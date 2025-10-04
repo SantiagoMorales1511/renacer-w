@@ -1,21 +1,20 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import './App.css'
 import { BrevoService } from './services/brevoService'
 
 function Header() {
   return (
     <header className="border-b border-border">
       <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2 sm:gap-3">
           <img
             src="/recursos/logos/logo%20png%202.png"
             alt="Logo Renacer"
-            className="h-8 w-auto object-contain"
+            className="h-6 sm:h-8 w-auto object-contain"
           />
-          <span className="font-semibold text-lg">Centro de Formación Renacer</span>
+          <span className="font-semibold text-sm sm:text-lg">Centro de Formación Renacer</span>
         </Link>
-        <nav className="flex gap-4 text-sm">
+        <nav className="flex gap-2 sm:gap-4 text-xs sm:text-sm">
           <Link to="/" className="hover:opacity-80">Inicio</Link>
         </nav>
       </div>
@@ -53,25 +52,33 @@ function CountdownTimer({ targetDate }: { targetDate: Date }) {
 
   return (
     <div className="bg-gradient-to-r from-accent/10 to-primary/10 rounded-xl p-4 border border-accent/20">
-      <div className="flex items-center justify-center gap-6">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
         <span className="text-sm text-text-muted">⏰ Tiempo restante:</span>
-        <div className="flex items-center gap-3">
-          <span className="text-2xl font-bold text-primary">
-            {timeLeft.days}
-          </span>
-          <span className="text-text-muted text-lg">días</span>
-          <span className="text-2xl font-bold text-accent">
-            {timeLeft.hours}
-          </span>
-          <span className="text-text-muted text-lg">horas</span>
-          <span className="text-2xl font-bold text-primary">
-            {timeLeft.minutes}
-          </span>
-          <span className="text-text-muted text-lg">min</span>
-          <span className="text-2xl font-bold text-accent">
-            {timeLeft.seconds}
-          </span>
-          <span className="text-text-muted text-lg">seg</span>
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1">
+            <span className="text-xl sm:text-2xl font-bold text-primary">
+              {timeLeft.days}
+            </span>
+            <span className="text-text-muted text-sm sm:text-lg">días</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-xl sm:text-2xl font-bold text-accent">
+              {timeLeft.hours}
+            </span>
+            <span className="text-text-muted text-sm sm:text-lg">horas</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-xl sm:text-2xl font-bold text-primary">
+              {timeLeft.minutes}
+            </span>
+            <span className="text-text-muted text-sm sm:text-lg">min</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-xl sm:text-2xl font-bold text-accent">
+              {timeLeft.seconds}
+            </span>
+            <span className="text-text-muted text-sm sm:text-lg">seg</span>
+          </div>
         </div>
       </div>
     </div>
@@ -140,7 +147,7 @@ function LeadCaptureModal({ isOpen, onClose, onSubmit }: { isOpen: boolean, onCl
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
       
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 animate-fade-in-up">
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-4 sm:p-8 animate-fade-in-up mx-4">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -155,14 +162,14 @@ function LeadCaptureModal({ isOpen, onClose, onSubmit }: { isOpen: boolean, onCl
         <div className="text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center mx-auto mb-4">
             {submitStatus === 'success' ? (
-              <span className="text-white text-2xl">✅</span>
+              <span className="text-white text-xl sm:text-2xl">✅</span>
             ) : submitStatus === 'error' ? (
-              <span className="text-white text-2xl">❌</span>
+              <span className="text-white text-xl sm:text-2xl">❌</span>
             ) : (
-              <span className="text-white text-2xl">📧</span>
+              <span className="text-white text-xl sm:text-2xl">📧</span>
             )}
           </div>
-          <h3 className="text-2xl font-semibold text-text mb-2">
+          <h3 className="text-xl sm:text-2xl font-semibold text-text mb-2">
             {submitStatus === 'success' ? '¡Gracias por tu interés!' : 
              submitStatus === 'error' ? 'Oops, algo salió mal' : 
              '¡No te pierdas nada!'}
@@ -246,16 +253,16 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
               {/* Hero */}
-              <section className="card-elevated p-10 flex flex-col md:flex-row items-center gap-12 animate-fade-in-up shadow-xl rounded-2xl">
+              <section className="card-elevated p-6 sm:p-10 flex flex-col md:flex-row items-center gap-8 sm:gap-12 animate-fade-in-up shadow-xl rounded-2xl">
         <img
           src="/recursos/logos/logo%20png%202.png"
           alt="Logo Renacer"
-          className="h-20 w-auto object-contain"
+          className="h-16 sm:h-20 w-auto object-contain"
         />
         <div className="flex-1">
-          <h1 className="text-4xl font-semibold text-text mb-6">Formación en Constelaciones Familiares y Terapia Sistémica</h1>
-          <p className="text-xl text-text-muted leading-relaxed mb-8">Descubre nuestra formación en Constelaciones Familiares y Terapia Sistémica en el Centro de Formación Renacer. Ofrecemos un enfoque único para tu crecimiento personal y profesional.</p>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-text mb-4 sm:mb-6">Formación en Constelaciones Familiares y Terapia Sistémica</h1>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed mb-6 sm:mb-8">Descubre nuestra formación en Constelaciones Familiares y Terapia Sistémica en el Centro de Formación Renacer. Ofrecemos un enfoque único para tu crecimiento personal y profesional.</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <a 
               href="https://wa.me/message/IHT5EC6ZSBPIL1" 
               target="_blank" 
@@ -300,91 +307,91 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
               </section>
 
               {/* Por qué elegirnos */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2637.jpg" alt="Círculo de formación" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_2637.jpg" alt="Círculo de formación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
-        <div className="card-elevated p-10">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">💫</span>
+        <div className="card-elevated p-6 sm:p-10">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">💫</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">¿Por qué elegirnos?</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">¿Por qué elegirnos?</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">Porque no solo te formamos, te transformamos. En el Centro de Formación Renacer, creemos que sanar es recordar quién eres en tu esencia, liberar las cargas que no te pertenecen y reconectar con la vida desde un lugar más auténtico y amoroso.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Porque no solo te formamos, te transformamos. En el Centro de Formación Renacer, creemos que sanar es recordar quién eres en tu esencia, liberar las cargas que no te pertenecen y reconectar con la vida desde un lugar más auténtico y amoroso.</p>
         </div>
       </section>
 
       {/* Formación vivencial */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
-        <div className="order-2 md:order-1 card-elevated p-10">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">🌱</span>
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+        <div className="order-2 md:order-1 card-elevated p-6 sm:p-10">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">🌱</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">Una formación completa y vivencial</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">Una formación completa y vivencial</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">Durante 11 módulos, adquirirás herramientas prácticas para reconocer y liberar patrones heredados, comprender el movimiento de los sistemas familiares y acompañar a otros en su propio proceso de sanación.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Durante 11 módulos, adquirirás herramientas prácticas para reconocer y liberar patrones heredados, comprender el movimiento de los sistemas familiares y acompañar a otros en su propio proceso de sanación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2660.jpg" alt="Proceso práctico" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_2660.jpg" alt="Proceso práctico" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
       </section>
 
       {/* Enfoque práctico */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2669.jpg" alt="Sesión práctica" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_2669.jpg" alt="Sesión práctica" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
-        <div className="card-elevated p-10">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">🎯</span>
+        <div className="card-elevated p-6 sm:p-10">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">🎯</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">Enfoque práctico</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">Enfoque práctico</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">Nuestras formaciones son presenciales y prácticas, lo que te permite aplicar directamente lo aprendido y experimentar una transformación real en tu vida.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Nuestras formaciones son presenciales y prácticas, lo que te permite aplicar directamente lo aprendido y experimentar una transformación real en tu vida.</p>
         </div>
       </section>
 
       {/* Guía experta */}
-      <section className="mt-16 card-elevated p-10">
-        <div className="flex flex-col md:flex-row gap-12 items-center">
+      <section className="mt-16 card-elevated p-6 sm:p-10">
+        <div className="flex flex-col md:flex-row gap-8 sm:gap-12 items-center">
           <div className="overflow-hidden rounded-xl border border-border w-full md:w-80 shadow-[var(--shadow-medium)]">
-            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-80 object-cover" loading="lazy" />
+            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-60 sm:h-80 object-cover" loading="lazy" />
           </div>
           <div className="flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
-                <span className="text-white text-2xl">👩‍🏫</span>
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
+                <span className="text-white text-xl sm:text-2xl">👩‍🏫</span>
               </div>
-              <h2 className="text-3xl font-semibold text-text">Guía experta</h2>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-text">Guía experta</h2>
             </div>
-            <p className="text-xl text-text-muted leading-relaxed mb-8">Aprenderás de Alba Elisa Cerón, una consteladora y terapeuta experimentada, quien te guiará con su conocimiento y experiencia en cada paso del camino.</p>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-base">
-              <li className="card-flat p-4 flex items-center gap-3">✨ Consteladora familiar</li>
-              <li className="card-flat p-4 flex items-center gap-3">🧠 Terapeuta y coach sistémica</li>
-              <li className="card-flat p-4 flex items-center gap-3">🔬 Biodescodificación</li>
-              <li className="card-flat p-4 flex items-center gap-3">💭 Bioneuroemoción</li>
-              <li className="card-flat p-4 flex items-center gap-3">🌲 Baño de bosque (Shinrin-Yoku)</li>
+            <p className="text-lg sm:text-xl text-text-muted leading-relaxed mb-6 sm:mb-8">Aprenderás de Alba Elisa Cerón, una consteladora y terapeuta experimentada, quien te guiará con su conocimiento y experiencia en cada paso del camino.</p>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm sm:text-base">
+              <li className="card-flat p-3 sm:p-4 flex items-center gap-2 sm:gap-3">✨ Consteladora familiar</li>
+              <li className="card-flat p-3 sm:p-4 flex items-center gap-2 sm:gap-3">🧠 Terapeuta y coach sistémica</li>
+              <li className="card-flat p-3 sm:p-4 flex items-center gap-2 sm:gap-3">🔬 Biodescodificación</li>
+              <li className="card-flat p-3 sm:p-4 flex items-center gap-2 sm:gap-3">💭 Bioneuroemoción</li>
+              <li className="card-flat p-3 sm:p-4 flex items-center gap-2 sm:gap-3">🌲 Baño de bosque (Shinrin-Yoku)</li>
             </ul>
           </div>
         </div>
       </section>
 
       {/* Ambiente */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
-        <div className="order-2 md:order-1 card-elevated p-10">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">🏠</span>
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+        <div className="order-2 md:order-1 card-elevated p-6 sm:p-10">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">🏠</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">Ambiente acogedor</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">Ambiente acogedor</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">A diferencia de otros centros, ofrecemos un ambiente cálido y armónico que facilita el aprendizaje y la transformación personal, haciendo que te sientas como en casa.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">A diferencia de otros centros, ofrecemos un ambiente cálido y armónico que facilita el aprendizaje y la transformación personal, haciendo que te sientas como en casa.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2650.jpg" alt="Ambiente acogedor" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_2650.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
       </section>
 
@@ -408,32 +415,32 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
       </section>
 
       {/* Sobre la formación */}
-      <section className="mt-16 card-elevated p-10">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-14 h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
-            <span className="text-white text-2xl">📋</span>
+      <section className="mt-16 card-elevated p-6 sm:p-10">
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
+            <span className="text-white text-xl sm:text-2xl">📋</span>
           </div>
-          <h2 className="text-3xl font-semibold text-text">Sobre la Formación</h2>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-text">Sobre la Formación</h2>
         </div>
-        <dl className="grid sm:grid-cols-2 gap-6 text-base">
-          <div className="card-flat p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
-            <dt className="font-semibold text-primary mb-2 text-lg">Duración</dt>
+        <dl className="grid sm:grid-cols-2 gap-4 sm:gap-6 text-sm sm:text-base">
+          <div className="card-flat p-4 sm:p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Duración</dt>
             <dd className="text-text-muted">11 Módulos (1 módulo al mes)</dd>
           </div>
-          <div className="card-flat p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
-            <dt className="font-semibold text-primary mb-2 text-lg">Modalidad</dt>
+          <div className="card-flat p-4 sm:p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Modalidad</dt>
             <dd className="text-text-muted">Presencial en Cali</dd>
           </div>
-          <div className="card-flat p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
-            <dt className="font-semibold text-primary mb-2 text-lg">Lugar</dt>
+          <div className="card-flat p-4 sm:p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Lugar</dt>
             <dd className="text-text-muted">Barrio Ciudad Jardín</dd>
           </div>
-          <div className="card-flat p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
-            <dt className="font-semibold text-primary mb-2 text-lg">Valor por módulo</dt>
-            <dd className="text-text-muted font-semibold text-accent text-xl">$250.000</dd>
+          <div className="card-flat p-4 sm:p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Valor por módulo</dt>
+            <dd className="text-text-muted font-semibold text-accent text-lg sm:text-xl">$250.000</dd>
           </div>
-          <div className="card-flat p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
-            <dt className="font-semibold text-primary mb-2 text-lg">Horario</dt>
+          <div className="card-flat p-4 sm:p-6 hover:shadow-[var(--shadow-medium)] transition-all duration-200">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Horario</dt>
             <dd className="text-text-muted">9:00 am a 5:00 pm</dd>
           </div>
         </dl>
@@ -444,16 +451,16 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
         <section className="mt-16 card-elevated p-10 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 shadow-xl rounded-2xl">
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-white text-2xl">📧</span>
+              <span className="text-white text-xl sm:text-2xl">📧</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text mb-4">¿Te interesa esta formación?</h2>
-            <p className="text-lg text-text-muted mb-8 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">¿Te interesa esta formación?</h2>
+            <p className="text-base sm:text-lg text-text-muted mb-6 sm:mb-8 max-w-2xl mx-auto">
               Mantente informado sobre fechas de inicio, descuentos especiales y contenido exclusivo de nuestras formaciones.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button 
                 onClick={onOpenLeadModal}
-                className="px-8 py-4 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20"
               >
                 📧 Recibir correos con novedades
               </button>
@@ -461,7 +468,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
                 href="https://wa.me/message/IHT5EC6ZSBPIL1" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/20 flex items-center gap-2"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/20 flex items-center gap-2"
               >
                 <span>💬</span>
                 WhatsApp
@@ -478,15 +485,15 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
               {/* Hero superior */}
-              <section className="card-elevated p-10 flex flex-col md:flex-row items-center gap-12 shadow-xl rounded-2xl">
+              <section className="card-elevated p-6 sm:p-10 flex flex-col md:flex-row items-center gap-8 sm:gap-12 shadow-xl rounded-2xl">
         <img
           src="/recursos/logos/logo%20png%202.png"
           alt="Logo Renacer"
-          className="h-20 w-auto object-contain"
+          className="h-16 sm:h-20 w-auto object-contain"
         />
         <div className="flex-1">
-          <h1 className="text-4xl font-semibold text-text mb-4">Centro de Formación Renacer</h1>
-          <p className="text-lg text-text-muted">Espacio de crecimiento personal y profesional en Santiago de Cali.</p>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-text mb-4">Centro de Formación Renacer</h1>
+          <p className="text-base sm:text-lg text-text-muted">Espacio de crecimiento personal y profesional en Santiago de Cali.</p>
         </div>
       </section>
 
@@ -563,9 +570,9 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
 
       {/* Testimonios */}
       <section className="mt-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-semibold text-text mb-4">Lo que dicen nuestros estudiantes</h2>
-          <p className="text-lg text-text-muted">Experiencias reales de transformación y crecimiento</p>
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">Lo que dicen nuestros estudiantes</h2>
+          <p className="text-base sm:text-lg text-text-muted">Experiencias reales de transformación y crecimiento</p>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -686,20 +693,20 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
       </section>
 
       {/* Suscripción a novedades */}
-      <section className="mt-16 card-elevated p-10 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 shadow-xl rounded-2xl">
+      <section className="mt-16 card-elevated p-6 sm:p-10 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 shadow-xl rounded-2xl">
         <div className="text-center">
-          <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
-            <span className="text-white text-2xl">📧</span>
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+            <span className="text-white text-xl sm:text-2xl">📧</span>
           </div>
-          <h2 className="text-3xl font-semibold text-text mb-4">¿Quieres recibir nuestras novedades?</h2>
-          <p className="text-lg text-text-muted mb-8 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">¿Quieres recibir nuestras novedades?</h2>
+          <p className="text-base sm:text-lg text-text-muted mb-6 sm:mb-8 max-w-2xl mx-auto">
             Mantente al día con nuestros próximos eventos, formaciones, contenido exclusivo y ofertas especiales. 
             Únete a nuestra comunidad y no te pierdas ninguna oportunidad de crecimiento personal.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             <button 
               onClick={onOpenLeadModal}
-              className="px-8 py-4 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20"
+              className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20"
             >
               📧 Recibir correos con novedades
             </button>
@@ -729,16 +736,16 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
       {/* Hero */}
-      <section className="card-elevated p-10 flex flex-col md:flex-row items-center gap-12 animate-fade-in-up shadow-xl rounded-2xl">
+      <section className="card-elevated p-6 sm:p-10 flex flex-col md:flex-row items-center gap-8 sm:gap-12 animate-fade-in-up shadow-xl rounded-2xl">
         <img
           src="/recursos/logos/logo%20png%202.png"
           alt="Logo Renacer"
-          className="h-20 w-auto object-contain"
+          className="h-16 sm:h-20 w-auto object-contain"
         />
         <div className="flex-1">
-          <h1 className="text-4xl font-semibold text-text mb-6">Certificado en Biodescodificación</h1>
-          <p className="text-xl text-text-muted leading-relaxed mb-8">Descubre nuestra formación en Biodescodificación en el Centro de Formación Renacer. Un programa presencial orientado a comprender el origen emocional de los síntomas y acompañar procesos de sanación con una mirada integral.</p>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-text mb-4 sm:mb-6">Certificado en Biodescodificación</h1>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed mb-6 sm:mb-8">Descubre nuestra formación en Biodescodificación en el Centro de Formación Renacer. Un programa presencial orientado a comprender el origen emocional de los síntomas y acompañar procesos de sanación con una mirada integral.</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
             <a 
               href="https://wa.me/message/IHT5EC6ZSBPIL1" 
               target="_blank" 
@@ -788,125 +795,125 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
       </section>
 
       {/* Por qué elegirnos */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/20250208_093922.jpg" alt="Formación en Biodescodificación" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/20250208_093922.jpg" alt="Formación en Biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
-        <div className="card-elevated p-10 shadow-xl rounded-2xl">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">💫</span>
+        <div className="card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">💫</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">¿Por qué elegirnos?</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">¿Por qué elegirnos?</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">Porque no solo te formamos, te transformamos. En el Centro de Formación Renacer, creemos que la biodescodificación es una herramienta poderosa para comprender el lenguaje del cuerpo y liberar las emociones que se manifiestan como síntomas físicos.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Porque no solo te formamos, te transformamos. En el Centro de Formación Renacer, creemos que la biodescodificación es una herramienta poderosa para comprender el lenguaje del cuerpo y liberar las emociones que se manifiestan como síntomas físicos.</p>
         </div>
       </section>
 
       {/* Formación completa */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
-        <div className="order-2 md:order-1 card-elevated p-10 shadow-xl rounded-2xl">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">🌱</span>
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+        <div className="order-2 md:order-1 card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">🌱</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">Una formación completa y vivencial</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">Una formación completa y vivencial</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">Durante 4 módulos, adquirirás herramientas prácticas para identificar conflictos emocionales, comprender la relación entre emociones y síntomas, y acompañar a otros en su proceso de sanación a través de la biodescodificación.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Durante 4 módulos, adquirirás herramientas prácticas para identificar conflictos emocionales, comprender la relación entre emociones y síntomas, y acompañar a otros en su proceso de sanación a través de la biodescodificación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2666.jpg" alt="Proceso de biodescodificación" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_2666.jpg" alt="Proceso de biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
       </section>
 
       {/* Enfoque práctico */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG-20250706-WA0016.jpg" alt="Sesión práctica de biodescodificación" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG-20250706-WA0016.jpg" alt="Sesión práctica de biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
-        <div className="card-elevated p-10 shadow-xl rounded-2xl">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">🎯</span>
+        <div className="card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">🎯</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">Enfoque práctico</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">Enfoque práctico</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">Nuestra formación es presencial y práctica, lo que te permite aplicar directamente las técnicas de biodescodificación y experimentar una transformación real en tu vida y en la de quienes acompañes.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Nuestra formación es presencial y práctica, lo que te permite aplicar directamente las técnicas de biodescodificación y experimentar una transformación real en tu vida y en la de quienes acompañes.</p>
         </div>
       </section>
 
       {/* Guía experta */}
-      <section className="mt-16 card-elevated p-10 shadow-xl rounded-2xl">
-        <div className="flex flex-col md:flex-row gap-12 items-center">
+      <section className="mt-16 card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
+        <div className="flex flex-col md:flex-row gap-8 sm:gap-12 items-center">
           <div className="overflow-hidden rounded-xl border border-border w-full md:w-80 shadow-[var(--shadow-medium)]">
-            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-80 object-cover" loading="lazy" />
+            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-60 sm:h-80 object-cover" loading="lazy" />
           </div>
           <div className="flex-1">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
-                <span className="text-white text-2xl">👩‍🏫</span>
+            <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
+                <span className="text-white text-xl sm:text-2xl">👩‍🏫</span>
               </div>
-              <h2 className="text-3xl font-semibold text-text">Guía experta</h2>
+              <h2 className="text-2xl sm:text-3xl font-semibold text-text">Guía experta</h2>
             </div>
             <p className="text-xl text-text-muted leading-relaxed mb-8">Aprenderás de Alba Elisa Cerón, una especialista en biodescodificación y terapeuta experimentada, quien te guiará con su conocimiento y experiencia en cada paso del camino hacia la comprensión del lenguaje del cuerpo.</p>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-base">
-              <li className="card-flat p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">✨ Especialista en biodescodificación</li>
-              <li className="card-flat p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">🧠 Terapeuta y coach sistémica</li>
-              <li className="card-flat p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">🔬 Bioneuroemoción</li>
-              <li className="card-flat p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">💭 Consteladora familiar</li>
-              <li className="card-flat p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">🌲 Baño de bosque (Shinrin-Yoku)</li>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm sm:text-base">
+              <li className="card-flat p-3 sm:p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">✨ Especialista en biodescodificación</li>
+              <li className="card-flat p-3 sm:p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">🧠 Terapeuta y coach sistémica</li>
+              <li className="card-flat p-3 sm:p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">🔬 Bioneuroemoción</li>
+              <li className="card-flat p-3 sm:p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">💭 Consteladora familiar</li>
+              <li className="card-flat p-3 sm:p-4 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">🌲 Baño de bosque (Shinrin-Yoku)</li>
             </ul>
           </div>
         </div>
       </section>
 
       {/* Ambiente acogedor */}
-      <section className="mt-16 grid md:grid-cols-2 gap-12 items-center">
-        <div className="order-2 md:order-1 card-elevated p-10 shadow-xl rounded-2xl">
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
-              <span className="text-white text-2xl">🏠</span>
+      <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
+        <div className="order-2 md:order-1 card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
+          <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-primary to-primary-light rounded-xl flex items-center justify-center">
+              <span className="text-white text-xl sm:text-2xl">🏠</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text">Ambiente acogedor</h2>
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text">Ambiente acogedor</h2>
           </div>
-          <p className="text-xl text-text-muted leading-relaxed">A diferencia de otros centros, ofrecemos un ambiente cálido y armónico que facilita el aprendizaje y la transformación personal, haciendo que te sientas como en casa mientras exploras el fascinante mundo de la biodescodificación.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">A diferencia de otros centros, ofrecemos un ambiente cálido y armónico que facilita el aprendizaje y la transformación personal, haciendo que te sientas como en casa mientras exploras el fascinante mundo de la biodescodificación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/20250208_093927.jpg" alt="Ambiente acogedor" className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/20250208_093927.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
       </section>
 
       {/* Sobre la formación */}
-      <section className="mt-16 card-elevated p-10 shadow-xl rounded-2xl">
-        <div className="flex items-center gap-4 mb-8">
+      <section className="mt-16 card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="w-14 h-14 bg-gradient-to-r from-accent to-accent-light rounded-xl flex items-center justify-center">
             <span className="text-white text-2xl">📋</span>
           </div>
           <h2 className="text-3xl font-semibold text-text">Sobre la Formación</h2>
         </div>
-        <dl className="grid sm:grid-cols-2 gap-6 text-base">
-          <div className="card-flat p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
-            <dt className="font-semibold text-primary mb-2 text-lg">Duración</dt>
+        <dl className="grid sm:grid-cols-2 gap-4 sm:gap-6 text-sm sm:text-base">
+          <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Duración</dt>
             <dd className="text-text-muted">4 Módulos (1 módulo al mes)</dd>
           </div>
-          <div className="card-flat p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
-            <dt className="font-semibold text-primary mb-2 text-lg">Modalidad</dt>
+          <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Modalidad</dt>
             <dd className="text-text-muted">Presencial en Cali</dd>
           </div>
-          <div className="card-flat p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
-            <dt className="font-semibold text-primary mb-2 text-lg">Lugar</dt>
+          <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Lugar</dt>
             <dd className="text-text-muted">Barrio Ciudad Jardín</dd>
           </div>
-          <div className="card-flat p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
-            <dt className="font-semibold text-primary mb-2 text-lg">Valor por módulo</dt>
-            <dd className="text-text-muted font-semibold text-accent text-xl">$250.000</dd>
+          <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Valor por módulo</dt>
+            <dd className="text-text-muted font-semibold text-accent text-lg sm:text-xl">$250.000</dd>
           </div>
-          <div className="card-flat p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
-            <dt className="font-semibold text-primary mb-2 text-lg">Horario</dt>
+          <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Horario</dt>
             <dd className="text-text-muted">9:00 am a 5:00 pm</dd>
           </div>
-          <div className="card-flat p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
-            <dt className="font-semibold text-primary mb-2 text-lg">Fecha de inicio</dt>
+          <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Fecha de inicio</dt>
             <dd className="text-text-muted font-semibold text-accent">Sábado, 25 de octubre 2025</dd>
           </div>
         </dl>
@@ -917,16 +924,16 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
         <section className="mt-16 card-elevated p-10 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 shadow-xl rounded-2xl">
           <div className="text-center">
             <div className="w-16 h-16 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-white text-2xl">📧</span>
+              <span className="text-white text-xl sm:text-2xl">📧</span>
             </div>
-            <h2 className="text-3xl font-semibold text-text mb-4">¿Te interesa esta formación?</h2>
-            <p className="text-lg text-text-muted mb-8 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">¿Te interesa esta formación?</h2>
+            <p className="text-base sm:text-lg text-text-muted mb-6 sm:mb-8 max-w-2xl mx-auto">
               Mantente informado sobre fechas de inicio, descuentos especiales y contenido exclusivo de nuestras formaciones.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <button 
                 onClick={onOpenLeadModal}
-                className="px-8 py-4 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20"
               >
                 📧 Recibir correos con novedades
               </button>
@@ -934,7 +941,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
                 href="https://wa.me/message/IHT5EC6ZSBPIL1" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-8 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/20 flex items-center gap-2"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/20 flex items-center gap-2"
               >
                 <span>💬</span>
                 WhatsApp

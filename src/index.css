@@ -12,14 +12,20 @@ html, body, #root {
 
 body { 
   @apply text-gray-800 antialiased;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
   margin: 0;
   padding: 0;
 }
+
+@media (min-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+}
 a { @apply text-gray-800 hover:opacity-80 transition-opacity; }
 button { 
-  @apply rounded-xl border border-gray-200 bg-gradient-to-r from-purple-500 to-purple-400 text-white px-6 py-3 shadow-sm transition-all duration-200 hover:shadow-md hover:translate-y-[-2px] active:translate-y-[0] font-medium;
+  @apply rounded-xl border border-gray-200 bg-gradient-to-r from-purple-500 to-purple-400 text-white px-4 py-2 sm:px-6 sm:py-3 text-sm sm:text-base shadow-sm transition-all duration-200 hover:shadow-md hover:translate-y-[-2px] active:translate-y-[0] font-medium;
 }
 
 /* Components */
