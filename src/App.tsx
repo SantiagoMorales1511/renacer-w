@@ -997,9 +997,28 @@ export default function App() {
       <div className="min-h-screen flex flex-col text-text relative">
         {/* Animated Background */}
         <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/30 to-slate-100/40"></div>
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50/40 via-transparent to-blue-50/30 animate-pulse" style={{ animationDuration: '8s' }}></div>
-          <div className="absolute inset-0 bg-gradient-to-tl from-indigo-50/30 via-transparent to-violet-50/20 animate-pulse" style={{ animationDelay: '2s', animationDuration: '10s' }}></div>
+          {/* Base gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-gray-50"></div>
+          
+          {/* Subtle pattern overlay */}
+          <div className="absolute inset-0 opacity-[0.02]" style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #6366f1 1px, transparent 0)`,
+            backgroundSize: '20px 20px'
+          }}></div>
+          
+          {/* Main gradient layers */}
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-50/60 via-transparent to-blue-50/40 animate-pulse" style={{ animationDuration: '12s' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-tl from-indigo-50/50 via-transparent to-violet-50/30 animate-pulse" style={{ animationDelay: '3s', animationDuration: '15s' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-cyan-50/30 via-transparent to-emerald-50/20 animate-pulse" style={{ animationDelay: '6s', animationDuration: '18s' }}></div>
+          
+          {/* Floating geometric shapes */}
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-purple-100/20 to-blue-100/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-indigo-100/25 to-violet-100/25 rounded-full blur-lg animate-drift" style={{ animationDelay: '5s' }}></div>
+          <div className="absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-br from-cyan-100/20 to-emerald-100/20 rounded-full blur-lg animate-float" style={{ animationDelay: '8s' }}></div>
+          <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-br from-rose-100/15 to-pink-100/15 rounded-full blur-xl animate-drift" style={{ animationDelay: '4s' }}></div>
+          
+          {/* Subtle texture overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent"></div>
         </div>
         
         {/* Content */}
