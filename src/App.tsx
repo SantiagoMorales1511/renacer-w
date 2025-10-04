@@ -525,22 +525,24 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
                 <Link to="/formacion/biodescodificacion" className="group relative card-elevated overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
           {/* Banner "Empieza este mes" */}
           <div className="absolute top-4 left-4 z-20">
-            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold px-4 py-2 rounded-full text-sm shadow-2xl hover:scale-110 transition-transform duration-300 border-2 border-yellow-300 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm shadow-2xl hover:scale-110 transition-transform duration-300 border-2 border-yellow-300 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-ping"></div>
               <span className="flex items-center gap-1 relative z-10">
-                <span className="text-lg">🚀</span>
-                Empieza este mes
+                <span className="text-sm sm:text-lg">🚀</span>
+                <span className="hidden sm:inline">Empieza este mes</span>
+                <span className="sm:hidden">Empieza</span>
               </span>
             </div>
           </div>
           
           {/* Banner "Fecha" */}
           <div className="absolute top-4 right-4 z-20">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold px-4 py-2 rounded-full text-sm shadow-2xl animate-bounce border-2 border-blue-400 relative overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm shadow-2xl animate-bounce border-2 border-blue-400 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-ping"></div>
               <span className="flex items-center gap-1 relative z-10">
-                <span className="text-lg">📅</span>
-                Sábado, 25 de octubre 2025
+                <span className="text-sm sm:text-lg">📅</span>
+                <span className="hidden sm:inline">Sábado, 25 de octubre 2025</span>
+                <span className="sm:hidden">25 oct</span>
               </span>
             </div>
           </div>
