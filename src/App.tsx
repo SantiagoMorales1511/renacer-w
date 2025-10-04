@@ -529,8 +529,7 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-ping"></div>
               <span className="flex items-center gap-1 relative z-10">
                 <span className="text-sm sm:text-lg">🚀</span>
-                <span className="hidden sm:inline">Empieza este mes</span>
-                <span className="sm:hidden">Empieza</span>
+                Empieza este mes
               </span>
             </div>
           </div>
