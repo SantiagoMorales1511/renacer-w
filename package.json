@@ -4,7 +4,13 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Sitio web del Centro de Formación Renacer - Constelaciones Familiares y Biodescodificación",
-  "keywords": ["constelaciones", "biodescodificacion", "terapia", "cali", "colombia"],
+  "keywords": [
+    "constelaciones",
+    "biodescodificacion",
+    "terapia",
+    "cali",
+    "colombia"
+  ],
   "author": "Centro de Formación Renacer",
   "scripts": {
     "dev": "vite",
