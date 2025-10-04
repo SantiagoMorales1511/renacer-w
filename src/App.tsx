@@ -208,7 +208,7 @@ function LeadCaptureModal({ isOpen, onClose, onSubmit }: { isOpen: boolean, onCl
                 disabled={isSubmitting || !name.trim() || !email.trim()}
                 className="w-full px-4 py-3 bg-gradient-to-r from-primary to-primary-light text-white rounded-xl font-medium hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Guardando en Brevo...' : '¡Sí, quiero recibir info!'}
+                {isSubmitting ? 'Guardando...' : '¡Sí, quiero recibir info!'}
               </button>
             </div>
           </form>
@@ -950,13 +950,11 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
 
 export default function App() {
   const [showLeadModal, setShowLeadModal] = useState(false)
-  const [hasShownModal, setHasShownModal] = useState(false)
 
   useEffect(() => {
     // Verificar si ya se mostró el modal automáticamente en esta sesión
     const modalShown = localStorage.getItem('leadModalShown')
     if (modalShown) {
-      setHasShownModal(true)
       return
     }
 
@@ -974,7 +972,6 @@ export default function App() {
     
     // Marcar que el modal ya se mostró
     localStorage.setItem('leadModalShown', 'true')
-    setHasShownModal(true)
   }
 
   const handleCloseModal = () => {
