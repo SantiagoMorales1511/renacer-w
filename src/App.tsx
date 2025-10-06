@@ -290,7 +290,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
                   <div className="flex-1">
                     <p className="text-sm text-primary font-medium">Próxima cohorte</p>
-                    <h2 className="text-xl font-semibold mt-1 text-text">Sábado 27 de septiembre</h2>
+                    <h2 className="text-xl font-semibold mt-1 text-text">Enero del 2026</h2>
                     <ul className="mt-2 text-sm text-text-muted flex flex-wrap gap-x-4 gap-y-1">
                       <li className="flex items-center gap-1">📍 Ciudad Jardín – Cali</li>
                       <li className="flex items-center gap-1">🕘 9:00 am a 5:00 pm</li>
@@ -399,7 +399,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
       <section id="proximo-inicio" className="mt-8 card-flat p-6">
         <h2 className="text-lg font-semibold">Próximo inicio</h2>
         <ul className="mt-2 text-sm text-text-muted grid sm:grid-cols-2 gap-x-6 gap-y-1">
-          <li>📆 Fecha de inicio: Sábado 27 de septiembre</li>
+          <li>📆 Fecha de inicio: Enero del 2026</li>
           <li>📍 Presencial – Ciudad Jardín – Cali</li>
           <li>🕘 9:00 am a 5:00 pm</li>
         </ul>
