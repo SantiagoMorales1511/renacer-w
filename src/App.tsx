@@ -14,8 +14,17 @@ function Header() {
           />
           <span className="font-semibold text-sm sm:text-lg">Centro de Formación Renacer</span>
         </Link>
-        <nav className="flex gap-2 sm:gap-4 text-xs sm:text-sm">
+        <nav className="flex gap-2 sm:gap-4 text-xs sm:text-sm items-center">
           <Link to="/" className="hover:opacity-80">Inicio</Link>
+          <a 
+            href="https://www.instagram.com/renacer.ahora/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-200 hover:translate-y-[-1px] hover:shadow-lg"
+          >
+            <span className="text-sm">📷</span>
+            <span className="hidden sm:inline">Instagram</span>
+          </a>
         </nav>
       </div>
     </header>
@@ -243,7 +252,29 @@ function Footer() {
   return (
     <footer className="border-t border-border text-text-muted">
       <div className="mx-auto max-w-5xl px-4 py-6 text-sm">
-        © {new Date().getFullYear()} Renacer · Santiago de Cali, Colombia
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>© {new Date().getFullYear()} Renacer · Santiago de Cali, Colombia</div>
+          <div className="flex items-center gap-4">
+            <a 
+              href="https://www.instagram.com/renacer.ahora/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-200 hover:translate-y-[-1px] hover:shadow-lg"
+            >
+              <span>📷</span>
+              <span>Instagram</span>
+            </a>
+            <a 
+              href="https://wa.me/message/IHT5EC6ZSBPIL1" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all duration-200 hover:translate-y-[-1px] hover:shadow-lg"
+            >
+              <span>💬</span>
+              <span>WhatsApp</span>
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   )
@@ -279,6 +310,15 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
             >
               <span>💬</span>
               WhatsApp
+            </a>
+            <a 
+              href="https://www.instagram.com/renacer.ahora/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
+            >
+              <span>📷</span>
+              Instagram
             </a>
             <a href="#proximo-inicio" className="text-base text-primary hover:text-primary-light transition-colors font-medium">Ver próxima cohorte →</a>
           </div>
@@ -720,6 +760,15 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
               <span>💬</span>
               WhatsApp
             </a>
+            <a 
+              href="https://www.instagram.com/renacer.ahora/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-500/20 flex items-center gap-2"
+            >
+              <span>📷</span>
+              Instagram
+            </a>
           </div>
           <p className="text-sm text-text-muted mt-4">
             Respetamos tu privacidad. No compartimos tu información con terceros.
@@ -763,6 +812,15 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
             >
               <span>💬</span>
               WhatsApp
+            </a>
+            <a 
+              href="https://www.instagram.com/renacer.ahora/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
+            >
+              <span>📷</span>
+              Instagram
             </a>
             <a href="#proximo-inicio" className="text-base text-primary hover:text-primary-light transition-colors font-medium">Ver próxima cohorte →</a>
           </div>
