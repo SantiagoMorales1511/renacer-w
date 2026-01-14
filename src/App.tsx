@@ -617,77 +617,30 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
-            <video 
-              className="w-full h-auto" 
-              controls 
-              preload="metadata"
-              style={{ maxHeight: '400px' }}
-            >
-              <source src="/recursos/testimonios/01.mp4" type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
-          </div>
-
-          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
-            <video 
-              className="w-full h-auto" 
-              controls 
-              preload="metadata"
-              style={{ maxHeight: '400px' }}
-            >
-              <source src="/recursos/testimonios/1001.mp4" type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
-          </div>
-
-          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
-            <video 
-              className="w-full h-auto" 
-              controls 
-              preload="metadata"
-              style={{ maxHeight: '400px' }}
-            >
-              <source src="/recursos/testimonios/1001 (2.mp4" type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
-          </div>
-
-          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
-            <video 
-              className="w-full h-auto" 
-              controls 
-              preload="metadata"
-              style={{ maxHeight: '400px' }}
-            >
-              <source src="/recursos/testimonios/27 (1).mp4" type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
-          </div>
-
-          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
-            <video 
-              className="w-full h-auto" 
-              controls 
-              preload="metadata"
-              style={{ maxHeight: '400px' }}
-            >
-              <source src="/recursos/testimonios/1001).mp4" type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
-          </div>
-
-          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
-            <video 
-              className="w-full h-auto" 
-              controls 
-              preload="metadata"
-              style={{ maxHeight: '400px' }}
-            >
-              <source src="/recursos/testimonios/1001 (.mp4" type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
-            </video>
-          </div>
+          {[
+            '01.mp4',
+            '1001.mp4',
+            '1001 (2.mp4',
+            '27 (1).mp4',
+            '1001).mp4',
+            '1001 (.mp4'
+          ].map((videoFile, index) => (
+            <div key={index} className="card-elevated shadow-xl rounded-2xl overflow-hidden bg-black">
+              <video 
+                className="w-full h-auto" 
+                controls 
+                preload="metadata"
+                style={{ maxHeight: '400px', display: 'block' }}
+                playsInline
+                onError={(e) => {
+                  console.error('Error cargando video:', videoFile, e);
+                }}
+              >
+                <source src={`/recursos/testimonios/${encodeURIComponent(videoFile)}`} type="video/mp4" />
+                Tu navegador no soporta el elemento de video.
+              </video>
+            </div>
+          ))}
         </div>
       </section>
 
