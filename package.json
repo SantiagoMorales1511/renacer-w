@@ -14,6 +14,7 @@
   "author": "Centro de Formación Renacer",
   "scripts": {
     "dev": "vite",
+    "prebuild": "git lfs pull || echo 'Git LFS not available, skipping...'",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
