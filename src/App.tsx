@@ -330,7 +330,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
                   <div className="flex-1">
                     <p className="text-sm text-primary font-medium">Próxima cohorte</p>
-                    <h2 className="text-xl font-semibold mt-1 text-text">Enero del 2026</h2>
+                    <h2 className="text-xl font-semibold mt-1 text-text">7 de febrero de 2026</h2>
                     <ul className="mt-2 text-sm text-text-muted flex flex-wrap gap-x-4 gap-y-1">
                       <li className="flex items-center gap-1">📍 Ciudad Jardín – Cali</li>
                       <li className="flex items-center gap-1">🕘 9:00 am a 5:00 pm</li>
@@ -349,7 +349,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
               {/* Por qué elegirnos */}
       <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2637.jpg" alt="Círculo de formación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/formacion.jpg" alt="Círculo de formación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
         <div className="card-elevated p-6 sm:p-10">
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -374,14 +374,14 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
           <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Durante 11 módulos, adquirirás herramientas prácticas para reconocer y liberar patrones heredados, comprender el movimiento de los sistemas familiares y acompañar a otros en su propio proceso de sanación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2660.jpg" alt="Proceso práctico" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/20250208_143018.jpg" alt="Proceso práctico" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
       </section>
 
       {/* Enfoque práctico */}
       <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2669.jpg" alt="Sesión práctica" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_3985.jpg" alt="Sesión práctica" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
         <div className="card-elevated p-6 sm:p-10">
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -431,7 +431,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
           <p className="text-lg sm:text-xl text-text-muted leading-relaxed">A diferencia de otros centros, ofrecemos un ambiente cálido y armónico que facilita el aprendizaje y la transformación personal, haciendo que te sientas como en casa.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2650.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_3992.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
         </div>
       </section>
 
@@ -439,7 +439,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
       <section id="proximo-inicio" className="mt-8 card-flat p-6">
         <h2 className="text-lg font-semibold">Próximo inicio</h2>
         <ul className="mt-2 text-sm text-text-muted grid sm:grid-cols-2 gap-x-6 gap-y-1">
-          <li>📆 Fecha de inicio: Enero del 2026</li>
+          <li>📆 Fecha de inicio: 7 de febrero de 2026</li>
           <li>📍 Presencial – Ciudad Jardín – Cali</li>
           <li>🕘 9:00 am a 5:00 pm</li>
         </ul>
@@ -612,123 +612,81 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
       {/* Testimonios */}
       <section className="mt-16">
         <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">Lo que dicen nuestros estudiantes</h2>
-          <p className="text-base sm:text-lg text-text-muted">Experiencias reales de transformación y crecimiento</p>
+          <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">Testimonios de nuestros estudiantes graduados</h2>
+          <p className="text-base sm:text-lg text-text-muted">Escucha las experiencias reales de transformación</p>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Testimonio 1 */}
-          <div className="card-elevated p-6 shadow-xl rounded-2xl">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                M
-              </div>
-              <div className="ml-4">
-                <h4 className="font-semibold text-text">María González</h4>
-                <p className="text-sm text-text-muted">Constelaciones Familiares</p>
-              </div>
-            </div>
-            <p className="text-text-muted italic leading-relaxed">
-              "La formación en Renacer transformó completamente mi vida. Aprendí a sanar heridas que no sabía que tenía y ahora puedo ayudar a otros en su proceso de sanación. Alba Elisa es una guía excepcional."
-            </p>
-            <div className="flex text-yellow-400 mt-4">
-              <span>⭐⭐⭐⭐⭐</span>
-            </div>
+          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
+            <video 
+              className="w-full h-auto" 
+              controls 
+              preload="metadata"
+              style={{ maxHeight: '400px' }}
+            >
+              <source src="/recursos/testimonios/01.mp4" type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
+            </video>
           </div>
 
-          {/* Testimonio 2 */}
-          <div className="card-elevated p-6 shadow-xl rounded-2xl">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-accent to-accent-light rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                C
-              </div>
-              <div className="ml-4">
-                <h4 className="font-semibold text-text">Carlos Rodríguez</h4>
-                <p className="text-sm text-text-muted">Biodescodificación</p>
-              </div>
-            </div>
-            <p className="text-text-muted italic leading-relaxed">
-              "El ambiente acogedor de Renacer me permitió abrirme completamente al aprendizaje. La biodescodificación me ayudó a entender el origen de mis síntomas y a liberar emociones que me limitaban."
-            </p>
-            <div className="flex text-yellow-400 mt-4">
-              <span>⭐⭐⭐⭐⭐</span>
-            </div>
+          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
+            <video 
+              className="w-full h-auto" 
+              controls 
+              preload="metadata"
+              style={{ maxHeight: '400px' }}
+            >
+              <source src="/recursos/testimonios/1001.mp4" type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
+            </video>
           </div>
 
-          {/* Testimonio 3 */}
-          <div className="card-elevated p-6 shadow-xl rounded-2xl">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                A
-              </div>
-              <div className="ml-4">
-                <h4 className="font-semibold text-text">Ana Martínez</h4>
-                <p className="text-sm text-text-muted">Constelaciones Familiares</p>
-              </div>
-            </div>
-            <p className="text-text-muted italic leading-relaxed">
-              "Una experiencia única. No solo aprendí técnicas, sino que me conecté con mi esencia. El enfoque práctico y vivencial hace que cada sesión sea transformadora. Altamente recomendado."
-            </p>
-            <div className="flex text-yellow-400 mt-4">
-              <span>⭐⭐⭐⭐⭐</span>
-            </div>
+          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
+            <video 
+              className="w-full h-auto" 
+              controls 
+              preload="metadata"
+              style={{ maxHeight: '400px' }}
+            >
+              <source src="/recursos/testimonios/1001 (2.mp4" type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
+            </video>
           </div>
 
-          {/* Testimonio 4 */}
-          <div className="card-elevated p-6 shadow-xl rounded-2xl">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-accent to-accent-light rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                L
-              </div>
-              <div className="ml-4">
-                <h4 className="font-semibold text-text">Luis Herrera</h4>
-                <p className="text-sm text-text-muted">Biodescodificación</p>
-              </div>
-            </div>
-            <p className="text-text-muted italic leading-relaxed">
-              "La formación superó todas mis expectativas. Alba Elisa tiene un don especial para guiar el proceso de sanación. Ahora trabajo como terapeuta y veo resultados increíbles en mis clientes."
-            </p>
-            <div className="flex text-yellow-400 mt-4">
-              <span>⭐⭐⭐⭐⭐</span>
-            </div>
+          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
+            <video 
+              className="w-full h-auto" 
+              controls 
+              preload="metadata"
+              style={{ maxHeight: '400px' }}
+            >
+              <source src="/recursos/testimonios/27 (1).mp4" type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
+            </video>
           </div>
 
-          {/* Testimonio 5 */}
-          <div className="card-elevated p-6 shadow-xl rounded-2xl">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-primary to-primary-light rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                S
-              </div>
-              <div className="ml-4">
-                <h4 className="font-semibold text-text">Sofia Jiménez</h4>
-                <p className="text-sm text-text-muted">Constelaciones Familiares</p>
-              </div>
-            </div>
-            <p className="text-text-muted italic leading-relaxed">
-              "Renacer no es solo un centro de formación, es un espacio de sanación. El ambiente cálido y la metodología práctica me permitieron integrar los conocimientos de manera profunda y duradera."
-            </p>
-            <div className="flex text-yellow-400 mt-4">
-              <span>⭐⭐⭐⭐⭐</span>
-            </div>
+          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
+            <video 
+              className="w-full h-auto" 
+              controls 
+              preload="metadata"
+              style={{ maxHeight: '400px' }}
+            >
+              <source src="/recursos/testimonios/1001).mp4" type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
+            </video>
           </div>
 
-          {/* Testimonio 6 */}
-          <div className="card-elevated p-6 shadow-xl rounded-2xl">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-accent to-accent-light rounded-full flex items-center justify-center text-white font-semibold text-lg">
-                R
-              </div>
-              <div className="ml-4">
-                <h4 className="font-semibold text-text">Roberto Silva</h4>
-                <p className="text-sm text-text-muted">Biodescodificación</p>
-              </div>
-            </div>
-            <p className="text-text-muted italic leading-relaxed">
-              "La formación en biodescodificación me abrió los ojos a una nueva forma de entender la salud. Los módulos están muy bien estructurados y el acompañamiento es excepcional. Una inversión que vale la pena."
-            </p>
-            <div className="flex text-yellow-400 mt-4">
-              <span>⭐⭐⭐⭐⭐</span>
-            </div>
+          <div className="card-elevated shadow-xl rounded-2xl overflow-hidden">
+            <video 
+              className="w-full h-auto" 
+              controls 
+              preload="metadata"
+              style={{ maxHeight: '400px' }}
+            >
+              <source src="/recursos/testimonios/1001 (.mp4" type="video/mp4" />
+              Tu navegador no soporta el elemento de video.
+            </video>
           </div>
         </div>
       </section>
