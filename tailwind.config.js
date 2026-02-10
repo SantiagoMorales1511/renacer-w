@@ -7,6 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: {
+          DEFAULT: '#a78bfa',
+          light: '#c4b5fd',
+        },
+        accent: {
+          DEFAULT: '#6ee7b7',
+          light: '#a7f3d0',
+        },
         surface: {
           DEFAULT: '#ffffff',
           soft: '#f8fafc',
@@ -16,6 +24,9 @@ export default {
           muted: '#6b7280',
         },
         border: '#e5e7eb',
+      },
+      fontFamily: {
+        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         'xl': '14px',

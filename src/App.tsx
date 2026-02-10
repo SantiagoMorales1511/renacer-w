@@ -1,10 +1,11 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { FaWhatsapp, FaInstagram } from 'react-icons/fa'
 import { BrevoService } from './services/brevoService'
 
 function Header() {
   return (
-    <header className="border-b border-border">
+    <header className="border-b border-primary/20 bg-gradient-to-r from-primary/5 via-white to-accent/5 backdrop-blur-sm">
       <div className="mx-auto max-w-5xl px-4 py-3 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 sm:gap-3">
           <img
@@ -20,9 +21,9 @@ function Header() {
             href="https://www.instagram.com/renacer.ahora/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-200 hover:translate-y-[-1px] hover:shadow-lg"
+            className="flex items-center gap-1 px-3 py-1.5 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-medium transition-all duration-300 hover:opacity-90 hover:translate-y-[-1px] hover:shadow-[var(--shadow-large)]"
           >
-            <span className="text-sm">📷</span>
+            <FaInstagram className="w-4 h-4 shrink-0" />
             <span className="hidden sm:inline">Instagram</span>
           </a>
         </nav>
@@ -94,6 +95,90 @@ function CountdownTimer({ targetDate }: { targetDate: Date }) {
   )
 }
 
+function VideoTestimonio({
+  videoFile,
+  isActive,
+  onActivate,
+}: { videoFile: string; isActive: boolean; onActivate: () => void }) {
+  const [error, setError] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const src = `/recursos/testimonios/${encodeURIComponent(videoFile)}`
+  const onActivateRef = useRef(onActivate)
+  onActivateRef.current = onActivate
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) onActivateRef.current()
+      },
+      { threshold: 0.4, rootMargin: '0px' }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const v = videoRef.current
+    if (!v) return
+    if (isActive) v.play().catch(() => {})
+    else v.pause()
+  }, [isActive])
+
+  if (error) {
+    return (
+      <div className="card-elevated shadow-xl rounded-2xl overflow-hidden bg-black flex items-center justify-center min-h-[200px] p-6 text-center">
+        <p className="text-white/90 text-sm">
+          Video no disponible. Los .mp4 del repo usan Git LFS: instala Git LFS y ejecuta <code className="bg-white/10 px-1 rounded">git lfs pull</code> en la raíz del proyecto.
+        </p>
+      </div>
+    )
+  }
+  return (
+    <div ref={containerRef} className="card-elevated shadow-xl rounded-2xl overflow-hidden bg-black flex justify-center">
+      <div className="w-full max-w-[280px] aspect-[9/16] flex items-center justify-center bg-black">
+        <video
+          ref={videoRef}
+          className="w-full h-full object-contain"
+          controls
+          preload="none"
+          playsInline
+          onError={() => setError(true)}
+        >
+          <source src={src} type="video/mp4" />
+          Tu navegador no soporta el elemento de video.
+        </video>
+      </div>
+    </div>
+  )
+}
+
+const TESTIMONIOS_VIDEOS = ['Captions_ABB03A.mp4', 'Captions_2FC1FC.mp4']
+
+function TestimoniosSection() {
+  const [activeVideo, setActiveVideo] = useState<string | null>(null)
+  return (
+    <section className="mt-16">
+      <div className="text-center mb-8 sm:mb-12 animate-fade-in-up-delay">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">Testimonios de nuestros estudiantes graduados</h2>
+        <p className="text-base sm:text-lg text-text-muted">Escucha las experiencias reales de transformación</p>
+      </div>
+      <div className="flex flex-col gap-8 max-w-2xl mx-auto">
+        {TESTIMONIOS_VIDEOS.map((videoFile) => (
+          <VideoTestimonio
+            key={videoFile}
+            videoFile={videoFile}
+            isActive={activeVideo === videoFile}
+            onActivate={() => setActiveVideo(videoFile)}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function LeadCaptureModal({ isOpen, onClose, onSubmit }: { isOpen: boolean, onClose: () => void, onSubmit: (name: string, email: string) => void }) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -153,7 +238,7 @@ function LeadCaptureModal({ isOpen, onClose, onSubmit }: { isOpen: boolean, onCl
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose}></div>
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300" onClick={onClose}></div>
       
       {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-4 sm:p-8 animate-fade-in-up mx-4">
@@ -250,7 +335,7 @@ function LeadCaptureModal({ isOpen, onClose, onSubmit }: { isOpen: boolean, onCl
 
 function Footer() {
   return (
-    <footer className="border-t border-border text-text-muted">
+    <footer className="border-t border-primary/20 bg-white/80 text-text-muted backdrop-blur-sm">
       <div className="mx-auto max-w-5xl px-4 py-6 text-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>© {new Date().getFullYear()} Renacer · Santiago de Cali, Colombia</div>
@@ -259,18 +344,18 @@ function Footer() {
               href="https://www.instagram.com/renacer.ahora/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-200 hover:translate-y-[-1px] hover:shadow-lg"
+              className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-medium transition-all duration-300 hover:opacity-90 hover:translate-y-[-1px] hover:shadow-[var(--shadow-large)]"
             >
-              <span>📷</span>
+              <FaInstagram className="w-5 h-5 shrink-0" />
               <span>Instagram</span>
             </a>
             <a 
               href="https://wa.me/message/IHT5EC6ZSBPIL1" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all duration-200 hover:translate-y-[-1px] hover:shadow-lg"
+              className="flex items-center gap-2 px-3 py-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-lg font-medium transition-all duration-300 hover:translate-y-[-1px] hover:shadow-[var(--shadow-large)]"
             >
-              <span>💬</span>
+              <FaWhatsapp className="w-5 h-5 shrink-0" />
               <span>WhatsApp</span>
             </a>
           </div>
@@ -306,18 +391,18 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
               href="https://wa.me/message/IHT5EC6ZSBPIL1" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-400 hover:bg-emerald-500 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
             >
-              <span>💬</span>
+              <FaWhatsapp className="w-5 h-5 shrink-0" />
               WhatsApp
             </a>
             <a 
               href="https://www.instagram.com/renacer.ahora/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
             >
-              <span>📷</span>
+              <FaInstagram className="w-5 h-5 shrink-0" />
               Instagram
             </a>
             <a href="#proximo-inicio" className="text-base text-primary hover:text-primary-light transition-colors font-medium">Ver próxima cohorte →</a>
@@ -508,9 +593,9 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
                 href="https://wa.me/message/IHT5EC6ZSBPIL1" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-6 py-3 sm:px-8 sm:py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/20 flex items-center gap-2"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-emerald-400 hover:bg-emerald-500 text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 flex items-center gap-2"
               >
-                <span>💬</span>
+                <FaWhatsapp className="w-5 h-5 shrink-0" />
                 WhatsApp
               </a>
             </div>
@@ -539,110 +624,58 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
 
               {/* Tarjetas de formaciones */}
               <section className="mt-10 grid md:grid-cols-2 gap-8">
-                <Link to="/formacion/constelaciones" className="group relative card-elevated overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
-          <img
-            src="/recursos/fotos/20250208_143018.jpg"
-            alt="formación en Constelaciones Familiares y Terapia Sistémica"
-            className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
-          <div className="absolute inset-x-0 bottom-0 p-6">
-            <div className="flex items-end justify-between gap-4">
-              <h3 className="text-white font-semibold text-lg sm:text-xl drop-shadow-lg flex-1">
-                formación en Constelaciones Familiares y Terapia Sistémica
-              </h3>
-              <button className="px-4 py-2 bg-gradient-to-r from-primary to-primary-light text-white font-semibold text-sm rounded-xl shadow-[var(--shadow-medium)] hover:shadow-[var(--shadow-large)] hover:translate-y-[-2px] active:translate-y-[0] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20 group !border-0 flex-shrink-0">
-                <span className="flex items-center gap-2">
-                  Ver contenido
-                  <span className="text-xl animate-bounce">👇</span>
-                </span>
-              </button>
-            </div>
-          </div>
-        </Link>
+                <Link to="/formacion/constelaciones" className="group block overflow-hidden rounded-2xl border border-primary/20 bg-white shadow-[var(--shadow-medium)] transition-all duration-300 hover:shadow-[var(--shadow-large)] hover:border-primary/30">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <img
+                      src="/recursos/fotos/20250208_143018.jpg"
+                      alt="Formación en Constelaciones Familiares y Terapia Sistémica"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent" />
+                  </div>
+                  <div className="p-5 sm:p-6 bg-gradient-to-b from-primary/5 to-white">
+                    <h3 className="text-text font-semibold text-lg sm:text-xl leading-snug mb-3">
+                      Formación en Constelaciones Familiares y Terapia Sistémica
+                    </h3>
+                    <span className="inline-flex items-center gap-2 text-primary font-medium text-sm hover:gap-3 transition-all duration-200">
+                      Ver contenido
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </span>
+                  </div>
+                </Link>
 
-                <Link to="/formacion/biodescodificacion" className="group relative card-elevated overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 rounded-2xl">
-          {/* Banner "Empieza este mes" */}
-          <div className="absolute top-4 left-4 z-20">
-            <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm shadow-2xl hover:scale-110 transition-transform duration-300 border-2 border-yellow-300 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-ping"></div>
-              <span className="flex items-center gap-1 relative z-10">
-                <span className="text-sm sm:text-lg">🚀</span>
-                Empieza este mes
-              </span>
-            </div>
-          </div>
-          
-          {/* Banner "Fecha" */}
-          <div className="absolute top-4 right-4 z-20">
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm shadow-2xl animate-bounce border-2 border-blue-400 relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-ping"></div>
-              <span className="flex items-center gap-1 relative z-10">
-                <span className="text-sm sm:text-lg">📅</span>
-                <span className="hidden sm:inline">Sábado, 25 de octubre 2025</span>
-                <span className="sm:hidden">25 oct</span>
-              </span>
-            </div>
-          </div>
-          
-          <img
-            src="/recursos/fotos/20250208_111336.jpg"
-            alt="Certificado en Biodescodificación"
-            className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-            loading="lazy"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
-          <div className="absolute inset-x-0 bottom-0 p-6">
-            <div className="flex items-end justify-between gap-4">
-              <h3 className="text-white font-semibold text-lg sm:text-xl drop-shadow-lg flex-1">
-                Certificado en Biodescodificación
-              </h3>
-              <button className="px-4 py-2 bg-gradient-to-r from-primary to-primary-light text-white font-semibold text-sm rounded-xl shadow-[var(--shadow-medium)] hover:shadow-[var(--shadow-large)] hover:translate-y-[-2px] active:translate-y-[0] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20 group !border-0 flex-shrink-0">
-                <span className="flex items-center gap-2">
-                  Ver contenido
-                  <span className="text-xl animate-bounce">👇</span>
-                </span>
-        </button>
-            </div>
-          </div>
-        </Link>
-      </section>
+                <Link to="/formacion/biodescodificacion" className="group block overflow-hidden rounded-2xl border border-primary/20 bg-white shadow-[var(--shadow-medium)] transition-all duration-300 hover:shadow-[var(--shadow-large)] hover:border-primary/30">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <span className="absolute top-4 left-4 z-10 rounded-full bg-amber-100/95 px-3 py-1.5 text-xs font-medium text-amber-800 backdrop-blur-sm">
+                      Empieza este mes
+                    </span>
+                    <span className="absolute top-4 right-4 z-10 rounded-full border border-primary/30 bg-white/90 px-3 py-1.5 text-xs font-medium text-primary backdrop-blur-sm">
+                      <span className="hidden sm:inline">28 feb 2026</span>
+                      <span className="sm:hidden">28 feb</span>
+                    </span>
+                    <img
+                      src="/recursos/fotos/20250208_111336.jpg"
+                      alt="Certificado en Biodescodificación"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-accent/20 via-transparent to-transparent" />
+                  </div>
+                  <div className="p-5 sm:p-6 bg-gradient-to-b from-accent/5 to-white">
+                    <h3 className="text-text font-semibold text-lg sm:text-xl leading-snug mb-3">
+                      Certificado en Biodescodificación
+                    </h3>
+                    <span className="inline-flex items-center gap-2 text-primary font-medium text-sm hover:gap-3 transition-all duration-200">
+                      Ver contenido
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                    </span>
+                  </div>
+                </Link>
+              </section>
 
-      {/* Testimonios */}
-      <section className="mt-16">
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-text mb-4">Testimonios de nuestros estudiantes graduados</h2>
-          <p className="text-base sm:text-lg text-text-muted">Escucha las experiencias reales de transformación</p>
-        </div>
-        
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[
-            '01.mp4',
-            '1001.mp4',
-            '1001 (2.mp4',
-            '27 (1).mp4',
-            '1001).mp4',
-            '1001 (.mp4'
-          ].map((videoFile, index) => (
-            <div key={index} className="card-elevated shadow-xl rounded-2xl overflow-hidden bg-black">
-              <video 
-                className="w-full h-auto" 
-                controls 
-                preload="metadata"
-                style={{ maxHeight: '400px', display: 'block' }}
-                playsInline
-                onError={(e) => {
-                  console.error('Error cargando video:', videoFile, e);
-                }}
-              >
-                <source src={`/recursos/testimonios/${encodeURIComponent(videoFile)}`} type="video/mp4" />
-                Tu navegador no soporta el elemento de video.
-              </video>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Testimonios: archivos en public/recursos/testimonios/ */}
+      <TestimoniosSection />
 
       {/* Suscripción a novedades */}
       <section className="mt-16 card-elevated p-6 sm:p-10 bg-gradient-to-r from-primary/5 to-accent/5 border-primary/20 shadow-xl rounded-2xl">
@@ -666,18 +699,18 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
               href="https://wa.me/message/IHT5EC6ZSBPIL1" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="px-8 py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/20 flex items-center gap-2"
+              className="px-8 py-4 bg-emerald-400 hover:bg-emerald-500 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 flex items-center gap-2"
             >
-              <span>💬</span>
+              <FaWhatsapp className="w-5 h-5 shrink-0" />
               WhatsApp
             </a>
             <a 
               href="https://www.instagram.com/renacer.ahora/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-pink-500/20 flex items-center gap-2"
+              className="px-8 py-4 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-primary/20 flex items-center gap-2"
             >
-              <span>📷</span>
+              <FaInstagram className="w-5 h-5 shrink-0" />
               Instagram
             </a>
           </div>
@@ -691,8 +724,8 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
 }
 
 function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?: () => void }) {
-  // Fecha objetivo: 25 de octubre de 2025 a las 9:00 AM
-  const targetDate = new Date('2025-10-25T09:00:00')
+  // Fecha objetivo: 28 de febrero de 2026 a las 9:00 AM
+  const targetDate = new Date('2026-02-28T09:00:00')
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
@@ -719,18 +752,18 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
               href="https://wa.me/message/IHT5EC6ZSBPIL1" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-400 hover:bg-emerald-500 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
             >
-              <span>💬</span>
+              <FaWhatsapp className="w-5 h-5 shrink-0" />
               WhatsApp
             </a>
             <a 
               href="https://www.instagram.com/renacer.ahora/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-white rounded-xl font-medium transition-all duration-200 hover:translate-y-[-2px] hover:shadow-lg"
             >
-              <span>📷</span>
+              <FaInstagram className="w-5 h-5 shrink-0" />
               Instagram
             </a>
             <a href="#proximo-inicio" className="text-base text-primary hover:text-primary-light transition-colors font-medium">Ver próxima cohorte →</a>
@@ -743,7 +776,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
         <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
           <div className="flex-1">
             <p className="text-sm text-primary font-medium">Próxima cohorte</p>
-            <h2 className="text-xl font-semibold mt-1 text-text">Sábado, 25 de octubre 2025</h2>
+            <h2 className="text-xl font-semibold mt-1 text-text">Sábado, 28 de febrero 2026</h2>
             <ul className="mt-2 text-sm text-text-muted flex flex-wrap gap-x-4 gap-y-1">
               <li className="flex items-center gap-1">📍 Barrio Ciudad Jardín – Cali</li>
               <li className="flex items-center gap-1">🕘 9:00 am a 5:00 pm</li>
@@ -884,7 +917,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
           </div>
           <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
             <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Fecha de inicio</dt>
-            <dd className="text-text-muted font-semibold text-accent">Sábado, 25 de octubre 2025</dd>
+            <dd className="text-text-muted font-semibold text-accent">Sábado, 28 de febrero 2026</dd>
           </div>
         </dl>
       </section>
@@ -911,9 +944,9 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
                 href="https://wa.me/message/IHT5EC6ZSBPIL1" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="px-6 py-3 sm:px-8 sm:py-4 bg-green-500 hover:bg-green-600 text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/20 flex items-center gap-2"
+                className="px-6 py-3 sm:px-8 sm:py-4 bg-emerald-400 hover:bg-emerald-500 text-white rounded-xl font-semibold text-base sm:text-lg hover:shadow-lg hover:translate-y-[-2px] transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-emerald-400/20 flex items-center gap-2"
               >
-                <span>💬</span>
+                <FaWhatsapp className="w-5 h-5 shrink-0" />
                 WhatsApp
               </a>
             </div>
@@ -966,28 +999,19 @@ export default function App() {
       <div className="min-h-screen flex flex-col text-text relative">
         {/* Animated Background */}
         <div className="fixed inset-0 z-0">
-          {/* Base gradient */}
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-gray-50"></div>
-          
-          {/* Subtle pattern overlay */}
-          <div className="absolute inset-0 opacity-[0.02]" style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, #6366f1 1px, transparent 0)`,
-            backgroundSize: '20px 20px'
+          <div className="absolute inset-0 bg-gradient-to-br from-violet-50/80 via-white to-emerald-50/60"></div>
+          <div className="absolute inset-0 opacity-[0.015]" style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #a78bfa 1px, transparent 0)`,
+            backgroundSize: '24px 24px'
           }}></div>
-          
-          {/* Main gradient layers */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-50/60 via-transparent to-blue-50/40 animate-pulse" style={{ animationDuration: '12s' }}></div>
-          <div className="absolute inset-0 bg-gradient-to-tl from-indigo-50/50 via-transparent to-violet-50/30 animate-pulse" style={{ animationDelay: '3s', animationDuration: '15s' }}></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-cyan-50/30 via-transparent to-emerald-50/20 animate-pulse" style={{ animationDelay: '6s', animationDuration: '18s' }}></div>
-          
-          {/* Floating geometric shapes */}
-          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-purple-100/20 to-blue-100/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
-          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-indigo-100/25 to-violet-100/25 rounded-full blur-lg animate-drift" style={{ animationDelay: '5s' }}></div>
-          <div className="absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-br from-cyan-100/20 to-emerald-100/20 rounded-full blur-lg animate-float" style={{ animationDelay: '8s' }}></div>
-          <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-br from-rose-100/15 to-pink-100/15 rounded-full blur-xl animate-drift" style={{ animationDelay: '4s' }}></div>
-          
-          {/* Subtle texture overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/15 via-transparent to-accent/10 animate-pulse" style={{ animationDuration: '12s' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-tl from-violet-100/25 via-transparent to-primary/10 animate-pulse" style={{ animationDelay: '3s', animationDuration: '15s' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-accent/15 via-transparent to-rose-50/20 animate-pulse" style={{ animationDelay: '6s', animationDuration: '18s' }}></div>
+          <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-40 right-20 w-24 h-24 bg-gradient-to-br from-violet-200/15 to-primary/15 rounded-full blur-xl animate-drift" style={{ animationDelay: '5s' }}></div>
+          <div className="absolute bottom-32 left-1/4 w-20 h-20 bg-gradient-to-br from-accent/15 to-emerald-100/20 rounded-full blur-xl animate-float" style={{ animationDelay: '8s' }}></div>
+          <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-gradient-to-br from-rose-100/12 to-pink-100/12 rounded-full blur-2xl animate-drift" style={{ animationDelay: '4s' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-transparent"></div>
         </div>
         
         {/* Content */}
