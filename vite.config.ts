@@ -12,8 +12,16 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: undefined,
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-dom')) return 'vendor-react-dom'
+            if (id.includes('react-router')) return 'vendor-router'
+            if (id.includes('react')) return 'vendor-react'
+          }
+        },
       },
     },
+    cssCodeSplit: true,
+    minify: 'esbuild',
   },
 })

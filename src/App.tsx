@@ -12,6 +12,10 @@ function Header() {
             src="/recursos/logos/logo%20png%202.png"
             alt="Logo Renacer"
             className="h-6 sm:h-8 w-auto object-contain"
+            width={120}
+            height={32}
+            fetchPriority="high"
+            decoding="async"
           />
           <span className="font-semibold text-sm sm:text-lg">Centro de Formación Renacer</span>
         </Link>
@@ -101,6 +105,7 @@ function VideoTestimonio({
   onActivate,
 }: { videoFile: string; isActive: boolean; onActivate: () => void }) {
   const [error, setError] = useState(false)
+  const [inView, setInView] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
   const src = `/recursos/testimonios/${encodeURIComponent(videoFile)}`
@@ -112,7 +117,11 @@ function VideoTestimonio({
     if (!el) return
     const obs = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting) onActivateRef.current()
+        const entry = entries[0]
+        if (entry?.isIntersecting) {
+          setInView(true)
+          onActivateRef.current()
+        }
       },
       { threshold: 0.4, rootMargin: '0px' }
     )
@@ -147,7 +156,7 @@ function VideoTestimonio({
           playsInline
           onError={() => setError(true)}
         >
-          <source src={src} type="video/mp4" />
+          {inView && <source src={src} type="video/mp4" />}
           Tu navegador no soporta el elemento de video.
         </video>
       </div>
@@ -374,6 +383,9 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
           src="/recursos/logos/logo%20png%202.png"
           alt="Logo Renacer"
           className="h-16 sm:h-20 w-auto object-contain"
+          width={160}
+          height={80}
+          decoding="async"
         />
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-text mb-4 sm:mb-6">Formación en Constelaciones Familiares y Terapia Sistémica</h1>
@@ -434,7 +446,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
               {/* Por qué elegirnos */}
       <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/formacion.jpg" alt="Círculo de formación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/formacion.jpg" alt="Círculo de formación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
         <div className="card-elevated p-6 sm:p-10">
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -459,14 +471,14 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
           <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Durante 11 módulos, adquirirás herramientas prácticas para reconocer y liberar patrones heredados, comprender el movimiento de los sistemas familiares y acompañar a otros en su propio proceso de sanación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/20250208_143018.jpg" alt="Proceso práctico" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/20250208_143018.jpg" alt="Proceso práctico" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
       </section>
 
       {/* Enfoque práctico */}
       <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_3985.jpg" alt="Sesión práctica" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_3985.jpg" alt="Sesión práctica" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
         <div className="card-elevated p-6 sm:p-10">
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -483,7 +495,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
       <section className="mt-16 card-elevated p-6 sm:p-10">
         <div className="flex flex-col md:flex-row gap-8 sm:gap-12 items-center">
           <div className="overflow-hidden rounded-xl border border-border w-full md:w-80 shadow-[var(--shadow-medium)]">
-            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-60 sm:h-80 object-cover" loading="lazy" />
+            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-60 sm:h-80 object-cover" loading="lazy" decoding="async" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -516,7 +528,7 @@ function FormacionConstelacionesPage({ onOpenLeadModal }: { onOpenLeadModal?: ()
           <p className="text-lg sm:text-xl text-text-muted leading-relaxed">A diferencia de otros centros, ofrecemos un ambiente cálido y armónico que facilita el aprendizaje y la transformación personal, haciendo que te sientas como en casa.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_3992.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_3992.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
       </section>
 
@@ -615,6 +627,9 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
           src="/recursos/logos/logo%20png%202.png"
           alt="Logo Renacer"
           className="h-16 sm:h-20 w-auto object-contain"
+          width={160}
+          height={80}
+          decoding="async"
         />
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-text mb-4">Centro de Formación Renacer</h1>
@@ -631,6 +646,8 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
                       alt="Formación en Constelaciones Familiares y Terapia Sistémica"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       loading="lazy"
+                      decoding="async"
+                      fetchPriority="high"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-primary/30 via-transparent to-transparent" />
                   </div>
@@ -659,6 +676,7 @@ function LandingPage({ onOpenLeadModal }: { onOpenLeadModal: () => void }) {
                       alt="Certificado en Biodescodificación"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-accent/20 via-transparent to-transparent" />
                   </div>
@@ -735,6 +753,9 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
           src="/recursos/logos/logo%20png%202.png"
           alt="Logo Renacer"
           className="h-16 sm:h-20 w-auto object-contain"
+          width={160}
+          height={80}
+          decoding="async"
         />
         <div className="flex-1">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-text mb-4 sm:mb-6">Certificado en Biodescodificación</h1>
@@ -800,7 +821,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
       {/* Por qué elegirnos */}
       <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/20250208_093922.jpg" alt="Formación en Biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/20250208_093922.jpg" alt="Formación en Biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
         <div className="card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -825,14 +846,14 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
           <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Durante 4 módulos, adquirirás herramientas prácticas para identificar conflictos emocionales, comprender la relación entre emociones y síntomas, y acompañar a otros en su proceso de sanación a través de la biodescodificación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG_2666.jpg" alt="Proceso de biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG_2666.jpg" alt="Proceso de biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
       </section>
 
       {/* Enfoque práctico */}
       <section className="mt-16 grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
         <div className="group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/IMG-20250706-WA0016.jpg" alt="Sesión práctica de biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/IMG-20250706-WA0016.jpg" alt="Sesión práctica de biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
         <div className="card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
           <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -849,7 +870,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
       <section className="mt-16 card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
         <div className="flex flex-col md:flex-row gap-8 sm:gap-12 items-center">
           <div className="overflow-hidden rounded-xl border border-border w-full md:w-80 shadow-[var(--shadow-medium)]">
-            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-60 sm:h-80 object-cover" loading="lazy" />
+            <img src="/recursos/fotos/20250621_141628.jpg" alt="Alba Elisa Cerón" className="w-full h-60 sm:h-80 object-cover" loading="lazy" decoding="async" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
@@ -882,7 +903,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
           <p className="text-lg sm:text-xl text-text-muted leading-relaxed">A diferencia de otros centros, ofrecemos un ambiente cálido y armónico que facilita el aprendizaje y la transformación personal, haciendo que te sientas como en casa mientras exploras el fascinante mundo de la biodescodificación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
-          <img src="/recursos/fotos/20250208_093927.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" />
+          <img src="/recursos/fotos/20250208_093927.jpg" alt="Ambiente acogedor" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
         </div>
       </section>
 
@@ -998,7 +1019,7 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen flex flex-col text-text relative">
         {/* Animated Background */}
-        <div className="fixed inset-0 z-0">
+        <div className="fixed inset-0 z-0 bg-contained">
           <div className="absolute inset-0 bg-gradient-to-br from-violet-50/80 via-white to-emerald-50/60"></div>
           <div className="absolute inset-0 opacity-[0.015]" style={{
             backgroundImage: `radial-gradient(circle at 1px 1px, #a78bfa 1px, transparent 0)`,
