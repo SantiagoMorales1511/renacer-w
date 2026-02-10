@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa'
 import { BrevoService } from './services/brevoService'
 
