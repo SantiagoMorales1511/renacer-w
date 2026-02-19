@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa'
-import { BrevoService } from './services/brevoService'
 
 function Header() {
   return (
@@ -205,9 +204,15 @@ function LeadCaptureModal({ isOpen, onClose, onSubmit }: { isOpen: boolean, onCl
     setErrorMessage('')
 
     try {
-      // Agregar contacto a Brevo
-      await BrevoService.addContactToRenacerList(name, email)
-      
+      const res = await fetch('/api/brevo-contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name.trim(), email: email.trim() }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        throw new Error((data as { error?: string }).error || `Error ${res.status}`)
+      }
       setSubmitStatus('success')
       
       // Mostrar mensaje de agradecimiento por 3 segundos antes de cerrar
