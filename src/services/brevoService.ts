@@ -1,7 +1,7 @@
 // Servicio para integrar con Brevo API
 const BREVO_API_URL = 'https://api.brevo.com/v3'
-const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY
-const BREVO_LIST_ID = import.meta.env.VITE_BREVO_LIST_ID
+const BREVO_API_KEY = (import.meta.env.VITE_BREVO_API_KEY ?? '').toString().trim()
+const BREVO_LIST_ID = (import.meta.env.VITE_BREVO_LIST_ID ?? '').toString().trim()
 
 
 export interface BrevoContact {
@@ -28,7 +28,7 @@ export interface BrevoResponse {
 export class BrevoService {
   private static async makeRequest(endpoint: string, options: RequestInit = {}) {
     if (!BREVO_API_KEY) {
-      throw new Error('Brevo API key no configurada')
+      throw new Error('Brevo API key no configurada. Crea .env.local con VITE_BREVO_API_KEY y reinicia el servidor.')
     }
 
     const response = await fetch(`${BREVO_API_URL}${endpoint}`, {
@@ -41,14 +41,18 @@ export class BrevoService {
     })
 
     if (!response.ok) {
-      let errorData = {}
+      let errorData: { message?: string } = {}
       try {
         const responseText = await response.text()
         errorData = JSON.parse(responseText)
-      } catch (parseError) {
-        throw new Error(`Error de Brevo: ${response.status} - ${response.statusText}`)
+      } catch {
+        errorData = {}
       }
-      throw new Error(`Error de Brevo: ${response.status} - ${(errorData as any).message || response.statusText}`)
+      const msg = (errorData as any).message || response.statusText
+      if (response.status === 401) {
+        throw new Error('Brevo: API key inválida o no encontrada. Revisa VITE_BREVO_API_KEY en .env.local (Brevo → Settings → API Keys).')
+      }
+      throw new Error(`Error de Brevo: ${response.status} - ${msg}`)
     }
 
     try {
@@ -61,7 +65,7 @@ export class BrevoService {
 
   static async addContactToRenacerList(name: string, email: string): Promise<BrevoResponse> {
     if (!BREVO_LIST_ID) {
-      throw new Error('ID de lista de Brevo no configurado')
+      throw new Error('ID de lista de Brevo no configurado. Añade VITE_BREVO_LIST_ID en .env.local.')
     }
 
     const contactData: BrevoContact = {
