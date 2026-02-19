@@ -843,7 +843,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
             </div>
             <h2 className="text-2xl sm:text-3xl font-semibold text-text">Una formación completa y vivencial</h2>
           </div>
-          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Durante 4 módulos, adquirirás herramientas prácticas para identificar conflictos emocionales, comprender la relación entre emociones y síntomas, y acompañar a otros en su proceso de sanación a través de la biodescodificación.</p>
+          <p className="text-lg sm:text-xl text-text-muted leading-relaxed">Durante 6 módulos, adquirirás herramientas prácticas para identificar conflictos emocionales, comprender la relación entre emociones y síntomas, y acompañar a otros en su proceso de sanación a través de la biodescodificación.</p>
         </div>
         <div className="order-1 md:order-2 group overflow-hidden rounded-xl border border-border bg-surface shadow-[var(--shadow-medium)]">
           <img src="/recursos/fotos/IMG_2666.jpg" alt="Proceso de biodescodificación" className="w-full h-60 sm:h-80 object-cover transition-transform duration-500 group-hover:scale-[1.05]" loading="lazy" decoding="async" />
@@ -918,7 +918,7 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
         <dl className="grid sm:grid-cols-2 gap-4 sm:gap-6 text-sm sm:text-base">
           <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
             <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Duración</dt>
-            <dd className="text-text-muted">4 Módulos (1 módulo al mes)</dd>
+            <dd className="text-text-muted">6 Módulos (1 módulo al mes)</dd>
           </div>
           <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
             <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Modalidad</dt>
@@ -929,8 +929,8 @@ function FormacionBiodescodificacionPage({ onOpenLeadModal }: { onOpenLeadModal?
             <dd className="text-text-muted">Barrio Ciudad Jardín</dd>
           </div>
           <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
-            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Valor por módulo</dt>
-            <dd className="text-text-muted font-semibold text-accent text-lg sm:text-xl">$250.000</dd>
+            <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Valor total</dt>
+            <dd className="text-text-muted font-semibold text-accent text-lg sm:text-xl">$300.000</dd>
           </div>
           <div className="card-flat p-4 sm:p-6 shadow-lg rounded-2xl hover:shadow-xl transition-shadow duration-300">
             <dt className="font-semibold text-primary mb-2 text-base sm:text-lg">Horario</dt>
