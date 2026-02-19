@@ -61,9 +61,7 @@ export class BrevoService {
 
   static async addContactToRenacerList(name: string, email: string): Promise<BrevoResponse> {
     if (!BREVO_LIST_ID) {
-      throw new Error(
-        'VITE_BREVO_LIST_ID no configurado. Crea .env.local con VITE_BREVO_LIST_ID=<id> (el ID está en Brevo: Contacts > Lists).'
-      )
+      throw new Error('ID de lista de Brevo no configurado')
     }
 
     const contactData: BrevoContact = {
@@ -125,9 +123,7 @@ export class BrevoService {
 
   static async getRenacerListInfo(): Promise<any> {
     if (!BREVO_LIST_ID) {
-      throw new Error(
-        'VITE_BREVO_LIST_ID no configurado. Crea .env.local con VITE_BREVO_LIST_ID=<id> (el ID está en Brevo: Contacts > Lists).'
-      )
+      throw new Error('ID de lista de Brevo no configurado')
     }
 
     try {
