@@ -352,20 +352,23 @@ function Footer() {
     <footer className="border-t border-primary/20 bg-white/80 text-text-muted backdrop-blur-sm">
       <div className="mx-auto max-w-5xl px-4 py-6 text-sm">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>© {new Date().getFullYear()} Renacer · Santiago de Cali, Colombia</div>
+          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-4">
+            <span>© {new Date().getFullYear()} Renacer · Santiago de Cali, Colombia</span>
+            <Link to="/privacy" className="hover:text-primary underline underline-offset-2">Política de Privacidad</Link>
+          </div>
           <div className="flex items-center gap-4">
-            <a 
-              href="https://www.instagram.com/renacer.ahora/" 
-              target="_blank" 
+            <a
+              href="https://www.instagram.com/renacer.ahora/"
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-primary to-accent text-white rounded-lg font-medium transition-all duration-300 hover:opacity-90 hover:translate-y-[-1px] hover:shadow-[var(--shadow-large)]"
             >
               <FaInstagram className="w-5 h-5 shrink-0" />
               <span>Instagram</span>
             </a>
-            <a 
-              href="https://wa.me/message/IHT5EC6ZSBPIL1" 
-              target="_blank" 
+            <a
+              href="https://wa.me/message/IHT5EC6ZSBPIL1"
+              target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-3 py-2 bg-emerald-400 hover:bg-emerald-500 text-white rounded-lg font-medium transition-all duration-300 hover:translate-y-[-1px] hover:shadow-[var(--shadow-large)]"
             >
@@ -376,6 +379,107 @@ function Footer() {
         </div>
       </div>
     </footer>
+  )
+}
+
+function PrivacyPolicyPage() {
+  return (
+    <main className="mx-auto max-w-3xl px-4 py-10">
+      <div className="card-elevated p-6 sm:p-10 shadow-xl rounded-2xl">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-text mb-2">Política de Privacidad — Renacer AI</h1>
+        <p className="text-sm text-text-muted mb-8">Última actualización: 8 de septiembre de 2026</p>
+
+        <div className="space-y-6 text-text-muted leading-relaxed">
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Responsable</h2>
+            <p>Centro de Formación Renacer ("Renacer"), a través de su aplicación interna Renacer AI, es responsable del tratamiento de la información descrita en esta política.</p>
+            <p className="mt-1">Correo de contacto: <a href="mailto:contactorenacer.co@gmail.com" className="text-primary hover:underline">contactorenacer.co@gmail.com</a></p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Qué información de Google utilizamos</h2>
+            <p>
+              Renacer AI accede, inicialmente, a información de Google Calendar autorizada explícitamente por
+              la cuenta oficial de Google de Renacer. Esta información se utiliza únicamente para consultar
+              fechas, módulos, horarios y eventos de nuestras formaciones (por ejemplo, sedes, fechas de inicio
+              y horarios de cada módulo).
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Cómo se procesa esta información</h2>
+            <p>
+              La información obtenida de Google Calendar se sincroniza mediante un flujo de automatización
+              interno (n8n) alojado en infraestructura privada (Railway) y puede almacenarse como metadata o
+              caché en una base de datos PostgreSQL privada, con el único fin de que nuestros sistemas internos
+              puedan responder consultas sobre fechas, módulos, horarios y eventos sin depender de una llamada
+              en vivo a la API de Google en cada consulta.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Qué no hacemos con tu información</h2>
+            <ul className="list-disc list-inside space-y-1">
+              <li>No vendemos datos obtenidos de Google.</li>
+              <li>No compartimos esta información con anunciantes.</li>
+              <li>No la utilizamos con fines distintos a operar y dar soporte a nuestras formaciones.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Con quién se comparte</h2>
+            <p>
+              Solo se procesa a través de los proveedores técnicos estrictamente necesarios para operar el
+              sistema (por ejemplo, el proveedor de infraestructura en la nube donde corren nuestros servicios).
+              El acceso a esta información está restringido a personal autorizado de Renacer y a los sistemas
+              internos autorizados para ese propósito.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Conservación de la información</h2>
+            <p>
+              La información se conserva únicamente durante el tiempo necesario para la operación del sistema
+              y para fines de auditoría interna. Puedes solicitar la eliminación de tu información escribiendo
+              a <a href="mailto:contactorenacer.co@gmail.com" className="text-primary hover:underline">contactorenacer.co@gmail.com</a>.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Medidas de seguridad</h2>
+            <p>
+              Aplicamos medidas de seguridad razonables para proteger esta información, incluyendo conexiones
+              cifradas mediante HTTPS y controles de acceso restringidos a los sistemas e infraestructura donde
+              se procesa y almacena la información.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Cumplimiento con las políticas de Google</h2>
+            <p>
+              El uso y la transferencia de información recibida de las API de Google por parte de Renacer AI
+              a cualquier otra aplicación cumplirá con la{' '}
+              <a
+                href="https://developers.google.com/terms/api-services-user-data-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Política de Datos de Usuario de los Servicios de API de Google
+              </a>, incluidos los requisitos de Uso Limitado.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-text mb-2">Contacto</h2>
+            <p>
+              Para preguntas sobre esta política o para ejercer tus derechos sobre tu información, escríbenos a{' '}
+              <a href="mailto:contactorenacer.co@gmail.com" className="text-primary hover:underline">contactorenacer.co@gmail.com</a>.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
   )
 }
 
@@ -1047,6 +1151,7 @@ export default function App() {
             <Route path="/" element={<LandingPage onOpenLeadModal={handleOpenModal} />} />
             <Route path="/formacion/constelaciones" element={<FormacionConstelacionesPage onOpenLeadModal={handleOpenModal} />} />
             <Route path="/formacion/biodescodificacion" element={<FormacionBiodescodificacionPage onOpenLeadModal={handleOpenModal} />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
           </Routes>
           <Footer />
         </div>
