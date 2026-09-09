@@ -1,4 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
+import {
+  WA_APP_ID,
+  WA_EMBEDDED_SIGNUP_CONFIG_ID,
+  WA_EMBEDDED_SIGNUP_REDIRECT_URI,
+  GRAPH_API_VERSION,
+} from '../shared/whatsappEmbeddedSignup'
 
 // Ruta administrativa NO enlazada públicamente. Aloja el flujo oficial de Meta
 // "Embedded Signup" (v25.0 del Graph API / JS SDK) para conectar el número
@@ -12,16 +18,11 @@ import { useEffect, useRef, useState } from 'react'
 // - El token resultante se muestra UNA sola vez en pantalla para que el
 //   administrador lo copie y lo pegue manualmente en la credencial de n8n.
 //   No se envía a ningún chat, log ni almacenamiento persistente desde aquí.
-
-const GRAPH_API_VERSION = 'v25.0'
-
-// App ID de "Renacer Automation" — público por diseño del SDK de Facebook, no es secreto.
-const WA_APP_ID = '1057632283566600'
-
-// Se completa con el Configuration ID una vez creado en Meta App Dashboard
-// (App Dashboard > Facebook Login for Business > Configurations). Tampoco es
-// secreto, pero no existe todavía hasta que se cree manualmente en Meta.
-const WA_EMBEDDED_SIGNUP_CONFIG_ID = '1392010019794916'
+//
+// redirect_uri: WA_EMBEDDED_SIGNUP_REDIRECT_URI es la ÚNICA fuente de verdad,
+// compartida con api/whatsapp-embedded-signup-exchange.ts, para evitar que el
+// valor usado al abrir el diálogo de OAuth diverja del usado al intercambiar
+// el code (error "redirect_uri is identical to the one you used...").
 
 declare global {
   interface Window {
@@ -38,6 +39,7 @@ declare global {
           config_id: string
           response_type: 'code'
           override_default_response_type: true
+          redirect_uri: string
           extras?: Record<string, unknown>
         }
       ) => void
@@ -170,6 +172,7 @@ export default function WhatsAppConnectAdmin() {
         config_id: configId,
         response_type: 'code',
         override_default_response_type: true,
+        redirect_uri: WA_EMBEDDED_SIGNUP_REDIRECT_URI,
         extras: { setup: {} },
       }
     )

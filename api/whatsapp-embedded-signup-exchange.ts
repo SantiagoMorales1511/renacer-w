@@ -3,11 +3,12 @@
 // VITE_, nunca enviada al navegador). El token resultante se devuelve una sola
 // vez a la sesión del administrador que inició el flujo; este endpoint no lo
 // almacena ni lo registra en logs.
+//
+// redirect_uri: se importa de src/shared/whatsappEmbeddedSignup.ts, la MISMA
+// constante que usa el frontend al abrir FB.login(), para que ambos valores
+// coincidan byte a byte y Meta no rechace el intercambio del code.
 
-const GRAPH_API_VERSION = 'v25.0'
-
-// App ID de "Renacer Automation" — público por diseño del SDK de Facebook, no es secreto.
-const WA_APP_ID = '1057632283566600'
+import { WA_APP_ID, WA_EMBEDDED_SIGNUP_REDIRECT_URI, GRAPH_API_VERSION } from '../src/shared/whatsappEmbeddedSignup'
 
 export async function POST(request: Request) {
   const appId = WA_APP_ID
@@ -32,6 +33,7 @@ export async function POST(request: Request) {
   const url = new URL(`https://graph.facebook.com/${GRAPH_API_VERSION}/oauth/access_token`)
   url.searchParams.set('client_id', appId)
   url.searchParams.set('client_secret', appSecret)
+  url.searchParams.set('redirect_uri', WA_EMBEDDED_SIGNUP_REDIRECT_URI)
   url.searchParams.set('code', code)
 
   const res = await fetch(url.toString(), { method: 'GET' })
