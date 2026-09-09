@@ -46,7 +46,7 @@ function verifySession(request: Request): { role: 'ADMIN' | 'ASSISTANT' } | null
 }
 
 const N8N_ADMIN_WEB_API_URL = 'https://n8n-production-a3a46.up.railway.app/webhook/renacer/admin-web-api'
-const VALID_ACTIONS = ['ENROLLMENT_LIST', 'PENDING_PANEL', 'PROPOSALS_LIST', 'PROPOSAL_RESOLVE']
+const VALID_ACTIONS = ['ENROLLMENT_LIST', 'PENDING_PANEL', 'PROPOSALS_LIST', 'PROPOSAL_RESOLVE', 'AI_BLOCK_SET', 'LEAD_AUTOMATION_TOGGLE']
 
 export async function POST(request: Request) {
   const session = verifySession(request)
@@ -65,6 +65,13 @@ export async function POST(request: Request) {
     proposal_id?: string
     decision?: 'APPROVE' | 'REJECT'
     staff_name?: string
+    target_phone?: string
+    target_name?: string
+    ai_block_action?: 'BLOCK' | 'UNBLOCK'
+    reason?: string
+    lead_id?: string
+    field?: 'commercial_followups_enabled' | 'operational_reminders_enabled'
+    value?: boolean
   }
   try {
     body = await request.json()
@@ -87,6 +94,13 @@ export async function POST(request: Request) {
       proposal_id: body.proposal_id || null,
       decision: body.decision || null,
       staff_name: body.staff_name || (session.role === 'ADMIN' ? 'Santiago' : 'Clarena'),
+      target_phone: body.target_phone || null,
+      target_name: body.target_name || null,
+      ai_block_action: body.ai_block_action || null,
+      reason: body.reason || null,
+      lead_id: body.lead_id || null,
+      field: body.field || null,
+      value: typeof body.value === 'boolean' ? body.value : null,
     }),
   })
 

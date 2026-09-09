@@ -15,6 +15,11 @@ interface Enrollment {
   whatsapp_group_status: string
   registered_at: string
   source: string | null
+  ai_enabled: boolean
+  commercial_followups_enabled: boolean
+  operational_reminders_enabled: boolean
+  next_followup_at: string | null
+  next_followup_type: string | null
 }
 
 function todayBogota(): string {
@@ -57,6 +62,41 @@ function AdminInscritosContent({ role }: { role: 'ADMIN' | 'ASSISTANT' }) {
     load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const toggleField = async (leadId: string, field: 'commercial_followups_enabled' | 'operational_reminders_enabled', value: boolean) => {
+    setRows((prev) => prev.map((r) => (r.lead_id === leadId ? { ...r, [field]: value } : r)))
+    try {
+      const res = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'LEAD_AUTOMATION_TOGGLE', lead_id: leadId, field, value }),
+      })
+      if (!res.ok) throw new Error('failed')
+    } catch {
+      setRows((prev) => prev.map((r) => (r.lead_id === leadId ? { ...r, [field]: !value } : r)))
+    }
+  }
+
+  const toggleAiBlock = async (phone: string, name: string | null, currentlyEnabled: boolean) => {
+    const action = currentlyEnabled ? 'BLOCK' : 'UNBLOCK'
+    setRows((prev) => prev.map((r) => (r.phone === phone ? { ...r, ai_enabled: !currentlyEnabled } : r)))
+    try {
+      const res = await fetch('/api/admin-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'AI_BLOCK_SET',
+          target_phone: phone,
+          target_name: name || '',
+          ai_block_action: action,
+          reason: action === 'BLOCK' ? 'Bloqueado desde panel Inscritos' : 'Desbloqueado desde panel Inscritos',
+        }),
+      })
+      if (!res.ok) throw new Error('failed')
+    } catch {
+      setRows((prev) => prev.map((r) => (r.phone === phone ? { ...r, ai_enabled: currentlyEnabled } : r)))
+    }
+  }
 
   const today = todayBogota()
   const total = rows.length
@@ -136,14 +176,15 @@ function AdminInscritosContent({ role }: { role: 'ADMIN' | 'ASSISTANT' }) {
                 <th className="px-3 py-2">Inscripción</th>
                 <th className="px-3 py-2">Pago</th>
                 <th className="px-3 py-2">Grupo WA</th>
+                <th className="px-3 py-2">Automatización</th>
               </tr>
             </thead>
             <tbody>
               {loading && (
-                <tr><td colSpan={7} className="px-3 py-6 text-center text-text-muted">Cargando...</td></tr>
+                <tr><td colSpan={8} className="px-3 py-6 text-center text-text-muted">Cargando...</td></tr>
               )}
               {!loading && rows.length === 0 && (
-                <tr><td colSpan={7} className="px-3 py-6 text-center text-text-muted">Sin inscritos con estos filtros.</td></tr>
+                <tr><td colSpan={8} className="px-3 py-6 text-center text-text-muted">Sin inscritos con estos filtros.</td></tr>
               )}
               {rows.map((r) => (
                 <tr key={r.lead_id} className="border-b last:border-0 hover:bg-gray-50">
@@ -161,6 +202,36 @@ function AdminInscritosContent({ role }: { role: 'ADMIN' | 'ASSISTANT' }) {
                     <span className={`text-xs px-2 py-0.5 rounded-full ${r.whatsapp_group_status === 'ADDED' ? 'bg-green-100 text-green-700' : r.whatsapp_group_status === 'PENDING' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-600'}`}>
                       {r.whatsapp_group_status}
                     </span>
+                  </td>
+                  <td className="px-3 py-2">
+                    <div className="flex flex-col gap-1">
+                      <button
+                        onClick={() => toggleField(r.lead_id, 'commercial_followups_enabled', !r.commercial_followups_enabled)}
+                        className={`text-xs px-2 py-0.5 rounded-full w-fit ${r.commercial_followups_enabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
+                        title="Seguimientos comerciales"
+                      >
+                        Comercial {r.commercial_followups_enabled ? 'ON' : 'OFF'}
+                      </button>
+                      <button
+                        onClick={() => toggleField(r.lead_id, 'operational_reminders_enabled', !r.operational_reminders_enabled)}
+                        className={`text-xs px-2 py-0.5 rounded-full w-fit ${r.operational_reminders_enabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
+                        title="Recordatorios operativos"
+                      >
+                        Recordatorios {r.operational_reminders_enabled ? 'ON' : 'OFF'}
+                      </button>
+                      <button
+                        onClick={() => toggleAiBlock(r.phone, r.full_name, r.ai_enabled)}
+                        className={`text-xs px-2 py-0.5 rounded-full w-fit ${r.ai_enabled ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+                        title="IA conversacional"
+                      >
+                        IA {r.ai_enabled ? 'ON' : 'OFF'}
+                      </button>
+                      {r.next_followup_at && (
+                        <span className="text-[10px] text-text-muted">
+                          Próximo: {new Date(r.next_followup_at).toLocaleDateString('es-CO')} ({r.next_followup_type})
+                        </span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
