@@ -9,10 +9,18 @@
 // — el bundler de Vercel Functions no traza esa dependencia de forma fiable.
 // Por eso estos valores están duplicados como literales aquí. Deben coincidir
 // EXACTAMENTE con src/shared/whatsappEmbeddedSignup.ts si cambian.
+//
+// redirect_uri: para este flujo específico (token de Business Integration
+// System User vía Embedded Signup con config_id), la documentación oficial de
+// Meta y una implementación de referencia (Bird/Dualhook) muestran el
+// intercambio SIN el parámetro redirect_uri — solo client_id, client_secret,
+// code. Incluirlo causó el error real "redirect_uri is identical to the one
+// you used in the OAuth dialog request" porque no coincide con el valor
+// interno que el SDK realmente usó al abrir el popup (fallback_redirect_uri
+// en FB.login solo aplica al flujo de fallback sin popup, no al popup normal).
 
 const GRAPH_API_VERSION = 'v25.0'
 const WA_APP_ID = '1057632283566600'
-const WA_EMBEDDED_SIGNUP_REDIRECT_URI = 'https://renacer-ahora.com/admin/whatsapp-connect'
 
 export async function POST(request: Request) {
   const appId = WA_APP_ID
@@ -37,7 +45,6 @@ export async function POST(request: Request) {
   const url = new URL(`https://graph.facebook.com/${GRAPH_API_VERSION}/oauth/access_token`)
   url.searchParams.set('client_id', appId)
   url.searchParams.set('client_secret', appSecret)
-  url.searchParams.set('redirect_uri', WA_EMBEDDED_SIGNUP_REDIRECT_URI)
   url.searchParams.set('code', code)
 
   const res = await fetch(url.toString(), { method: 'GET' })

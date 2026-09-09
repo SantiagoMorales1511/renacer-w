@@ -19,10 +19,14 @@ import {
 //   administrador lo copie y lo pegue manualmente en la credencial de n8n.
 //   No se envía a ningún chat, log ni almacenamiento persistente desde aquí.
 //
-// redirect_uri: WA_EMBEDDED_SIGNUP_REDIRECT_URI es la ÚNICA fuente de verdad,
-// compartida con api/whatsapp-embedded-signup-exchange.ts, para evitar que el
-// valor usado al abrir el diálogo de OAuth diverja del usado al intercambiar
-// el code (error "redirect_uri is identical to the one you used...").
+// redirect_uri: WA_EMBEDDED_SIGNUP_REDIRECT_URI se usa como
+// fallback_redirect_uri en FB.login — SOLO aplica al flujo de respaldo cuando
+// el navegador bloquea el popup (in-app browsers). El popup normal NO usa
+// este valor como redirect_uri real, y el backend (api/whatsapp-embedded-signup-exchange.ts)
+// deliberadamente NO envía redirect_uri al intercambiar el code, siguiendo el
+// ejemplo oficial de Meta para este flujo (Business Integration System User
+// token). Aun así, el valor está registrado en "Valid OAuth Redirect URIs" en
+// Meta porque ese registro es requisito para que el dominio sea aceptado.
 
 declare global {
   interface Window {
