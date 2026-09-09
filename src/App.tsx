@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa'
+import WhatsAppConnectAdmin from './pages/WhatsAppConnectAdmin'
 
 function Header() {
   return (
@@ -1152,6 +1153,7 @@ export default function App() {
             <Route path="/formacion/constelaciones" element={<FormacionConstelacionesPage onOpenLeadModal={handleOpenModal} />} />
             <Route path="/formacion/biodescodificacion" element={<FormacionBiodescodificacionPage onOpenLeadModal={handleOpenModal} />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/admin/whatsapp-connect" element={<WhatsAppConnectAdmin />} />
           </Routes>
           <Footer />
         </div>
