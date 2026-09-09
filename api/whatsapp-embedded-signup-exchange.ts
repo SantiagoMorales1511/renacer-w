@@ -6,13 +6,13 @@
 
 const GRAPH_API_VERSION = 'v25.0'
 
+// App ID de "Renacer Automation" — público por diseño del SDK de Facebook, no es secreto.
+const WA_APP_ID = '1057632283566600'
+
 export async function POST(request: Request) {
-  const appId = process.env.WA_APP_ID
+  const appId = WA_APP_ID
   const appSecret = process.env.WA_APP_SECRET
 
-  if (!appId?.trim()) {
-    return Response.json({ error: 'WA_APP_ID no configurada en Vercel' }, { status: 500 })
-  }
   if (!appSecret?.trim()) {
     return Response.json({ error: 'WA_APP_SECRET no configurada en Vercel' }, { status: 500 })
   }

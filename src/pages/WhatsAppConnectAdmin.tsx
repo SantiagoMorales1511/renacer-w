@@ -15,6 +15,14 @@ import { useEffect, useRef, useState } from 'react'
 
 const GRAPH_API_VERSION = 'v25.0'
 
+// App ID de "Renacer Automation" — público por diseño del SDK de Facebook, no es secreto.
+const WA_APP_ID = '1057632283566600'
+
+// Se completa con el Configuration ID una vez creado en Meta App Dashboard
+// (App Dashboard > Facebook Login for Business > Configurations). Tampoco es
+// secreto, pero no existe todavía hasta que se cree manualmente en Meta.
+const WA_EMBEDDED_SIGNUP_CONFIG_ID = '' // TODO: pegar aquí el config_id una vez creado
+
 declare global {
   interface Window {
     FB?: {
@@ -62,8 +70,8 @@ type Step = 'locked' | 'idle' | 'sdk_loading' | 'ready' | 'signing_up' | 'exchan
 
 export default function WhatsAppConnectAdmin() {
   const accessCode = import.meta.env.VITE_ADMIN_ACCESS_CODE as string | undefined
-  const appId = import.meta.env.VITE_WA_APP_ID as string | undefined
-  const configId = import.meta.env.VITE_WA_EMBEDDED_SIGNUP_CONFIG_ID as string | undefined
+  const appId = WA_APP_ID
+  const configId = WA_EMBEDDED_SIGNUP_CONFIG_ID || (import.meta.env.VITE_WA_EMBEDDED_SIGNUP_CONFIG_ID as string | undefined)
 
   const [unlocked, setUnlocked] = useState(!accessCode)
   const [passInput, setPassInput] = useState('')
@@ -82,11 +90,6 @@ export default function WhatsAppConnectAdmin() {
   useEffect(() => {
     if (!unlocked) return
     if (sdkLoaded.current) return
-    if (!appId) {
-      appendLog('ERROR: falta VITE_WA_APP_ID en el entorno de Vercel.')
-      setStep('error')
-      return
-    }
     sdkLoaded.current = true
     setStep('sdk_loading')
 
@@ -146,7 +149,7 @@ export default function WhatsAppConnectAdmin() {
       return
     }
     if (!configId) {
-      appendLog('ERROR: falta VITE_WA_EMBEDDED_SIGNUP_CONFIG_ID en el entorno de Vercel.')
+      appendLog('ERROR: todavía falta el config_id de Embedded Signup (créalo en Meta App Dashboard y pégalo en el código o en VITE_WA_EMBEDDED_SIGNUP_CONFIG_ID).')
       return
     }
     setStep('signing_up')
