@@ -39,7 +39,7 @@ declare global {
           config_id: string
           response_type: 'code'
           override_default_response_type: true
-          redirect_uri: string
+          fallback_redirect_uri: string
           extras?: Record<string, unknown>
         }
       ) => void
@@ -172,7 +172,7 @@ export default function WhatsAppConnectAdmin() {
         config_id: configId,
         response_type: 'code',
         override_default_response_type: true,
-        redirect_uri: WA_EMBEDDED_SIGNUP_REDIRECT_URI,
+        fallback_redirect_uri: WA_EMBEDDED_SIGNUP_REDIRECT_URI,
         extras: { setup: {} },
       }
     )
