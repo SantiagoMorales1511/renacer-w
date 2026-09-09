@@ -1,7 +1,25 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import { FaWhatsapp, FaInstagram } from 'react-icons/fa'
 import WhatsAppConnectAdmin from './pages/WhatsAppConnectAdmin'
+import AdminAsistentePage from './pages/AdminAsistentePage'
+import AdminInscritosPage from './pages/AdminInscritosPage'
+
+function SiteChrome({ children }: { children: React.ReactNode }) {
+  const location = useLocation()
+  const isAdminPanel = location.pathname.startsWith('/admin/asistente') || location.pathname.startsWith('/admin/inscritos')
+  if (isAdminPanel) {
+    // Los paneles admin tienen su propio layout — no deben verse como la landing pública.
+    return <>{children}</>
+  }
+  return (
+    <>
+      <Header />
+      {children}
+      <Footer />
+    </>
+  )
+}
 
 function Header() {
   return (
@@ -1147,15 +1165,17 @@ export default function App() {
         
         {/* Content */}
         <div className="relative z-10">
-          <Header />
-          <Routes>
-            <Route path="/" element={<LandingPage onOpenLeadModal={handleOpenModal} />} />
-            <Route path="/formacion/constelaciones" element={<FormacionConstelacionesPage onOpenLeadModal={handleOpenModal} />} />
-            <Route path="/formacion/biodescodificacion" element={<FormacionBiodescodificacionPage onOpenLeadModal={handleOpenModal} />} />
-            <Route path="/privacy" element={<PrivacyPolicyPage />} />
-            <Route path="/admin/whatsapp-connect" element={<WhatsAppConnectAdmin />} />
-          </Routes>
-          <Footer />
+          <SiteChrome>
+            <Routes>
+              <Route path="/" element={<LandingPage onOpenLeadModal={handleOpenModal} />} />
+              <Route path="/formacion/constelaciones" element={<FormacionConstelacionesPage onOpenLeadModal={handleOpenModal} />} />
+              <Route path="/formacion/biodescodificacion" element={<FormacionBiodescodificacionPage onOpenLeadModal={handleOpenModal} />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
+              <Route path="/admin/whatsapp-connect" element={<WhatsAppConnectAdmin />} />
+              <Route path="/admin/asistente" element={<AdminAsistentePage />} />
+              <Route path="/admin/inscritos" element={<AdminInscritosPage />} />
+            </Routes>
+          </SiteChrome>
         </div>
 
         {/* Lead Capture Modal */}
