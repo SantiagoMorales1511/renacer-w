@@ -21,7 +21,7 @@ const WA_APP_ID = '1057632283566600'
 // Se completa con el Configuration ID una vez creado en Meta App Dashboard
 // (App Dashboard > Facebook Login for Business > Configurations). Tampoco es
 // secreto, pero no existe todavía hasta que se cree manualmente en Meta.
-const WA_EMBEDDED_SIGNUP_CONFIG_ID = '' // TODO: pegar aquí el config_id una vez creado
+const WA_EMBEDDED_SIGNUP_CONFIG_ID = '1392010019794916'
 
 declare global {
   interface Window {
