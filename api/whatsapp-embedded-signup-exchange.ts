@@ -4,11 +4,15 @@
 // vez a la sesión del administrador que inició el flujo; este endpoint no lo
 // almacena ni lo registra en logs.
 //
-// redirect_uri: se importa de src/shared/whatsappEmbeddedSignup.ts, la MISMA
-// constante que usa el frontend al abrir FB.login(), para que ambos valores
-// coincidan byte a byte y Meta no rechace el intercambio del code.
+// IMPORTANTE: el import cross-directorio a src/shared/ rompe la función en
+// runtime de Vercel (FUNCTION_INVOCATION_FAILED) aunque compile bien en local
+// — el bundler de Vercel Functions no traza esa dependencia de forma fiable.
+// Por eso estos valores están duplicados como literales aquí. Deben coincidir
+// EXACTAMENTE con src/shared/whatsappEmbeddedSignup.ts si cambian.
 
-import { WA_APP_ID, WA_EMBEDDED_SIGNUP_REDIRECT_URI, GRAPH_API_VERSION } from '../src/shared/whatsappEmbeddedSignup'
+const GRAPH_API_VERSION = 'v25.0'
+const WA_APP_ID = '1057632283566600'
+const WA_EMBEDDED_SIGNUP_REDIRECT_URI = 'https://renacer-ahora.com/admin/whatsapp-connect'
 
 export async function POST(request: Request) {
   const appId = WA_APP_ID

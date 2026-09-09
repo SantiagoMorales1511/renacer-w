@@ -1,6 +1,9 @@
-// Fuente única de verdad para los valores del flujo de WhatsApp Embedded
-// Signup (Coexistencia). Importado tanto por el frontend (src/pages/...) como
-// por el backend (api/...) para garantizar que coincidan byte a byte.
+// Fuente de verdad para el frontend (src/pages/WhatsAppConnectAdmin.tsx).
+// NOTA: api/whatsapp-embedded-signup-exchange.ts NO importa este archivo —
+// un import cross-directorio hacia src/ rompe esa función en runtime de
+// Vercel — así que mantiene sus propios literales duplicados. Si cambias
+// WA_APP_ID o WA_EMBEDDED_SIGNUP_REDIRECT_URI aquí, actualiza también ese
+// archivo.
 
 // App ID de "Renacer Automation" — público por diseño del SDK de Facebook.
 export const WA_APP_ID = '1057632283566600'
