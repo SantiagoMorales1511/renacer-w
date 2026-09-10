@@ -46,7 +46,16 @@ function verifySession(request: Request): { role: 'ADMIN' | 'ASSISTANT' } | null
 }
 
 const N8N_ADMIN_WEB_API_URL = 'https://n8n-production-a3a46.up.railway.app/webhook/renacer/admin-web-api'
-const VALID_ACTIONS = ['ENROLLMENT_LIST', 'PENDING_PANEL', 'PROPOSALS_LIST', 'PROPOSAL_RESOLVE', 'AI_BLOCK_SET', 'LEAD_AUTOMATION_TOGGLE']
+const VALID_ACTIONS = [
+  'ENROLLMENT_LIST',
+  'PENDING_PANEL',
+  'PROPOSALS_LIST',
+  'PROPOSAL_RESOLVE',
+  'AI_BLOCK_SET',
+  'LEAD_AUTOMATION_TOGGLE',
+  'AD_MAPPING_LIST',
+  'AD_MAPPING_SET',
+]
 
 export async function POST(request: Request) {
   const session = verifySession(request)
@@ -72,6 +81,9 @@ export async function POST(request: Request) {
     lead_id?: string
     field?: 'commercial_followups_enabled' | 'operational_reminders_enabled'
     value?: boolean
+    ad_source_id?: string
+    ad_service_context?: 'BIODECODIFICATION_MASTER' | 'CONSTELLATIONS_TRAINING' | 'CONSTELLATION_EVENT' | null
+    ad_active?: boolean
   }
   try {
     body = await request.json()
@@ -101,6 +113,9 @@ export async function POST(request: Request) {
       lead_id: body.lead_id || null,
       field: body.field || null,
       value: typeof body.value === 'boolean' ? body.value : null,
+      ad_source_id: body.ad_source_id || null,
+      ad_service_context: body.ad_service_context ?? null,
+      ad_active: typeof body.ad_active === 'boolean' ? body.ad_active : true,
     }),
   })
 

@@ -4,10 +4,14 @@ import { FaWhatsapp, FaInstagram } from 'react-icons/fa'
 import WhatsAppConnectAdmin from './pages/WhatsAppConnectAdmin'
 import AdminAsistentePage from './pages/AdminAsistentePage'
 import AdminInscritosPage from './pages/AdminInscritosPage'
+import AdminAnunciosPage from './pages/AdminAnunciosPage'
 
 function SiteChrome({ children }: { children: React.ReactNode }) {
   const location = useLocation()
-  const isAdminPanel = location.pathname.startsWith('/admin/asistente') || location.pathname.startsWith('/admin/inscritos')
+  const isAdminPanel =
+    location.pathname.startsWith('/admin/asistente') ||
+    location.pathname.startsWith('/admin/inscritos') ||
+    location.pathname.startsWith('/admin/anuncios')
   if (isAdminPanel) {
     // Los paneles admin tienen su propio layout — no deben verse como la landing pública.
     return <>{children}</>
@@ -1174,6 +1178,7 @@ export default function App() {
               <Route path="/admin/whatsapp-connect" element={<WhatsAppConnectAdmin />} />
               <Route path="/admin/asistente" element={<AdminAsistentePage />} />
               <Route path="/admin/inscritos" element={<AdminInscritosPage />} />
+              <Route path="/admin/anuncios" element={<AdminAnunciosPage />} />
             </Routes>
           </SiteChrome>
         </div>
