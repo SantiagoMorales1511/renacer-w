@@ -11,6 +11,8 @@ import FactSheet from './FactSheet.astro'
 import FacilitatorCard from './FacilitatorCard.astro'
 import Faq from './Faq.astro'
 import CtaBand from './CtaBand.astro'
+import TestimonialCarousel from './TestimonialCarousel.astro'
+import { testimonialsFor } from '../data/testimonials'
 import { formatCOP, type Program } from '../data/programs'
 import type { Faq as FaqItem } from '../data/faqs'
 import { site } from '../data/site'
@@ -31,6 +33,8 @@ interface Props {
   ctaTitle: string
 }
 const { program: p, title, description, heroImage, heroAlt, intro, highlights, faqs, gallery, facilitatorRole, syllabusNote, ctaTitle } = Astro.props
+
+const testimonials = testimonialsFor(p.key)
 
 const courseLd = {
   '@context': 'https://schema.org',
@@ -178,7 +182,13 @@ const courseLd = {
     </div>
   </section>
 
-  <section class="section bg-white" aria-labelledby="preguntas">
+  <TestimonialCarousel
+    items={testimonials}
+    bg="white"
+    subtitle="Experiencias de estudiantes de esta formación, contadas por ellos mismos."
+  />
+
+  <section class:list={['section', testimonials.length === 0 && 'bg-white']} aria-labelledby="preguntas">
     <div class="wrap grid gap-10 md:grid-cols-12">
       <div class="md:col-span-4">
         <p class="eyebrow">Preguntas frecuentes</p>

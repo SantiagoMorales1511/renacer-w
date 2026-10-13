@@ -7,6 +7,8 @@ import ModuleTimeline from '../components/ModuleTimeline.astro'
 import FacilitatorCard from '../components/FacilitatorCard.astro'
 import Faq from '../components/Faq.astro'
 import CtaBand from '../components/CtaBand.astro'
+import TestimonialCarousel from '../components/TestimonialCarousel.astro'
+import { testimonialsFor } from '../data/testimonials'
 import { sexualidad as p, formatDate, shortDate, formatCOP } from '../data/programs'
 import { people } from '../data/people'
 import { sexFaqs } from '../data/faqs'
@@ -267,6 +269,9 @@ const courseLd = {
       </div>
     </div>
   </section>
+
+  <!-- TESTIMONIOS (solo si hay testimonios confirmados de esta formación) -->
+  <TestimonialCarousel items={testimonialsFor('sex')} subtitle="Experiencias de estudiantes de esta formación, contadas por ellos mismos." />
 
   <!-- FAQ -->
   <section class="section" aria-labelledby="preguntas">

@@ -62,11 +62,29 @@ for (const claim of ['200 estudiantes', '+150', 'graduados', 'grupos reducidos',
   ok(!all.includes(claim), `sin la afirmación "${claim}"`)
 }
 
-// Videos: no se precargan
-ok(!/<video[\s>]/.test(read('testimonios.html')), 'Testimonios: ningún <video> en el HTML inicial (carga bajo demanda)')
-for (const v of ['testimonio-mauricio-constelaciones.mp4', 'testimonio-estudiante-constelaciones.mp4']) {
-  const size = statSync(new URL(`videos/${v}`, dist)).size
-  ok(size < 8 * 1024 * 1024, `videos/${v}: ${(size / 1048576).toFixed(1)} MB`)
+// Videos: ninguno se descarga al abrir la página (solo data-*; el <video> del diálogo no tiene src)
+for (const f of ['index.html', 'testimonios.html', 'constelaciones-familiares.html', 'biodescodificacion.html']) {
+  const html = read(f)
+  const eager = /<video[^>]*\ssrc=|<source[^>]*\.mp4/.test(html)
+  ok(!eager, `${f}: ningún video con src en el HTML inicial (carga bajo demanda)`)
+  const n = (html.match(/data-full="\/videos\/testimonio-[^"]+\.mp4"/g) || []).length
+  ok(n > 0, `${f}: ${n} testimonios en video`)
+}
+ok((read('index.html').match(/data-slide /g) || []).length === 11, 'Home: carrusel con los 11 testimonios')
+ok(!read('sexualidad-consciente.html').includes('data-carousel'), 'Sexualidad: sin testimonios (no hay atribuciones confirmadas)')
+const bioHtml = read('biodescodificacion.html')
+ok(['Marcela Rivera', 'Johana Valencia', 'Viviana'].every((n) => bioHtml.includes(`data-name="${n}"`)) && !bioHtml.includes('data-name="Mauricio"'), 'Biodescodificación: solo testimonios que mencionan el programa')
+const constHtml = read('constelaciones-familiares.html')
+ok(!constHtml.includes('data-name="Marcela Rivera"') && constHtml.includes('data-name="Alexis García"'), 'Constelaciones: solo testimonios que mencionan el programa')
+ok(read('index.html').includes('Coach Ontológica') && read('index.html').includes('Shinrin Yoku'), 'Home: credenciales completas de Alba Elisa')
+import { readdirSync } from 'node:fs'
+for (const f of readdirSync(new URL('videos/', dist)).filter((x) => x.endsWith('.mp4'))) {
+  const size = statSync(new URL(`videos/${f}`, dist)).size
+  ok(size < 8 * 1024 * 1024, `videos/${f}: ${(size / 1048576).toFixed(1)} MB`)
+}
+for (const f of readdirSync(new URL('videos/previews/', dist))) {
+  const size = statSync(new URL(`videos/previews/${f}`, dist)).size
+  ok(size < 1024 * 1024, `videos/previews/${f}: ${(size / 1024).toFixed(0)} KB`)
 }
 
 // /privacy: el texto debe coincidir con la versión original (commit a51ce87)

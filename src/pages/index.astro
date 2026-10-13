@@ -3,13 +3,13 @@ import { Picture } from 'astro:assets'
 import Base from '../layouts/Base.astro'
 import Icon from '../components/Icon.astro'
 import ProgramCard from '../components/ProgramCard.astro'
-import VideoCard from '../components/VideoCard.astro'
+import TestimonialCarousel from '../components/TestimonialCarousel.astro'
 import Faq from '../components/Faq.astro'
 import CtaBand from '../components/CtaBand.astro'
 import { programs, sexualidad, formatCOP } from '../data/programs'
 import { people } from '../data/people'
 import { homeFaqs } from '../data/faqs'
-import { videoTestimonials } from '../data/testimonials'
+import { testimonialsFor } from '../data/testimonials'
 import { waLink } from '../lib/whatsapp'
 
 import hero from '../assets/photos/grupo-ceremonia.jpg'
@@ -145,7 +145,7 @@ const pillars = [
           <div>
             <p class="font-semibold text-ink">{people.alba.name}</p>
             <p class="text-[0.9rem] leading-snug text-ink-mute">
-              Directora y fundadora · Consteladora Familiar y Empresarial · Terapeuta Sistémica
+              {[people.alba.role, ...people.alba.credentials].join(' · ')}
             </p>
           </div>
         </div>
@@ -215,8 +215,11 @@ const pillars = [
     </div>
   </section>
 
+  <!-- TESTIMONIOS -->
+  <TestimonialCarousel items={testimonialsFor()} />
+
   <!-- GALERÍA -->
-  <section class="section" aria-labelledby="galeria">
+  <section class="section bg-white" aria-labelledby="galeria">
     <div class="wrap">
       <p class="eyebrow">Nuestros encuentros</p>
       <h2 id="galeria" class="title mt-5 max-w-2xl">Así se viven los <span class="accent">encuentros</span> en Renacer.</h2>
@@ -229,21 +232,6 @@ const pillars = [
           </div>
         ))
       }
-    </div>
-  </section>
-
-  <!-- TESTIMONIOS -->
-  <section class="section bg-white" aria-labelledby="testimonios">
-    <div class="wrap grid gap-12 md:grid-cols-12">
-      <div class="md:col-span-4">
-        <p class="eyebrow">Testimonios</p>
-        <h2 id="testimonios" class="title mt-5">En sus <span class="accent">propias palabras.</span></h2>
-        <p class="mt-5 text-ink-soft">Estudiantes de la Formación en Constelaciones Familiares cuentan cómo vivieron su proceso en Renacer.</p>
-        <a href="/testimonios" class="mt-8 inline-flex items-center gap-2 font-semibold text-petrol">Ver testimonios <Icon name="arrow" size={18} /></a>
-      </div>
-      <div class="grid grid-cols-1 gap-8 min-[480px]:grid-cols-2 md:col-span-8 md:gap-6">
-        {videoTestimonials.map((t) => <VideoCard item={t} />)}
-      </div>
     </div>
   </section>
 

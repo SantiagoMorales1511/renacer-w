@@ -78,7 +78,7 @@ export const bioFaqs: Faq[] = [
   },
   {
     q: '¿Quién dirige el máster?',
-    a: 'Alba Elisa Cerón Gómez, directora y fundadora de Renacer, Consteladora Familiar y Empresarial, Terapeuta Sistémica, Coach Sistémica y Coach Ontológica.',
+    a: 'Alba Elisa Cerón Gómez, directora y fundadora de Renacer: Consteladora Familiar y Empresarial, Terapeuta Sistémica, Coach Sistémica, Coach Ontológica y especialista en Biodescodificación, Bioneuroemoción y Shinrin Yoku.',
   },
 ]
 

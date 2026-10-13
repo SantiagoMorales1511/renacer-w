@@ -1,0 +1,499 @@
+---
+/**
+ * Carrusel de testimonios en video. Reproduce sin sonido solo el clip de
+ * vista previa de la tarjeta central mientras la sección está en pantalla;
+ * el video completo (con sonido) se abre en un diálogo cuando el visitante lo pide.
+ */
+import Icon from './Icon.astro'
+import TestimonialCard from './TestimonialCard.astro'
+import type { VideoTestimonial } from '../data/testimonials'
+
+interface Props {
+  items: VideoTestimonial[]
+  eyebrow?: string
+  title?: string
+  subtitle?: string
+  id?: string
+  bg?: 'cream' | 'white'
+  /** Incluir el diálogo del reproductor (uno por página) */
+  withDialog?: boolean
+}
+const {
+  items,
+  eyebrow = 'Experiencias Renacer',
+  title = 'Historias que inspiran',
+  subtitle = 'Conoce las experiencias de quienes han sido parte de nuestras formaciones.',
+  id = 'testimonios',
+  bg = 'cream',
+  withDialog = true,
+} = Astro.props
+const n = items.length
+const headingId = `${id}-titulo`
+---
+
+{
+  n > 0 && (
+    <section
+      id={id}
+      class:list={['tc py-14 sm:py-20 lg:py-24', bg === 'white' ? 'bg-white' : 'bg-cream']}
+      aria-labelledby={headingId}
+      data-carousel
+      data-count={n}
+    >
+      <div class="wrap text-center">
+        <p class="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-petrol">{eyebrow}</p>
+        <h2 id={headingId} class="title mx-auto mt-4 max-w-3xl text-petrol">
+          {title}
+        </h2>
+        <p class="mx-auto mt-4 max-w-xl text-[1.02rem] leading-relaxed text-ink-soft">{subtitle}</p>
+      </div>
+
+      <div class="tc-viewport mx-auto mt-10 max-w-[72rem] sm:mt-12" aria-roledescription="carrusel" aria-label={title}>
+        <ul class:list={['tc-track no-scrollbar', n === 1 && 'tc-single']} data-track>
+          {items.map((t, i) => (
+            <li class="tc-slide" data-slide data-index={i} aria-roledescription="diapositiva" aria-label={`${i + 1} de ${n}: ${t.name}`}>
+              <TestimonialCard item={t} />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {n > 1 && (
+        <div class="wrap mt-8 flex flex-col items-center gap-4">
+          <div class="flex items-center gap-4">
+            <button type="button" class="tc-arrow" data-prev aria-label="Testimonio anterior">
+              <Icon name="arrow" size={20} class="rotate-180" />
+            </button>
+            <div class="tc-indicator" aria-hidden="true">
+              <span data-indicator style={`width:${100 / n}%`} />
+            </div>
+            <button type="button" class="tc-arrow" data-next aria-label="Testimonio siguiente">
+              <Icon name="arrow" size={20} />
+            </button>
+            <button type="button" class="tc-pause" data-pause aria-pressed="false">
+              <svg class="tc-i-pause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" /><rect x="14" y="5" width="4" height="14" rx="1" /></svg>
+              <svg class="tc-i-play" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.2-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6Z" /></svg>
+              <span class="sr-only" data-pause-label>Pausar carrusel</span>
+            </button>
+          </div>
+          <p class="text-[0.85rem] text-ink-mute">Desliza para conocer más experiencias</p>
+          <p class="sr-only" aria-live="polite" data-live />
+        </div>
+      )}
+    </section>
+  )
+}
+
+{
+  withDialog && n > 0 && (
+    <dialog id="tc-dialog" class="tc-dialog" aria-labelledby="tc-dialog-name">
+      <div class="tc-dialog-inner">
+        <div class="flex items-start justify-between gap-4 px-1 pb-3">
+          <div class="min-w-0">
+            <p id="tc-dialog-name" class="text-[1.05rem] font-semibold text-cream" data-d-name />
+            <p class="text-[0.8rem] text-cream/70" data-d-program />
+          </div>
+          <button type="button" class="tc-dialog-btn shrink-0" data-d-close aria-label="Cerrar video">
+            <Icon name="close" size={20} />
+          </button>
+        </div>
+        <div class="tc-dialog-media">
+          <video controls playsinline preload="none" data-d-video />
+          <span class="tc-progress tc-dialog-progress" aria-hidden="true"><span data-d-bar /></span>
+        </div>
+        <div class="mt-4 flex items-center justify-center gap-3">
+          <button type="button" class="tc-dialog-btn" data-d-seek="-10" aria-label="Retroceder 10 segundos">−10 s</button>
+          <button type="button" class="tc-dialog-btn tc-dialog-main" data-d-toggle>Pausar</button>
+          <button type="button" class="tc-dialog-btn" data-d-seek="10" aria-label="Adelantar 10 segundos">+10 s</button>
+        </div>
+      </div>
+    </dialog>
+  )
+}
+
+<style is:global>
+  .tc-viewport { position: relative; }
+  .tc-track {
+    --card: min(74vw, 300px);
+    --gap: 14px;
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    padding: 0.5rem calc((100% - var(--card)) / 2) 0.75rem;
+    list-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (min-width: 768px) {
+    .tc-track { --card: 280px; --gap: 22px; }
+  }
+  .tc-track.tc-single { justify-content: center; overflow: visible; }
+  .tc-slide {
+    flex: 0 0 var(--card);
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+  .tc[data-ready] .tc-slide:not([data-active]) .tc-card { transform: scale(0.9); }
+  .tc[data-ready] .tc-slide:not([data-active]) .tc-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(247, 246, 243, 0.42);
+    pointer-events: none;
+  }
+  .tc-arrow {
+    display: none;
+    height: 2.75rem;
+    width: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    color: #2f4d7e;
+    transition: background-color 0.2s;
+  }
+  .tc-arrow:hover { background: rgba(47, 77, 126, 0.08); }
+  @media (min-width: 640px) { .tc-arrow { display: inline-flex; } }
+  .tc-indicator {
+    position: relative;
+    height: 4px;
+    width: 9rem;
+    overflow: hidden;
+    border-radius: 9999px;
+    background: rgba(47, 77, 126, 0.15);
+  }
+  .tc-indicator span {
+    position: absolute;
+    inset: 0 auto 0 0;
+    border-radius: 9999px;
+    background: #2f4d7e;
+    transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .tc-pause {
+    display: inline-flex;
+    height: 2.75rem;
+    width: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid rgba(47, 77, 126, 0.25);
+    color: #2f4d7e;
+  }
+  .tc-pause .tc-i-play,
+  .tc-pause[aria-pressed='true'] .tc-i-pause { display: none; }
+  .tc-pause[aria-pressed='true'] .tc-i-play { display: block; }
+  .tc[data-static] .tc-pause { display: none; }
+
+  .tc-dialog {
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .tc-dialog[open] { display: flex; align-items: center; justify-content: center; }
+  .tc-dialog::backdrop { background: rgba(20, 36, 61, 0.9); }
+  .tc-dialog-inner { width: min(92vw, 400px); padding: 1rem 0; }
+  @media (max-height: 760px) { .tc-dialog-inner { width: min(92vw, calc((100dvh - 11rem) * 9 / 16)); } }
+  .tc-dialog-media {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    background: #000;
+  }
+  .tc-dialog-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .tc-dialog-progress { inset: auto 0 0 0; z-index: 1; pointer-events: none; }
+  .tc-dialog-btn {
+    display: inline-flex;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid rgba(247, 246, 243, 0.3);
+    padding: 0 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f7f6f3;
+  }
+  .tc-dialog-btn:hover { background: rgba(247, 246, 243, 0.08); }
+  .tc-dialog-main { background: #f7f6f3; color: #14243d; border-color: #f7f6f3; min-width: 6.5rem; }
+  .tc-dialog-main:hover { background: #fff; }
+</style>
+
+<script>
+  type Conn = { saveData?: boolean; effectiveType?: string; addEventListener?: (t: string, f: () => void) => void }
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+  const conn = (navigator as Navigator & { connection?: Conn }).connection
+  const lowData = () => !!conn?.saveData || /2g/.test(conn?.effectiveType ?? '')
+  const allowAutoplay = () => !reduceMotion.matches && !lowData()
+  const IDLE_MS = 6000
+
+  const carousels: Carousel[] = []
+  let dialogOpen = false
+
+  class Carousel {
+    root: HTMLElement
+    track: HTMLElement
+    slides: HTMLElement[]
+    n: number
+    active = -1
+    inView = false
+    userPaused = false
+    idle = true
+    idleTimer = 0
+    raf = 0
+    scrollRaf = 0
+    settleTimer = 0
+    blocked = false
+    video: HTMLVideoElement | null = null
+    preloaded: { index: number; el: HTMLVideoElement } | null = null
+
+    constructor(root: HTMLElement) {
+      this.root = root
+      this.track = root.querySelector('[data-track]')!
+      this.slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')]
+      this.n = this.slides.length
+      if (!allowAutoplay()) root.dataset.static = ''
+
+      new IntersectionObserver(
+        ([e]) => {
+          this.inView = e.isIntersecting
+          this.update()
+        },
+        { threshold: 0.35 },
+      ).observe(root)
+
+      this.track.addEventListener('scroll', () => {
+        cancelAnimationFrame(this.scrollRaf)
+        this.scrollRaf = requestAnimationFrame(() => this.syncActive())
+      }, { passive: true })
+
+      for (const type of ['pointerdown', 'wheel', 'keydown', 'touchstart']) {
+        this.track.addEventListener(type, () => this.interact(), { passive: true })
+      }
+      this.track.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') { e.preventDefault(); this.go(this.active + 1) }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); this.go(this.active - 1) }
+      })
+      root.querySelector('[data-prev]')?.addEventListener('click', () => { this.interact(); this.go(this.active - 1, true) })
+      root.querySelector('[data-next]')?.addEventListener('click', () => { this.interact(); this.go(this.active + 1, true) })
+      const pause = root.querySelector<HTMLButtonElement>('[data-pause]')
+      pause?.addEventListener('click', () => {
+        this.userPaused = !this.userPaused
+        pause.setAttribute('aria-pressed', String(this.userPaused))
+        const label = pause.querySelector('[data-pause-label]')
+        if (label) label.textContent = this.userPaused ? 'Reanudar carrusel' : 'Pausar carrusel'
+        this.update()
+      })
+
+      // Con 3 o más testimonios se empieza en el segundo para mostrar tarjetas a ambos lados.
+      const start = this.n >= 3 ? 1 : 0
+      this.track.scrollLeft = this.offsetFor(start)
+      this.setActive(start)
+      root.dataset.ready = ''
+    }
+
+    offsetFor(i: number) {
+      const s = this.slides[i]
+      return s.offsetLeft - (this.track.clientWidth - s.offsetWidth) / 2
+    }
+
+    syncActive() {
+      const center = this.track.scrollLeft + this.track.clientWidth / 2
+      let best = 0
+      let dist = Infinity
+      this.slides.forEach((s, i) => {
+        const d = Math.abs(s.offsetLeft + s.offsetWidth / 2 - center)
+        if (d < dist) { dist = d; best = i }
+      })
+      this.setActive(best)
+    }
+
+    go(i: number, announce = false) {
+      if (this.n < 2) return
+      const target = (i + this.n) % this.n
+      this.track.scrollTo({ left: this.offsetFor(target), behavior: reduceMotion.matches ? 'auto' : 'smooth' })
+      if (announce) {
+        const live = this.root.querySelector('[data-live]')
+        if (live) live.textContent = `Testimonio ${target + 1} de ${this.n}: ${this.slides[target].querySelector<HTMLElement>('[data-open]')?.dataset.name ?? ''}`
+      }
+    }
+
+    setActive(i: number) {
+      if (i === this.active) return
+      this.stopPreview()
+      this.slides.forEach((s, k) => (k === i ? s.setAttribute('data-active', '') : s.removeAttribute('data-active')))
+      this.active = i
+      const ind = this.root.querySelector<HTMLElement>('[data-indicator]')
+      if (ind) ind.style.transform = `translateX(${i * 100}%)`
+      // Espera a que el desplazamiento termine antes de iniciar la vista previa.
+      clearTimeout(this.settleTimer)
+      this.settleTimer = window.setTimeout(() => this.update(), 300)
+    }
+
+    interact() {
+      this.idle = false
+      clearTimeout(this.idleTimer)
+      this.idleTimer = window.setTimeout(() => {
+        this.idle = true
+        if (this.video?.ended) this.advance()
+      }, IDLE_MS)
+    }
+
+    canPlay() {
+      return this.inView && !document.hidden && !dialogOpen && !this.userPaused && !this.blocked && allowAutoplay()
+    }
+
+    update() {
+      if (this.canPlay()) this.startPreview()
+      else this.video?.pause()
+    }
+
+    makeVideo(src: string) {
+      const v = document.createElement('video')
+      v.muted = true
+      v.defaultMuted = true
+      v.playsInline = true
+      v.setAttribute('muted', '')
+      v.setAttribute('playsinline', '')
+      v.setAttribute('aria-hidden', 'true')
+      v.preload = 'auto'
+      v.src = src
+      return v
+    }
+
+    startPreview() {
+      const slide = this.slides[this.active]
+      const card = slide.querySelector<HTMLElement>('[data-open]')!
+      if (!this.video) {
+        const reuse = this.preloaded?.index === this.active ? this.preloaded.el : null
+        this.preloaded = null
+        const v = reuse ?? this.makeVideo(card.dataset.preview!)
+        v.addEventListener('playing', () => { v.dataset.ready = ''; slide.dataset.playing = '' ; this.tick() })
+        v.addEventListener('ended', () => this.onEnded())
+        slide.querySelector('[data-slot]')!.append(v)
+        this.video = v
+      }
+      if (this.video.ended) return
+      const v = this.video
+      v.play().catch((err: DOMException) => {
+        // Solo NotAllowedError significa autoplay bloqueado: se queda el poster con el
+        // botón de reproducción y sin avance automático. AbortError (pausa/cambio de
+        // tarjeta durante la carga) no es un bloqueo.
+        if (err?.name !== 'NotAllowedError' || v !== this.video) return
+        this.blocked = true
+        this.root.dataset.static = ''
+        this.stopPreview()
+      })
+    }
+
+    tick() {
+      cancelAnimationFrame(this.raf)
+      const v = this.video
+      const bar = this.slides[this.active]?.querySelector<HTMLElement>('[data-bar]')
+      if (!v || !bar) return
+      const step = () => {
+        if (v !== this.video) return
+        if (v.duration) bar.style.transform = `scaleX(${Math.min(1, v.currentTime / v.duration)})`
+        if (v.duration && v.currentTime / v.duration > 0.5) this.preloadNext()
+        if (!v.paused && !v.ended) this.raf = requestAnimationFrame(step)
+      }
+      step()
+    }
+
+    preloadNext() {
+      if (this.n < 2 || lowData()) return
+      const next = (this.active + 1) % this.n
+      if (this.preloaded?.index === next) return
+      const src = this.slides[next].querySelector<HTMLElement>('[data-open]')!.dataset.preview!
+      this.preloaded = { index: next, el: this.makeVideo(src) }
+      this.preloaded.el.load()
+    }
+
+    onEnded() {
+      this.tick()
+      if (this.n > 1 && this.idle && !this.userPaused && !dialogOpen) this.advance()
+    }
+
+    advance() {
+      this.go(this.active + 1)
+    }
+
+    stopPreview() {
+      cancelAnimationFrame(this.raf)
+      const slide = this.slides[this.active]
+      if (slide) {
+        slide.removeAttribute('data-playing')
+        const bar = slide.querySelector<HTMLElement>('[data-bar]')
+        if (bar) bar.style.transform = 'scaleX(0)'
+      }
+      if (this.video) {
+        this.video.pause()
+        this.video.removeAttribute('src')
+        this.video.load()
+        this.video.remove()
+        this.video = null
+      }
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((el) => carousels.push(new Carousel(el)))
+  document.addEventListener('visibilitychange', () => carousels.forEach((c) => c.update()))
+  reduceMotion.addEventListener?.('change', () => carousels.forEach((c) => c.update()))
+
+  // ── Reproductor con sonido ──
+  const dialog = document.querySelector<HTMLDialogElement>('#tc-dialog')
+  if (dialog) {
+    const video = dialog.querySelector<HTMLVideoElement>('[data-d-video]')!
+    const bar = dialog.querySelector<HTMLElement>('[data-d-bar]')!
+    const toggle = dialog.querySelector<HTMLButtonElement>('[data-d-toggle]')!
+    let opener: HTMLElement | null = null
+    let raf = 0
+
+    const paint = () => {
+      if (video.duration) bar.style.transform = `scaleX(${video.currentTime / video.duration})`
+      if (!video.paused) raf = requestAnimationFrame(paint)
+    }
+    video.addEventListener('play', () => { toggle.textContent = 'Pausar'; paint() })
+    video.addEventListener('pause', () => { toggle.textContent = 'Reproducir'; cancelAnimationFrame(raf); paint() })
+    video.addEventListener('seeked', paint)
+    toggle.addEventListener('click', () => (video.paused ? video.play() : video.pause()))
+    dialog.querySelectorAll<HTMLButtonElement>('[data-d-seek]').forEach((b) =>
+      b.addEventListener('click', () => {
+        video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + Number(b.dataset.dSeek)))
+      }),
+    )
+    dialog.querySelector('[data-d-close]')!.addEventListener('click', () => dialog.close())
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close() })
+    dialog.addEventListener('close', () => {
+      cancelAnimationFrame(raf)
+      video.pause()
+      video.removeAttribute('src')
+      video.load()
+      bar.style.transform = 'scaleX(0)'
+      dialogOpen = false
+      carousels.forEach((c) => c.update())
+      opener?.focus({ preventScroll: true })
+    })
+
+    document.addEventListener('click', (e) => {
+      const card = (e.target as HTMLElement).closest<HTMLElement>('[data-open]')
+      if (!card) return
+      opener = card
+      dialogOpen = true
+      carousels.forEach((c) => { c.interact(); c.update() })
+      dialog.querySelector('[data-d-name]')!.textContent = card.dataset.name ?? ''
+      dialog.querySelector('[data-d-program]')!.textContent = card.dataset.program ?? ''
+      video.poster = card.dataset.poster ?? ''
+      video.src = card.dataset.full ?? ''
+      bar.style.transform = 'scaleX(0)'
+      dialog.showModal()
+      video.play().catch(() => {})
+    })
+  }
+</script>

@@ -1,40 +1,43 @@
 ---
 import Base from '../layouts/Base.astro'
-import VideoCard from '../components/VideoCard.astro'
+import TestimonialCarousel from '../components/TestimonialCarousel.astro'
+import TestimonialCard from '../components/TestimonialCard.astro'
 import CtaBand from '../components/CtaBand.astro'
-import Icon from '../components/Icon.astro'
 import { videoTestimonials } from '../data/testimonials'
-import { constelaciones } from '../data/programs'
 import ctaImg from '../assets/photos/certificados.jpg'
 import ogImg from '../assets/photos/grupo-sentado-blanco.jpg'
 ---
 
 <Base
   title="Testimonios · Centro de Formación Renacer"
-  description="Estudiantes de la Formación en Constelaciones Familiares de Renacer cuentan, en video, cómo vivieron su proceso de formación en Cali."
+  description="Estudiantes de Renacer cuentan, en video y con sus propias palabras, cómo vivieron sus formaciones en Constelaciones Familiares y Biodescodificación en Cali."
   ogImage={ogImg}
 >
   <section class="grain">
-    <div class="wrap pb-12 pt-10 sm:pb-16 sm:pt-16">
+    <div class="wrap pb-4 pt-10 sm:pb-6 sm:pt-16">
       <p class="eyebrow rise">Testimonios</p>
       <h1 class="display rise rise-2 mt-5 max-w-4xl">Historias <span class="accent">reales</span> de nuestros estudiantes.</h1>
       <p class="lead rise rise-3 mt-6 max-w-2xl">
-        Estudiantes de la Formación en Constelaciones Familiares comparten, con sus propias palabras, cómo vivieron su proceso en Renacer.
+        Quienes han sido parte de nuestras formaciones comparten, con sus propias palabras, cómo vivieron su proceso en Renacer.
       </p>
     </div>
   </section>
 
-  <section class="pb-20 sm:pb-28" aria-label="Videos de testimonios">
+  <TestimonialCarousel items={videoTestimonials} id="carrusel" />
+
+  <section class="bg-white py-16 sm:py-24" aria-labelledby="todos">
     <div class="wrap">
-      <div class="mx-auto grid max-w-3xl gap-10 min-[480px]:grid-cols-2 sm:gap-8">
-        {videoTestimonials.map((t) => <VideoCard item={t} />)}
-      </div>
-      <p class="mx-auto mt-10 max-w-3xl text-center text-[0.9rem] text-ink-mute">
-        Los videos se cargan solo cuando pulsas reproducir.
-        <a href={constelaciones.slug} class="ml-1 inline-flex items-center gap-1 font-semibold text-petrol">
-          Conocer la formación <Icon name="arrow" size={16} />
-        </a>
-      </p>
+      <h2 id="todos" class="title text-center">Todos los <span class="accent">testimonios</span></h2>
+      <p class="mx-auto mt-4 max-w-xl text-center text-ink-soft">{videoTestimonials.length} videos. Toca cualquiera para verlo con sonido.</p>
+      <ul class="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
+        {
+          videoTestimonials.map((t) => (
+            <li>
+              <TestimonialCard item={t} sizes="(min-width: 1024px) 270px, (min-width: 768px) 33vw, 50vw" />
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
