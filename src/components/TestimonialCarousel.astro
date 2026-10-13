@@ -153,6 +153,14 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
   .tc[data-sound-on][data-sound-flash] .tc-slide[data-active] .tc-hint-on { opacity: 1; transform: translate(-50%, 0); }
   .tc-slide[data-active] .tc-media { cursor: pointer; }
   .tc-slide[data-active][data-playing] .tc-smart { opacity: 1; }
+  /* Destello de inicio que recorre la barra una vez (decorativo; el relleno sigue el tiempo real) */
+  .tc-slide[data-burst] .tc-smart::before { animation: tc-burst 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  @keyframes tc-burst {
+    from { transform: translateX(-100%); opacity: 1; }
+    70% { opacity: 1; }
+    to { transform: translateX(260%); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tc-slide[data-burst] .tc-smart::before { animation: none; } }
   .tc-arrow {
     display: none;
     height: 2.75rem;
@@ -202,9 +210,13 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
   const conn = (navigator as Navigator & { connection?: Conn }).connection
   const lowData = () => !!conn?.saveData || /2g/.test(conn?.effectiveType ?? '')
   const allowAutoplay = () => !reduceMotion.matches && !lowData()
+  /** Buffer por delante del video actual a partir del cual se precarga el siguiente */
+  const AHEAD_TO_PRELOAD = 6
 
   const carousels: Carousel[] = []
   let dialogOpen = false
+  /** La página terminó de cargar (Hero, CSS, posters): ya se pueden pedir videos sin competir con el LCP */
+  let pageIdle = false
 
   class Carousel {
     root: HTMLElement
@@ -215,6 +227,8 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
     /** Índice físico (incluye copias) de la tarjeta central */
     active = -1
     inView = false
+    /** La sección está a menos de ~800 px de entrar en pantalla */
+    near = false
     userPaused = false
     touching = false
     pendingAdvance = false
@@ -222,11 +236,21 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
     blocked = false
     /** El visitante inició la reproducción manualmente (autoplay no permitido) */
     started = false
-    video: HTMLVideoElement | null = null
+    /**
+     * Como máximo dos <video>: el del testimonio actual y el que precarga el siguiente.
+     * Cada uno guarda en data-real el testimonio que tiene cargado; nunca hay dos con el mismo
+     * archivo ni más de dos descargas a la vez.
+     */
+    pool: HTMLVideoElement[] = []
+    cur: HTMLVideoElement | null = null
     raf = 0
     scrollRaf = 0
     settleTimer = 0
     flashTimer = 0
+    /** Mientras el carrusel se desplaza solo hacia una tarjeta elegida, el scroll no cambia la activa */
+    lockUntil = 0
+    /** Tarjeta física cuyo video terminó: su barra queda al 100 % mientras se desplaza */
+    finished = -1
 
     constructor(root: HTMLElement) {
       this.root = root
@@ -235,24 +259,31 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       this.n = this.slides.filter((s) => !s.hasAttribute('data-clone')).length
       if (!allowAutoplay()) root.dataset.static = ''
 
+      // Visible: reproducir. Cerca: preparar el video con antelación.
       new IntersectionObserver(
         ([e]) => {
           this.inView = e.isIntersecting
           this.update()
         },
-        { threshold: 0.35 },
+        { threshold: 0.25 },
+      ).observe(root)
+      new IntersectionObserver(
+        ([e]) => {
+          this.near = e.isIntersecting
+          this.warm()
+        },
+        { rootMargin: '0px 0px 800px 0px' },
       ).observe(root)
 
-      // Durante el desplazamiento solo se actualiza la tarjeta resaltada; el video
-      // cambia cuando el desplazamiento se detiene.
       this.track.addEventListener('scroll', () => {
-        cancelAnimationFrame(this.scrollRaf)
-        this.scrollRaf = requestAnimationFrame(() => this.setActive(this.nearest()))
         clearTimeout(this.settleTimer)
         this.settleTimer = window.setTimeout(() => this.onSettle(), 140)
+        if (performance.now() < this.lockUntil) return
+        cancelAnimationFrame(this.scrollRaf)
+        this.scrollRaf = requestAnimationFrame(() => this.setActive(this.nearest()))
       }, { passive: true })
 
-      const down = () => { this.touching = true }
+      const down = () => { this.touching = true; this.lockUntil = 0 }
       const up = () => {
         this.touching = false
         clearTimeout(this.settleTimer)
@@ -320,35 +351,53 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       return best
     }
 
-    /** Lleva el carrusel a la tarjeta física p (siempre existe una copia a cada lado). */
+    /**
+     * Lleva el carrusel a la tarjeta física p (siempre hay una copia a cada lado).
+     * La tarjeta elegida se activa y su video arranca de inmediato, mientras el
+     * carrusel termina de desplazarse.
+     */
     go(p: number, announce = false) {
       if (this.n < 2) return
       const target = Math.max(0, Math.min(this.slides.length - 1, p))
+      this.lockUntil = performance.now() + 900
       this.track.scrollTo({ left: this.offsetFor(target), behavior: reduceMotion.matches ? 'auto' : 'smooth' })
       if (announce) {
         const live = this.root.querySelector('[data-live]')
         if (live) live.textContent = `Testimonio ${this.real(target) + 1} de ${this.n}: ${this.card(target).dataset.name ?? ''}`
       }
+      this.setActive(target)
+      this.update()
     }
 
-    /** Fin del desplazamiento: si quedó en una copia, salto invisible a la tarjeta real y reproducción. */
+    /** Fin del desplazamiento: si quedó en una copia, salto invisible a la tarjeta real (el video se mueve con ella). */
     onSettle() {
       if (this.touching) return
+      this.lockUntil = 0
       this.setActive(this.nearest())
       // El video terminó mientras el visitante tocaba el carrusel: ahora sí avanza.
       if (this.pendingAdvance) {
         this.pendingAdvance = false
-        const v = this.video
-        if (v?.ended && v.dataset.for === String(this.active)) { this.go(this.active + 1); return }
+        if (this.cur?.ended && this.cur.dataset.real === String(this.real(this.active))) { this.go(this.active + 1); return }
       }
       if (this.isClone(this.active)) {
-        const realP = this.physicalOf(this.real(this.active))
-        const delta = this.slides[realP].offsetLeft - this.slides[this.active].offsetLeft
+        const clone = this.active
+        const realP = this.physicalOf(this.real(clone))
+        const delta = this.slides[realP].offsetLeft - this.slides[clone].offsetLeft
         // Sin transiciones durante el salto: la tarjeta real es idéntica a la copia.
         this.root.dataset.jump = ''
         this.track.style.scrollSnapType = 'none'
         this.track.scrollLeft += delta
         this.track.style.scrollSnapType = ''
+        // El mismo <video> pasa a la tarjeta real sin detenerse (se mueve en el mismo instante).
+        const v = this.cur
+        if (v && v.dataset.for === String(clone)) {
+          const bar = this.slides[clone].querySelector<HTMLElement>('[data-bar]')?.style.transform
+          this.attach(v, realP)
+          if (bar) this.slides[realP].querySelector<HTMLElement>('[data-bar]')!.style.transform = bar
+          if (this.slides[clone].hasAttribute('data-playing')) this.slides[realP].setAttribute('data-playing', '')
+          this.slides[clone].removeAttribute('data-playing')
+          this.setBar(clone, 0)
+        }
         this.setActive(realP)
         void this.root.offsetWidth
         requestAnimationFrame(() => requestAnimationFrame(() => delete this.root.dataset.jump))
@@ -369,8 +418,9 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
     setActive(p: number) {
       if (p === this.active || p < 0) return
       this.hydrate(p)
-      // Al cambiar de tarjeta se detiene el video anterior y su progreso vuelve a cero.
-      this.detach()
+      // Si la tarjeta nueva es de otro testimonio, el video anterior se detiene y su barra vuelve a cero.
+      const v = this.cur
+      if (v && v.dataset.real !== String(this.real(p))) this.stop(v)
       this.slides.forEach((s, i) => (i === p ? s.setAttribute('data-active', '') : s.removeAttribute('data-active')))
       this.active = p
       const ind = this.root.querySelector<HTMLElement>('[data-indicator]')
@@ -380,16 +430,29 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
 
     shouldPlay() {
       const allowed = (allowAutoplay() && !this.blocked) || this.started || this.soundOn
-      return allowed && this.inView && !document.hidden && !dialogOpen && !this.userPaused && !this.isClone(this.active)
+      return allowed && this.inView && !document.hidden && !dialogOpen && !this.userPaused
     }
 
     update() {
       if (this.shouldPlay()) this.play()
-      else this.video?.pause()
+      else {
+        this.cur?.pause()
+        this.warm()
+      }
     }
 
-    ensureVideo() {
-      if (this.video) return this.video
+    /** Prepara el video de la tarjeta central antes de que el carrusel sea visible (sin competir con el Hero). */
+    warm() {
+      if (!pageIdle || !this.near || !allowAutoplay() || this.blocked || this.cur) return
+      const p = this.active
+      // Solo el inicio (metadatos y primeros fotogramas): quien no baja hasta el carrusel no gasta datos.
+      const v = this.acquire(this.real(p), 'metadata')
+      this.attach(v, p)
+      v.dataset.burst = '1'
+      this.cur = v
+    }
+
+    createVideo() {
       const v = document.createElement('video')
       v.muted = true
       v.defaultMuted = true
@@ -402,31 +465,81 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       v.setAttribute('aria-hidden', 'true')
       v.preload = 'auto'
       v.addEventListener('playing', () => {
+        if (v !== this.cur) { v.pause(); return }
         v.dataset.ready = ''
-        this.slides[Number(v.dataset.for)]?.setAttribute('data-playing', '')
+        const slide = this.slides[Number(v.dataset.for)]
+        slide?.setAttribute('data-playing', '')
+        if (v.dataset.burst) {
+          delete v.dataset.burst
+          this.burst(slide)
+        }
         this.tick()
       })
-      v.addEventListener('pause', () => cancelAnimationFrame(this.raf))
-      v.addEventListener('ended', () => this.onEnded())
-      this.video = v
+      v.addEventListener('canplaythrough', () => { if (v === this.cur && !v.paused) this.preloadNext() })
+      v.addEventListener('ended', () => { if (v === this.cur) this.onEnded() })
+      this.pool.push(v)
       return v
     }
 
-    /** Reproduce el video completo de la tarjeta central (el mismo elemento se mueve entre tarjetas). */
+    /** Devuelve el <video> con el testimonio r (reutiliza el precargado o recicla el libre). */
+    acquire(r: number, preload: 'auto' | 'metadata' = 'auto') {
+      const have = this.pool.find((v) => v.dataset.real === String(r))
+      if (have) {
+        if (preload === 'auto') have.preload = 'auto'
+        return have
+      }
+      const free = this.pool.length < 2 ? this.createVideo() : this.pool.find((v) => v !== this.cur) ?? this.pool[0]
+      free.pause()
+      free.removeAttribute('data-ready')
+      free.preload = preload
+      free.dataset.real = String(r)
+      free.src = this.card(this.physicalOf(r)).dataset.full!
+      free.load()
+      return free
+    }
+
+    /** Coloca el <video> en la ranura de la tarjeta física p (moverlo no lo detiene). */
+    attach(v: HTMLVideoElement, p: number) {
+      const slot = this.slides[p].querySelector('[data-slot]')!
+      if (v.parentElement !== slot) slot.append(v)
+      v.dataset.for = String(p)
+    }
+
+    /** Detiene un video y deja su tarjeta en el poster con la barra en cero. */
+    stop(v: HTMLVideoElement) {
+      cancelAnimationFrame(this.raf)
+      v.pause()
+      const p = Number(v.dataset.for)
+      this.slides[p]?.removeAttribute('data-playing')
+      if (p === this.finished) {
+        // Terminó: la barra se queda llena mientras la tarjeta sale y luego vuelve a cero.
+        this.finished = -1
+        window.setTimeout(() => { if (Number(this.cur?.dataset.for) !== p) this.setBar(p, 0) }, 700)
+      } else this.setBar(p, 0)
+      v.removeAttribute('data-ready')
+      v.dataset.restart = '1'
+      if (v === this.cur) this.cur = null
+    }
+
+    /** Reproduce el testimonio de la tarjeta central. */
     play() {
       const p = this.active
-      const v = this.ensureVideo()
-      if (v.dataset.for !== String(p) || !v.isConnected) {
-        v.removeAttribute('data-ready')
-        v.src = this.card(p).dataset.full!
-        v.dataset.for = String(p)
-        this.slides[p].querySelector('[data-slot]')!.append(v)
+      const r = this.real(p)
+      const v = this.acquire(r)
+      if (this.cur && this.cur !== v) this.stop(this.cur)
+      const fresh = this.cur !== v || v.dataset.restart === '1'
+      this.cur = v
+      this.attach(v, p)
+      if (fresh) {
+        delete v.dataset.restart
+        if (v.currentTime > 0) v.currentTime = 0
+        v.dataset.burst = '1'
         this.setBar(p, 0)
       }
       if (v.ended) return
       v.muted = !this.soundOn
       v.play().catch((err: DOMException) => {
-        if (err?.name !== 'NotAllowedError' || v.dataset.for !== String(this.active)) return
+        if (err?.name !== 'NotAllowedError' || v !== this.cur) return
         if (!v.muted) {
           // El navegador exige un nuevo toque para el audio: se continúa en silencio.
           this.soundOn = false
@@ -439,25 +552,21 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       })
     }
 
+    /** Precarga limitada: solo el siguiente testimonio, cuando el actual ya tiene suficiente buffer. */
+    preloadNext() {
+      // Solo mientras el actual se está reproduciendo de verdad (no durante la preparación).
+      if (this.n < 2 || lowData() || reduceMotion.matches || !this.cur || this.cur.paused) return
+      const next = (Number(this.cur.dataset.real) + 1) % this.n
+      if (this.pool.some((v) => v.dataset.real === String(next))) return
+      const v = this.acquire(next)
+      this.attach(v, this.physicalOf(next))
+    }
+
     /** Autoplay bloqueado: queda el poster con el botón de reproducción, sin avance automático. */
     block() {
       this.blocked = true
       this.root.dataset.static = ''
-      this.detach()
-    }
-
-    detach() {
-      cancelAnimationFrame(this.raf)
-      const v = this.video
-      if (!v || !v.isConnected) return
-      const p = Number(v.dataset.for)
-      v.pause()
-      v.remove()
-      v.removeAttribute('src')
-      v.load()
-      delete v.dataset.for
-      this.slides[p]?.removeAttribute('data-playing')
-      this.setBar(p, 0)
+      if (this.cur) this.stop(this.cur)
     }
 
     setBar(p: number, value: number) {
@@ -465,25 +574,36 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       if (bar) bar.style.transform = `translateX(${((Math.max(0, Math.min(1, value)) - 1) * 100).toFixed(3)}%)`
     }
 
+    /** Destello de luz que recorre la barra al comenzar cada testimonio (decorativo). */
+    burst(slide?: HTMLElement) {
+      if (!slide || reduceMotion.matches) return
+      slide.removeAttribute('data-burst')
+      void slide.offsetWidth
+      slide.setAttribute('data-burst', '')
+      window.setTimeout(() => slide.removeAttribute('data-burst'), 1000)
+    }
+
     /**
      * Smart progress bar: currentTime / duration del video real, en cada fotograma.
-     * Entre dos actualizaciones de currentTime (algunos navegadores lo informan a saltos)
-     * se interpola con el reloj, como máximo 0,25 s y nunca más allá de la duración, para
-     * que avance fluido sin adelantarse al video. Si el video se detiene, la barra también.
+     * Entre dos actualizaciones de currentTime se interpola con el reloj (máx. 0,25 s y nunca
+     * más allá de la duración); si el video espera datos o se pausa, la barra se detiene.
      */
     tick() {
       cancelAnimationFrame(this.raf)
-      const v = this.video
+      const v = this.cur
       if (!v) return
-      const p = Number(v.dataset.for)
       let lastTime = -1
       let lastAt = 0
       const step = (now: number) => {
-        if (v.dataset.for !== String(p)) return
+        if (v !== this.cur) return
         if (v.duration) {
           if (v.currentTime !== lastTime) { lastTime = v.currentTime; lastAt = now }
           const ahead = v.paused || v.readyState < 3 ? 0 : Math.min(0.25, (now - lastAt) / 1000) * v.playbackRate
-          this.setBar(p, Math.min(v.duration, lastTime + ahead) / v.duration)
+          const ratio = Math.min(v.duration, lastTime + ahead) / v.duration
+          this.setBar(Number(v.dataset.for), ratio)
+          // Con suficiente buffer del actual, se precarga el siguiente (preloadNext no repite si ya está).
+          const b = v.buffered
+          if (b.length && b.end(b.length - 1) - v.currentTime >= AHEAD_TO_PRELOAD) this.preloadNext()
         }
         if (!v.paused && !v.ended) this.raf = requestAnimationFrame(step)
       }
@@ -492,6 +612,7 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
 
     onEnded() {
       this.setBar(this.active, 1)
+      this.finished = this.active
       if (this.n < 2 || this.userPaused || reduceMotion.matches) return
       // Si el visitante está deslizando, el avance espera a que suelte.
       if (this.touching) { this.pendingAdvance = true; return }
@@ -509,8 +630,8 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
         this.go(p, true)
         return
       }
-      const v = this.video
-      const playing = !!v && v.isConnected && v.dataset.for === String(p) && !v.paused
+      const v = this.cur
+      const playing = !!v && v.dataset.for === String(p) && !v.paused
       if (!playing) {
         this.started = true
         this.blocked = false
@@ -518,22 +639,40 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
         this.root.dataset.started = ''
         this.setSound(true)
         this.play()
+        this.unlockSpare()
         return
       }
       this.setSound(!this.soundOn)
       // Dentro del mismo toque: el navegador permite el audio y el video sigue en el mismo segundo.
       v!.muted = !this.soundOn
-      if (this.soundOn) v!.play().catch(() => {})
+      if (this.soundOn) {
+        v!.play().catch(() => {})
+        this.unlockSpare()
+      }
+    }
+
+    /**
+     * iPhone solo permite audio en un <video> que se reprodujo tras un toque. Dentro del mismo
+     * toque se "habilita" también el segundo elemento (play + pausa inmediata), para que el
+     * siguiente testimonio pueda continuar con sonido.
+     */
+    unlockSpare() {
+      const spare = this.pool.find((x) => x !== this.cur)
+      if (!spare || !spare.src) return
+      spare.muted = false
+      const pr = spare.play()
+      spare.pause()
+      spare.muted = true
+      pr?.catch(() => {})
     }
 
     /**
      * Teclas de volumen del dispositivo (solo en navegadores que las informan a la página:
      * algunos Android y teclados con teclas multimedia; iPhone no las expone a la web).
-     * Si el video central suena en silencio, se activa el audio sin pausarlo.
      */
     onVolumeKey() {
-      const v = this.video
-      if (this.soundOn || !this.inView || dialogOpen || !v || !v.isConnected || v.paused || v.dataset.for !== String(this.active)) return
+      const v = this.cur
+      if (this.soundOn || !this.inView || dialogOpen || !v || v.paused || v.dataset.for !== String(this.active)) return
       this.setSound(true)
       v.muted = false
       v.play().catch(() => {
@@ -572,6 +711,16 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
     if (VOLUME_KEYS.includes(e.key)) carousels.forEach((c) => c.onVolumeKey())
   })
   reduceMotion.addEventListener?.('change', () => carousels.forEach((c) => c.update()))
+
+  // Los videos esperan a que la página termine de cargar (Hero y posters primero).
+  const markIdle = () => {
+    const ric = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback
+    const go = () => { pageIdle = true; carousels.forEach((c) => c.warm()) }
+    if (ric) ric(go, { timeout: 1500 })
+    else window.setTimeout(go, 300)
+  }
+  if (document.readyState === 'complete') markIdle()
+  else window.addEventListener('load', markIdle, { once: true })
 
   // Si en la página se abre el reproductor grande (miniaturas), el carrusel se pausa.
   document.addEventListener('tc:dialog', (e) => {

@@ -117,7 +117,7 @@ const tab = clone ? -1 : undefined
     height: 100%;
     object-fit: cover;
   }
-  .tc-slot video { opacity: 0; transition: opacity 0.35s ease; }
+  .tc-slot video { opacity: 0; transition: opacity 0.15s ease; }
   .tc-slot video[data-ready] { opacity: 1; }
   .tc-play {
     position: absolute;
@@ -199,17 +199,28 @@ const tab = clone ? -1 : undefined
     z-index: 2;
     height: 6px;
     overflow: hidden;
-    background: rgba(20, 36, 61, 0.55);
+    background: rgba(20, 36, 61, 0.65);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.35s ease;
+  }
+  .tc-smart::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 38%;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.9) 55%, rgba(255, 255, 255, 0) 100%);
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
   }
   @media (min-width: 768px) { .tc-smart { height: 5px; } }
   .tc-smart-fill {
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, #c8b6e6 0%, #e9e1f5 70%, #ffffff 100%);
+    background: linear-gradient(90deg, #d9ccf2 0%, #efe9fa 65%, #ffffff 100%);
     will-change: transform;
   }
   /* Brillo sutil en el extremo que avanza */

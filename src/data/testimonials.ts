@@ -37,7 +37,8 @@ const programLabels: Record<ProgramKey, string> = {
 export const programLabel = (t: VideoTestimonial) =>
   t.programs.length ? t.programs.map((k) => programLabels[k]).join(' · ') : 'Estudiante de Renacer'
 
-const v = (slug: string) => ({ src: `/videos/testimonio-${slug}.mp4` })
+// .v2: versión optimizada (H.264 720p, GOP 2 s, AAC 64k). El sufijo evita mezclar cachés con la versión anterior.
+const v = (slug: string) => ({ src: `/videos/testimonio-${slug}.v2.mp4` })
 
 // Atribución tomada de lo que cada persona dice en su video (subtítulos originales).
 // Publicación autorizada por Renacer (12 oct 2026).
