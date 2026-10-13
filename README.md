@@ -1,35 +1,40 @@
-# Centro de Formación Renacer
+# Centro de Formación Renacer — renacer-ahora.com
 
-Sitio web del Centro de Formación Renacer, especializado en Constelaciones Familiares, Terapia Sistémica y Biodescodificación en Santiago de Cali, Colombia.
+Sitio oficial de Renacer (Cali, Colombia).
 
-## 🚀 Algunas Características
+## Stack
 
-- **Diseño moderno y responsive** - Optimizado para móviles y desktop
-- **Integración con Brevo** - Captura automática de leads y gestión de contactos
-- **Modal de suscripción** - Popup automático y botones manuales para recibir novedades
+- **Astro 5** (salida estática) + **TypeScript** + **Tailwind CSS 3**
+- **React** solo en los paneles internos `/admin/*` (islas `client:only`)
+- Imágenes con `astro:assets` (AVIF/WebP responsivas), fuentes autoalojadas (Manrope + Cormorant Garamond)
+- Funciones serverless de Vercel en `api/` (sesión admin, datos, chat, Brevo, WhatsApp Embedded Signup)
 
-## 🛠️ Tecnologías Utilizadas
+## Estructura
 
-- **React 18** - Framework principal
-- **TypeScript** - Tipado estático
-- **Vite** - Herramienta de construcción
-- **Tailwind CSS** - Framework de estilos
-- **React Router** - Navegación entre páginas
-- **Brevo API** - Gestión de contactos y email marketing
+```
+src/data/          programas, facilitadoras, FAQs, testimonios, datos del sitio
+src/lib/whatsapp.ts  enlaces wa.me con mensaje por formación ([WEB-SEX], [WEB-BIO], [WEB-CONST], [WEB-GENERAL])
+src/pages/         /, /formaciones, /sexualidad-consciente, /biodescodificacion,
+                   /constelaciones-familiares, /testimonios, /privacy, /admin/*
+src/react-admin/   paneles internos (sin cambios funcionales)
+api/               funciones de Vercel (no modificar rutas: las usan integraciones activas)
+public/videos/     testimonios optimizados (los originales están fuera del repo)
+```
 
-## 📧 Integración con Brevo
+Para cambiar fechas, precios o módulos edita `src/data/programs.ts`.
 
-El sitio incluye integración completa con Brevo para la captura automática de leads:
+## Desarrollo
 
-### Configuración Requerida
-1. **API Key de Brevo** - Para autenticación
-2. **ID de Lista** - ID de la lista "renacer" en Brevo
-3. **Variables de entorno** - Configuradas en `.env.local`
+```bash
+npm install
+npm run dev        # http://localhost:4321
+npm run build      # astro check + build
+npm test           # verificaciones sobre dist/ (SEO, WhatsApp, /privacy, redirecciones)
+```
 
-Ver [README-BREVO.md](./README-BREVO.md) para instrucciones detalladas de configuración.
+Las rutas `/api/*` solo funcionan en Vercel (o con `vercel dev`).
 
-## 🚀 Instalación y Desarrollo
+## Notas
 
-### Prerrequisitos
-- Node.js 18+ 
-- npm o yarn
+- `/privacy` contiene la política de Renacer AI usada por integraciones de Google; no cambiar su texto.
+- Redirecciones 301 de rutas antiguas en `vercel.json`.

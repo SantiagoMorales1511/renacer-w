@@ -1,7 +1,0 @@
-{
-  "version": "0.0.1",
-  "configurations": [
-    { "name": "renacer-dev", "runtimeExecutable": "npx", "runtimeArgs": ["astro", "dev", "--port", "4321", "--host"], "port": 4321 },
-    { "name": "renacer-preview", "runtimeExecutable": "npx", "runtimeArgs": ["astro", "preview", "--port", "4322", "--host"], "port": 4322 }
-  ]
-}
