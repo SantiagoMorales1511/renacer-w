@@ -110,10 +110,7 @@ import Icon from './Icon.astro'
 
     document.addEventListener('click', (e) => {
       const target = e.target as HTMLElement
-      let card = target.closest<HTMLElement>('[data-open]')
-      // Fuera de un carrusel (p. ej. la cuadrícula de /testimonios), "Ver con sonido" abre el reproductor.
-      const sound = target.closest<HTMLElement>('[data-sound]')
-      if (!card && sound && !sound.closest('[data-carousel]')) card = sound.closest('.tc-card')?.querySelector<HTMLElement>('[data-open]') ?? null
+      const card = target.closest<HTMLElement>('[data-open]')
       if (!card) return
       opener = card
       document.dispatchEvent(new CustomEvent('tc:dialog', { detail: { open: true } }))

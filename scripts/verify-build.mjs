@@ -97,6 +97,11 @@ ok(own('biodescodificacion.html').every((p) => p.includes('Biodescodificación')
 ok(own('constelaciones-familiares.html').every((p) => p.includes('Constelaciones')), 'Constelaciones: miniaturas de estudiantes de Constelaciones')
 const sexHtml = read('sexualidad-consciente.html')
 ok(sexHtml.includes('Testimonios de estudiantes de otras formaciones de Renacer') && own('sexualidad-consciente.html').every((p) => !p.includes('Sexualidad')), 'Sexualidad: experiencias de otras formaciones, identificadas')
+for (const f of ['index.html', 'biodescodificacion.html', 'testimonios.html']) {
+  const html = read(f)
+  ok(!/>\s*Ver con sonido\s*</.test(html) && !html.includes('data-sound '), `${f}: sin el botón duplicado "Ver con sonido"`)
+}
+ok((read('index.html').match(/Toca el video para activar el sonido/g) || []).length === 17, 'Home: una sola indicación de sonido por tarjeta (11 + 6 copias)')
 ok(read('index.html').includes('Coach Ontológica') && read('index.html').includes('Shinrin Yoku'), 'Home: credenciales completas de Alba Elisa')
 import { readdirSync } from 'node:fs'
 for (const f of readdirSync(new URL('videos/', dist)).filter((x) => x.endsWith('.mp4'))) {

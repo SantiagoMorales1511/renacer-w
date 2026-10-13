@@ -143,9 +143,10 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
   }
   /* La tarjeta central no muestra el botón de play mientras carga su video */
   .tc:not([data-static]) .tc-slide[data-active] .tc-play { opacity: 0; }
-  /* "Toca para activar el sonido" solo en la central, mientras suena en silencio */
-  .tc:not([data-sound-on]) .tc-slide[data-active][data-playing] .tc-hint { opacity: 1; transform: translate(-50%, 0); }
-  .tc[data-sound-on] .tc-slide[data-active][data-playing] .tc-vol { opacity: 1; }
+  /* Una sola indicación sobre la central: "Toca el video…" en silencio; "Sonido activado" un instante */
+  .tc:not([data-sound-on]) .tc-slide[data-active][data-playing] .tc-hint:not(.tc-hint-on),
+  .tc[data-sound-on][data-sound-flash] .tc-slide[data-active] .tc-hint-on { opacity: 1; transform: translate(-50%, 0); }
+  .tc-slide[data-active] .tc-media { cursor: pointer; }
   .tc-arrow {
     display: none;
     height: 2.75rem;
@@ -219,6 +220,7 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
     raf = 0
     scrollRaf = 0
     settleTimer = 0
+    flashTimer = 0
 
     constructor(root: HTMLElement) {
       this.root = root
@@ -261,9 +263,19 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       root.querySelector('[data-prev]')?.addEventListener('click', () => this.go(this.active - 1, true))
       root.querySelector('[data-next]')?.addEventListener('click', () => this.go(this.active + 1, true))
 
+      // Todo el video es la zona táctil. Un arrastre (deslizar el carrusel) no cuenta como toque.
       this.slides.forEach((slide, p) => {
-        slide.querySelector('[data-tap]')?.addEventListener('click', () => this.onTap(p))
-        slide.querySelector('[data-sound]')?.addEventListener('click', () => this.onTap(p, true))
+        const media = slide.querySelector<HTMLElement>('[data-tap]')
+        if (!media) return
+        let start: { x: number; y: number; left: number } | null = null
+        media.addEventListener('pointerdown', (e) => { start = { x: e.clientX, y: e.clientY, left: this.track.scrollLeft } }, { passive: true })
+        media.addEventListener('click', (e) => {
+          const moved = start && (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 10 || Math.abs(this.track.scrollLeft - start.left) > 6)
+          start = null
+          // e.detail === 0: activación con teclado (Enter/Espacio)
+          if (moved && e.detail !== 0) return
+          this.onTap(p)
+        })
       })
 
       const pause = root.querySelector<HTMLButtonElement>('[data-pause]')
@@ -470,14 +482,13 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
     }
 
     /**
-     * Toque en el video (o en "Ver con sonido"):
+     * Toque en cualquier parte del video:
      * - tarjeta lateral: se selecciona;
      * - tarjeta central reproduciéndose: activa/desactiva el sonido sin pausar ni reiniciar;
      * - tarjeta central sin reproducir (autoplay no permitido): empieza con sonido.
      */
-    onTap(p: number, viaButton = false) {
+    onTap(p: number) {
       if (p !== this.active) {
-        if (viaButton) this.setSound(true)
         this.go(p, true)
         return
       }
@@ -501,19 +512,20 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
     setSound(on: boolean) {
       this.soundOn = on
       this.syncSoundUI()
+      // "Sonido activado" se muestra un instante y luego se oculta.
+      clearTimeout(this.flashTimer)
+      this.root.toggleAttribute('data-sound-flash', on)
+      if (on) this.flashTimer = window.setTimeout(() => this.root.removeAttribute('data-sound-flash'), 1400)
     }
 
     syncSoundUI() {
       this.root.toggleAttribute('data-sound-on', this.soundOn)
       this.slides.forEach((slide, i) => {
+        const media = slide.querySelector<HTMLElement>('[data-tap]')
+        if (!media) return
         const on = this.soundOn && i === this.active
-        const btn = slide.querySelector<HTMLButtonElement>('[data-sound]')
-        if (btn) {
-          btn.setAttribute('aria-pressed', String(on))
-          const label = btn.querySelector('[data-sound-label]')
-          if (label) label.textContent = on ? 'Silenciar' : 'Ver con sonido'
-        }
-        slide.querySelector('[data-tap]')?.setAttribute('aria-pressed', String(on))
+        const label = on ? media.dataset.labelOn : media.dataset.labelOff
+        if (label) media.setAttribute('aria-label', label)
       })
     }
   }
