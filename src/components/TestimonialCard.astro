@@ -6,11 +6,15 @@ import { programLabel, type VideoTestimonial } from '../data/testimonials'
 interface Props {
   item: VideoTestimonial
   sizes?: string
+  /** Posterga la carga del poster hasta que el carrusel se acerque a la tarjeta */
+  defer?: boolean
 }
-const { item, sizes = '(min-width: 768px) 280px, 74vw' } = Astro.props
+const { item, sizes = '(min-width: 768px) 280px, 74vw', defer = false } = Astro.props
+const blank = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
 const small = await getImage({ src: item.poster, width: 360, format: 'webp', quality: 70 })
 const large = await getImage({ src: item.poster, width: 560, format: 'webp', quality: 72 })
 const program = programLabel(item)
+const srcset = `${small.src} 360w, ${large.src} 560w`
 ---
 
 <button
@@ -26,8 +30,10 @@ const program = programLabel(item)
 >
   <span class="tc-media">
     <img
-      src={small.src}
-      srcset={`${small.src} 360w, ${large.src} 560w`}
+      src={defer ? blank : small.src}
+      srcset={defer ? undefined : srcset}
+      data-src={defer ? small.src : undefined}
+      data-srcset={defer ? srcset : undefined}
       sizes={sizes}
       width={small.attributes.width}
       height={small.attributes.height}

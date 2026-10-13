@@ -53,7 +53,7 @@ const headingId = `${id}-titulo`
         <ul class:list={['tc-track no-scrollbar', n === 1 && 'tc-single']} data-track>
           {items.map((t, i) => (
             <li class="tc-slide" data-slide data-index={i} aria-roledescription="diapositiva" aria-label={`${i + 1} de ${n}: ${t.name}`}>
-              <TestimonialCard item={t} />
+              <TestimonialCard item={t} defer={i > 3} />
             </li>
           ))}
         </ul>
@@ -261,8 +261,20 @@ const headingId = `${id}-titulo`
       }
     }
 
+    /** Carga los posters de las tarjetas cercanas a la activa (las demás esperan). */
+    hydrate(i: number) {
+      for (let d = -1; d <= 2; d++) {
+        const img = this.slides[(i + d + this.n) % this.n]?.querySelector<HTMLImageElement>('img[data-src]')
+        if (!img) continue
+        img.srcset = img.dataset.srcset ?? ''
+        img.src = img.dataset.src ?? ''
+        img.removeAttribute('data-src')
+      }
+    }
+
     setActive(i: number) {
       if (i === this.active) return
+      this.hydrate(i)
       this.stopPreview()
       this.slides.forEach((s, k) => (k === i ? s.setAttribute('data-active', '') : s.removeAttribute('data-active')))
       this.active = i
