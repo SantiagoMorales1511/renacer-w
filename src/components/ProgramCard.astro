@@ -50,7 +50,7 @@ const open = p.status === 'abierta'
       </div>
       <div>
         <dt class="text-ink-mute">Horario</dt>
-        <dd class="font-semibold text-ink">{p.schedule}</dd>
+        <dd class="whitespace-nowrap font-semibold text-ink">{p.schedule.replace(/:00/g, '')}</dd>
       </div>
       <div>
         <dt class="text-ink-mute">Modalidad</dt>

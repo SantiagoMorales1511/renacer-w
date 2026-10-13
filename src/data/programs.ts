@@ -165,7 +165,7 @@ export const biodescodificacion: Program = {
   status: 'en-curso',
   statusLabel: 'En curso desde septiembre de 2026',
   summary:
-    'Doce módulos para comprender y acompañar procesos familiares y emocionales desde una mirada sistémica y profesional, con práctica guiada en cada encuentro.',
+    'Doce módulos para comprender y acompañar procesos familiares y emocionales desde una mirada sistémica y profesional.',
   modulesCount: 12,
   frequency: 'Un módulo al mes',
   schedule: '9:00 a. m. – 5:00 p. m.',

@@ -4,7 +4,12 @@ import Icon from './Icon.astro'
 import logoMark from '../assets/logo-mark.png'
 import logoWord from '../assets/logo-wordmark.png'
 import { nav } from '../data/site'
-import { waLink } from '../lib/whatsapp'
+import { waLink, type WaKey } from '../lib/whatsapp'
+
+interface Props {
+  waKey?: WaKey
+}
+const { waKey = 'general' } = Astro.props
 
 const path = Astro.url.pathname.replace(/\/$/, '')
 const isActive = (href: string) => path === href
@@ -38,7 +43,7 @@ const isActive = (href: string) => path === href
     </nav>
 
     <div class="flex items-center gap-2">
-      <a href={waLink('general')} class="btn btn-primary hidden min-h-[2.75rem] px-5 text-[0.85rem] sm:inline-flex" target="_blank" rel="noopener">
+      <a href={waLink(waKey)} class="btn btn-primary hidden min-h-[2.75rem] px-5 text-[0.85rem] sm:inline-flex" target="_blank" rel="noopener">
         <Icon name="whatsapp" size={18} />
         WhatsApp
       </a>
@@ -73,7 +78,7 @@ const isActive = (href: string) => path === href
           </a>
         ))
       }
-      <a href={waLink('general')} class="btn btn-primary mt-5 w-full" target="_blank" rel="noopener">
+      <a href={waLink(waKey)} class="btn btn-primary mt-5 w-full" target="_blank" rel="noopener">
         <Icon name="whatsapp" size={20} />
         Escribir por WhatsApp
       </a>

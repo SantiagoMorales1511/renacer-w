@@ -4,7 +4,12 @@ import Icon from './Icon.astro'
 import logoMark from '../assets/logo-mark.png'
 import { site } from '../data/site'
 import { programs } from '../data/programs'
-import { waLink } from '../lib/whatsapp'
+import { waLink, type WaKey } from '../lib/whatsapp'
+
+interface Props {
+  waKey?: WaKey
+}
+const { waKey = 'general' } = Astro.props
 const year = new Date().getFullYear()
 ---
 
@@ -21,7 +26,7 @@ const year = new Date().getFullYear()
       <p class="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-cream/70">
         Formación y desarrollo humano en Cali, Colombia. Herramientas sistémicas para comprender, acompañar y transformar, desde una práctica ética y humana.
       </p>
-      <a href={waLink('general')} class="btn btn-light mt-8" target="_blank" rel="noopener">
+      <a href={waLink(waKey)} class="btn btn-light mt-8" target="_blank" rel="noopener">
         <Icon name="whatsapp" size={20} />
         Escríbenos por WhatsApp
       </a>
@@ -40,7 +45,7 @@ const year = new Date().getFullYear()
       <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-lavender">Contacto</h2>
       <ul class="mt-5 space-y-3.5 text-[0.95rem]">
         <li>
-          <a href={waLink('general')} class="inline-flex items-center gap-3 hover:text-cream" target="_blank" rel="noopener">
+          <a href={waLink(waKey)} class="inline-flex items-center gap-3 hover:text-cream" target="_blank" rel="noopener">
             <Icon name="whatsapp" size={18} class="text-lavender" />{site.whatsapp.display}
           </a>
         </li>

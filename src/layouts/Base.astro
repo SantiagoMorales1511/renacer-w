@@ -21,9 +21,11 @@ interface Props {
   /** Muestra la barra fija de WhatsApp en móvil con el mensaje del curso */
   stickyWa?: { key: WaKey; label: string; caption?: string }
   jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+  /** Mensaje de WhatsApp para header y footer de esta página */
+  waKey?: WaKey
 }
 
-const { title, description, ogImage = defaultOg, ogAlt, noindex = false, stickyWa, jsonLd } = Astro.props
+const { title, description, ogImage = defaultOg, ogAlt, noindex = false, stickyWa, jsonLd, waKey = stickyWa?.key ?? 'general' } = Astro.props
 const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href
 const og = await getImage({ src: ogImage, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 78 })
 const ogUrl = new URL(og.src, site.url).href
@@ -77,11 +79,11 @@ const ld = [orgLd, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
     <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-cream">
       Saltar al contenido
     </a>
-    <Header />
+    <Header waKey={waKey} />
     <main id="contenido">
       <slot />
     </main>
-    <Footer />
+    <Footer waKey={waKey} />
     {stickyWa && <StickyWa waKey={stickyWa.key} label={stickyWa.label} caption={stickyWa.caption} />}
   </body>
 </html>
