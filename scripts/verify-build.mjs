@@ -70,13 +70,16 @@ for (const f of ['index.html', 'testimonios.html', 'constelaciones-familiares.ht
   const n = (html.match(/data-full="\/videos\/testimonio-[^"]+\.mp4"/g) || []).length
   ok(n > 0, `${f}: ${n} testimonios en video`)
 }
-ok((read('index.html').match(/data-slide /g) || []).length === 11, 'Home: carrusel con los 11 testimonios')
+ok((read('index.html').match(/<li[^>]*data-slide data-real="\d+" aria-roledescription/g) || []).length === 11, 'Home: carrusel con los 11 testimonios')
+ok((read('index.html').match(/data-slide data-clone/g) || []).length === 6, 'Home: 3 copias visuales a cada lado para el carrusel circular')
+ok(!/<section[^>]*data-carousel[\s\S]*?data-open[\s\S]*?<\/section>/.test(read('index.html')) && !/\sloop[\s>=]/.test(read('index.html')), 'Home: el carrusel no abre reproductor grande y sin loop')
 // Ubicación de testimonios: Home = carrusel tras el Hero; formaciones = mini testimonios tras el Hero
 const home = read('index.html')
 const hCar = home.search(/<section[^>]*data-carousel/), hH1 = home.indexOf('<h1'), hSobre = home.indexOf('id="sobre"')
 ok(hCar > hH1 && hCar < hSobre && (home.match(/<section[^>]*data-carousel/g) || []).length === 1, 'Home: un solo carrusel, inmediatamente después del Hero')
 ok(!home.includes('class="ts ') && !home.includes('quienes han vivido Renacer') && !/class="(tc|ts)-time"/.test(home), 'Home: sin mini testimonios ni duración de videos')
-ok((home.match(/id="tc-dialog"/g) || []).length === 1, 'Home: un único reproductor')
+ok((home.match(/id="tc-dialog"/g) || []).length === 0, 'Home: sin reproductor grande (todo ocurre en el carrusel)')
+ok((read('testimonios.html').match(/id="tc-dialog"/g) || []).length === 1, '/testimonios: reproductor para la cuadrícula')
 for (const [f, nextId] of [['sexualidad-consciente.html', 'id="que-es"'], ['biodescodificacion.html', 'id="intro"'], ['constelaciones-familiares.html', 'id="intro"']]) {
   const html = read(f)
   const strip = html.indexOf('Conoce la experiencia de estudiar en Renacer'), h1 = html.indexOf('<h1'), next = html.indexOf(nextId)
@@ -99,10 +102,6 @@ import { readdirSync } from 'node:fs'
 for (const f of readdirSync(new URL('videos/', dist)).filter((x) => x.endsWith('.mp4'))) {
   const size = statSync(new URL(`videos/${f}`, dist)).size
   ok(size < 8 * 1024 * 1024, `videos/${f}: ${(size / 1048576).toFixed(1)} MB`)
-}
-for (const f of readdirSync(new URL('videos/previews/', dist))) {
-  const size = statSync(new URL(`videos/previews/${f}`, dist)).size
-  ok(size < 1024 * 1024, `videos/previews/${f}: ${(size / 1024).toFixed(0)} KB`)
 }
 
 // /privacy: el texto debe coincidir con la versión original (commit a51ce87)

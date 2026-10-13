@@ -23,8 +23,6 @@ export interface VideoTestimonial {
   programs: ProgramKey[]
   /** Video completo, solo se descarga cuando el visitante lo abre */
   src: string
-  /** Clip de los primeros 10 s, sin audio, para la vista previa */
-  preview: string
   poster: ImageMetadata
   /** Duración real del video completo (m:ss) */
   duration: string
@@ -39,7 +37,7 @@ const programLabels: Record<ProgramKey, string> = {
 export const programLabel = (t: VideoTestimonial) =>
   t.programs.length ? t.programs.map((k) => programLabels[k]).join(' · ') : 'Estudiante de Renacer'
 
-const v = (slug: string) => ({ src: `/videos/testimonio-${slug}.mp4`, preview: `/videos/previews/${slug}.mp4` })
+const v = (slug: string) => ({ src: `/videos/testimonio-${slug}.mp4` })
 
 // Atribución tomada de lo que cada persona dice en su video (subtítulos originales).
 // Publicación autorizada por Renacer (12 oct 2026).
