@@ -71,28 +71,25 @@ for (const f of ['index.html', 'testimonios.html', 'constelaciones-familiares.ht
   ok(n > 0, `${f}: ${n} testimonios en video`)
 }
 ok((read('index.html').match(/data-slide /g) || []).length === 11, 'Home: carrusel con los 11 testimonios')
-// Orden de testimonios y bloques de prueba social
-const slideNames = (html) => {
-  const car = html.slice(html.indexOf('data-carousel'))
-  return [...car.matchAll(/data-slide [^>]*aria-label="\d+ de \d+: ([^"]+)"/g)].map((m) => m[1])
-}
-const bioNames = slideNames(read('biodescodificacion.html'))
-ok(bioNames.slice(0, 3).sort().join() === ['Johana Valencia', 'Marcela Rivera', 'Viviana'].sort().join() && bioNames.length === 11, `Biodescodificación: carrusel con sus 3 testimonios primero (${bioNames.slice(0, 3).join(', ')}) y luego los demás`)
-const constNames = slideNames(read('constelaciones-familiares.html'))
-ok(constNames.slice(0, 6).every((n) => ['Mauricio', 'Vany Osorio', 'Jaime Fernández Naranjo', 'Viviana', 'Laura', 'Alexis García'].includes(n)), 'Constelaciones: sus 6 testimonios primero')
-for (const [f, title] of [['index.html', 'Conoce las experiencias de quienes han vivido Renacer'], ['sexualidad-consciente.html', 'Conoce la experiencia de estudiar en Renacer'], ['biodescodificacion.html', 'Conoce la experiencia de estudiar en Renacer'], ['constelaciones-familiares.html', 'Conoce la experiencia de estudiar en Renacer']]) {
+// Ubicación de testimonios: Home = carrusel tras el Hero; formaciones = mini testimonios tras el Hero
+const home = read('index.html')
+const hCar = home.indexOf('data-carousel'), hH1 = home.indexOf('<h1'), hSobre = home.indexOf('id="sobre"')
+ok(hCar > hH1 && hCar < hSobre && (home.match(/data-carousel/g) || []).length === 1, 'Home: un solo carrusel, inmediatamente después del Hero')
+ok(!home.includes('class="ts ') && !home.includes('quienes han vivido Renacer'), 'Home: sin mini testimonios')
+ok((home.match(/id="tc-dialog"/g) || []).length === 1, 'Home: un único reproductor')
+for (const [f, nextId] of [['sexualidad-consciente.html', 'id="que-es"'], ['biodescodificacion.html', 'id="intro"'], ['constelaciones-familiares.html', 'id="intro"']]) {
   const html = read(f)
-  const strip = html.indexOf(title), carousel = html.indexOf('data-carousel'), h1 = html.indexOf('<h1')
-  ok(strip > h1 && strip < carousel, `${f}: bloque compacto de testimonios después del Hero y antes del carrusel`)
-  ok(html.includes('Ver más experiencias'), `${f}: enlace "Ver más experiencias"`)
+  const strip = html.indexOf('Conoce la experiencia de estudiar en Renacer'), h1 = html.indexOf('<h1'), next = html.indexOf(nextId)
+  ok(strip > h1 && strip < next, `${f}: mini testimonios después del Hero y antes del contenido`)
+  ok(!html.includes('data-carousel'), `${f}: sin carrusel completo (no se repiten testimonios)`)
+  ok((html.match(/id="tc-dialog"/g) || []).length === 1 && (html.match(/class="ts-thumb/g) || []).length === 3, `${f}: 3 miniaturas y un único reproductor`)
+  ok(html.indexOf('experiencia de formación?') > strip, `${f}: CTA final de WhatsApp conservado`)
 }
+const own = (f) => [...read(f).matchAll(/class="ts-thumb[^>]*data-program="([^"]+)"/g)].map((m) => m[1])
+ok(own('biodescodificacion.html').every((p) => p.includes('Biodescodificación')), 'Biodescodificación: miniaturas de estudiantes de Biodescodificación')
+ok(own('constelaciones-familiares.html').every((p) => p.includes('Constelaciones')), 'Constelaciones: miniaturas de estudiantes de Constelaciones')
 const sexHtml = read('sexualidad-consciente.html')
-ok(sexHtml.includes('Testimonios de estudiantes de otras formaciones de Renacer') && !/data-program="Sexualidad/.test(sexHtml), 'Sexualidad: testimonios identificados como de otras formaciones, ninguno atribuido a Sexualidad')
-for (const f of ['sexualidad-consciente.html', 'biodescodificacion.html', 'constelaciones-familiares.html']) {
-  const html = read(f)
-  const car = html.indexOf('data-carousel'), cta = html.indexOf('experiencia de formación?')
-  ok(cta > car, `${f}: CTA "¿Te gustaría vivir tu propia experiencia de formación?" después del carrusel`)
-}
+ok(sexHtml.includes('Testimonios de estudiantes de otras formaciones de Renacer') && own('sexualidad-consciente.html').every((p) => !p.includes('Sexualidad')), 'Sexualidad: experiencias de otras formaciones, identificadas')
 ok(read('index.html').includes('Coach Ontológica') && read('index.html').includes('Shinrin Yoku'), 'Home: credenciales completas de Alba Elisa')
 import { readdirSync } from 'node:fs'
 for (const f of readdirSync(new URL('videos/', dist)).filter((x) => x.endsWith('.mp4'))) {

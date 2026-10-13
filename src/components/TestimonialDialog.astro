@@ -1,0 +1,125 @@
+---
+/**
+ * Reproductor de testimonios con sonido (uno por página). Lo abre cualquier
+ * botón con [data-open] (tarjetas del carrusel o miniaturas compactas) y avisa
+ * con el evento `tc:dialog` para que los carruseles pausen su vista previa.
+ */
+import Icon from './Icon.astro'
+---
+
+<dialog id="tc-dialog" class="tc-dialog" aria-labelledby="tc-dialog-name">
+  <div class="tc-dialog-inner">
+    <div class="flex items-start justify-between gap-4 px-1 pb-3">
+      <div class="min-w-0">
+        <p id="tc-dialog-name" class="text-[1.05rem] font-semibold text-cream" data-d-name />
+        <p class="text-[0.8rem] text-cream/70" data-d-program />
+      </div>
+      <button type="button" class="tc-dialog-btn shrink-0" data-d-close aria-label="Cerrar video">
+        <Icon name="close" size={20} />
+      </button>
+    </div>
+    <div class="tc-dialog-media">
+      <video controls playsinline preload="none" data-d-video />
+      <span class="tc-progress tc-dialog-progress" aria-hidden="true"><span data-d-bar /></span>
+    </div>
+    <div class="mt-4 flex items-center justify-center gap-3">
+      <button type="button" class="tc-dialog-btn" data-d-seek="-10" aria-label="Retroceder 10 segundos">−10 s</button>
+      <button type="button" class="tc-dialog-btn tc-dialog-main" data-d-toggle>Pausar</button>
+      <button type="button" class="tc-dialog-btn" data-d-seek="10" aria-label="Adelantar 10 segundos">+10 s</button>
+    </div>
+  </div>
+</dialog>
+
+<style is:global>
+  .tc-dialog {
+    max-width: none;
+    max-height: none;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .tc-dialog[open] { display: flex; align-items: center; justify-content: center; }
+  .tc-dialog::backdrop { background: rgba(20, 36, 61, 0.9); }
+  .tc-dialog-inner { width: min(92vw, 400px); padding: 1rem 0; }
+  @media (max-height: 760px) { .tc-dialog-inner { width: min(92vw, calc((100dvh - 11rem) * 9 / 16)); } }
+  .tc-dialog-media {
+    position: relative;
+    aspect-ratio: 9 / 16;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    background: #000;
+  }
+  .tc-dialog-media video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+  .tc-dialog-progress { inset: auto 0 0 0; z-index: 1; pointer-events: none; }
+  .tc-dialog-btn {
+    display: inline-flex;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid rgba(247, 246, 243, 0.3);
+    padding: 0 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f7f6f3;
+  }
+  .tc-dialog-btn:hover { background: rgba(247, 246, 243, 0.08); }
+  .tc-dialog-main { background: #f7f6f3; color: #14243d; border-color: #f7f6f3; min-width: 6.5rem; }
+  .tc-dialog-main:hover { background: #fff; }
+  .tc-dialog-progress { position: absolute; height: 3px; background: rgba(247, 246, 243, 0.18); }
+  .tc-dialog-progress span { display: block; height: 100%; width: 100%; transform: scaleX(0); transform-origin: left; background: #f7f6f3; }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#tc-dialog')
+  if (dialog) {
+    const video = dialog.querySelector<HTMLVideoElement>('[data-d-video]')!
+    const bar = dialog.querySelector<HTMLElement>('[data-d-bar]')!
+    const toggle = dialog.querySelector<HTMLButtonElement>('[data-d-toggle]')!
+    let opener: HTMLElement | null = null
+    let raf = 0
+
+    const paint = () => {
+      if (video.duration) bar.style.transform = `scaleX(${video.currentTime / video.duration})`
+      if (!video.paused) raf = requestAnimationFrame(paint)
+    }
+    video.addEventListener('play', () => { toggle.textContent = 'Pausar'; paint() })
+    video.addEventListener('pause', () => { toggle.textContent = 'Reproducir'; cancelAnimationFrame(raf); paint() })
+    video.addEventListener('seeked', paint)
+    toggle.addEventListener('click', () => (video.paused ? video.play() : video.pause()))
+    dialog.querySelectorAll<HTMLButtonElement>('[data-d-seek]').forEach((b) =>
+      b.addEventListener('click', () => {
+        video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + Number(b.dataset.dSeek)))
+      }),
+    )
+    dialog.querySelector('[data-d-close]')!.addEventListener('click', () => dialog.close())
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close() })
+    dialog.addEventListener('close', () => {
+      cancelAnimationFrame(raf)
+      video.pause()
+      video.removeAttribute('src')
+      video.load()
+      bar.style.transform = 'scaleX(0)'
+      document.dispatchEvent(new CustomEvent('tc:dialog', { detail: { open: false } }))
+      opener?.focus({ preventScroll: true })
+    })
+
+    document.addEventListener('click', (e) => {
+      const card = (e.target as HTMLElement).closest<HTMLElement>('[data-open]')
+      if (!card) return
+      opener = card
+      document.dispatchEvent(new CustomEvent('tc:dialog', { detail: { open: true } }))
+      dialog.querySelector('[data-d-name]')!.textContent = card.dataset.name ?? ''
+      dialog.querySelector('[data-d-program]')!.textContent = card.dataset.program ?? ''
+      video.poster = card.dataset.poster ?? ''
+      video.src = card.dataset.full ?? ''
+      bar.style.transform = 'scaleX(0)'
+      dialog.showModal()
+      video.play().catch(() => {})
+    })
+  }
+</script>

@@ -4,13 +4,12 @@ import Base from '../layouts/Base.astro'
 import Icon from '../components/Icon.astro'
 import ProgramCard from '../components/ProgramCard.astro'
 import TestimonialCarousel from '../components/TestimonialCarousel.astro'
-import TestimonialStrip from '../components/TestimonialStrip.astro'
 import Faq from '../components/Faq.astro'
 import CtaBand from '../components/CtaBand.astro'
 import { programs, sexualidad, formatCOP } from '../data/programs'
 import { people } from '../data/people'
 import { homeFaqs } from '../data/faqs'
-import { testimonialsFor, featured } from '../data/testimonials'
+import { testimonialsFor } from '../data/testimonials'
 import { waLink } from '../lib/whatsapp'
 
 import hero from '../assets/photos/grupo-ceremonia.jpg'
@@ -118,13 +117,8 @@ const pillars = [
     </div>
   </section>
 
-  <!-- MINI TESTIMONIOS -->
-  <TestimonialStrip
-    items={featured.home}
-    title="Conoce las experiencias de quienes han vivido Renacer"
-    moreHref="#testimonios"
-    class="pb-10 sm:pb-16"
-  />
+  <!-- TESTIMONIOS -->
+  <TestimonialCarousel items={testimonialsFor()} />
 
   <!-- PRESENTACIÓN -->
   <section class="section bg-white" aria-labelledby="sobre">
@@ -224,11 +218,8 @@ const pillars = [
     </div>
   </section>
 
-  <!-- TESTIMONIOS -->
-  <TestimonialCarousel items={testimonialsFor()} />
-
   <!-- GALERÍA -->
-  <section class="section bg-white" aria-labelledby="galeria">
+  <section class="section" aria-labelledby="galeria">
     <div class="wrap">
       <p class="eyebrow">Nuestros encuentros</p>
       <h2 id="galeria" class="title mt-5 max-w-2xl">Así se viven los <span class="accent">encuentros</span> en Renacer.</h2>
@@ -245,7 +236,7 @@ const pillars = [
   </section>
 
   <!-- FAQ -->
-  <section class="section" aria-labelledby="preguntas">
+  <section class="section bg-white" aria-labelledby="preguntas">
     <div class="wrap grid gap-10 md:grid-cols-12">
       <div class="md:col-span-4">
         <p class="eyebrow">Preguntas frecuentes</p>

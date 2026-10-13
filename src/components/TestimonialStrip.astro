@@ -6,6 +6,7 @@
  */
 import { getImage } from 'astro:assets'
 import Icon from './Icon.astro'
+import TestimonialDialog from './TestimonialDialog.astro'
 import { programLabel, type VideoTestimonial } from '../data/testimonials'
 
 interface Props {
@@ -16,8 +17,10 @@ interface Props {
   moreHref?: string
   moreLabel?: string
   class?: string
+  /** Incluir el reproductor con sonido (uno por página) */
+  withDialog?: boolean
 }
-const { items, title, note, moreHref, moreLabel = 'Ver más experiencias', class: className = '' } = Astro.props
+const { items, title, note, moreHref, moreLabel = 'Ver más experiencias', class: className = '', withDialog = true } = Astro.props
 const thumbs = await Promise.all(
   items.slice(0, 3).map(async (t) => ({
     t,
@@ -86,6 +89,8 @@ const thumbs = await Promise.all(
     </section>
   )
 }
+
+{withDialog && thumbs.length > 0 && <TestimonialDialog />}
 
 <style is:global>
   .ts-box {
