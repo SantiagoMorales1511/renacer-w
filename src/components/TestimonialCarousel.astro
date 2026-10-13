@@ -25,7 +25,7 @@ interface Props {
   withDialog?: boolean
 }
 const {
-  items,
+  items: rawItems,
   eyebrow = 'Experiencias Renacer',
   title = 'Historias que inspiran',
   subtitle = 'Conoce las experiencias de quienes han sido parte de nuestras formaciones.',
@@ -33,6 +33,10 @@ const {
   bg = 'cream',
   withDialog = false,
 } = Astro.props
+// Todos los carruseles empiezan con el testimonio de Vany Osorio; el resto conserva su orden.
+const FIRST_ID = 'vany'
+const first = rawItems.find((t) => t.id === FIRST_ID)
+const items = first ? [first, ...rawItems.filter((t) => t !== first)] : rawItems
 const n = items.length
 const headingId = `${id}-titulo`
 // Copias visuales a cada lado para que el paso del último al primero sea continuo.
@@ -144,6 +148,7 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
   /* La tarjeta central no muestra el botón de play mientras carga su video */
   .tc:not([data-static]) .tc-slide[data-active] .tc-play { opacity: 0; }
   /* Una sola indicación sobre la central: "Toca el video…" en silencio; "Sonido activado" un instante */
+  .tc:not([data-sound-on]) .tc-slide[data-active][data-playing] .tc-film { opacity: 1; }
   .tc:not([data-sound-on]) .tc-slide[data-active][data-playing] .tc-hint:not(.tc-hint-on),
   .tc[data-sound-on][data-sound-flash] .tc-slide[data-active] .tc-hint-on { opacity: 1; transform: translate(-50%, 0); }
   .tc-slide[data-active] .tc-media { cursor: pointer; }

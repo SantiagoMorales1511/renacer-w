@@ -65,9 +65,10 @@ const tab = clone ? -1 : undefined
     {
       inCarousel ? (
         <>
+          <span class="tc-film" aria-hidden="true" />
           <span class="tc-hint" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" /></svg>
-            Toca el video para activar el sonido
+            Toca para activar el sonido
           </span>
           <span class="tc-hint tc-hint-on" aria-hidden="true">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" /></svg>
@@ -147,6 +148,16 @@ const tab = clone ? -1 : undefined
     border-radius: 9999px;
     background: rgba(20, 36, 61, 0.55);
     color: #f7f6f3;
+  }
+  /* Película mientras el audio está apagado: oscurece un poco todo el cuadro (que es la zona táctil) */
+  .tc-film {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(to top, rgba(20, 36, 61, 0.72) 0%, rgba(20, 36, 61, 0.42) 38%, rgba(20, 36, 61, 0.4) 100%);
+    opacity: 0;
+    transition: opacity 0.45s ease;
+    pointer-events: none;
   }
   /* Indicación sobre el video (carrusel): solo visual, el toque lo recibe todo el video */
   .tc-hint {

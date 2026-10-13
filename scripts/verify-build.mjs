@@ -92,7 +92,7 @@ for (const [f, nextId] of [['sexualidad-consciente.html', 'id="que-es"'], ['biod
 }
 const own = (f) => [...read(f).matchAll(/class="ts-thumb[^>]*data-program="([^"]+)"/g)].map((m) => m[1])
 const bioSlides = [...read('biodescodificacion.html').matchAll(/data-slide [^>]*aria-label="\d+ de \d+: ([^"]+)"/g)].map((m) => m[1])
-ok(['Marcela Rivera', 'Johana Valencia', 'Viviana'].every((n) => bioSlides.slice(0, 3).includes(n)), `Biodescodificación: el carrusel empieza con sus testimonios (${bioSlides.slice(0, 3).join(', ')})`)
+ok(['Marcela Rivera', 'Johana Valencia', 'Viviana'].every((n) => bioSlides.slice(1, 4).includes(n)), `Biodescodificación: el carrusel empieza con sus testimonios (${bioSlides.slice(1, 4).join(', ')})`)
 ok(own('biodescodificacion.html').every((p) => p.includes('Biodescodificación')), 'Biodescodificación: miniaturas de estudiantes de Biodescodificación')
 ok(own('constelaciones-familiares.html').every((p) => p.includes('Constelaciones')), 'Constelaciones: miniaturas de estudiantes de Constelaciones')
 const sexHtml = read('sexualidad-consciente.html')
@@ -101,7 +101,12 @@ for (const f of ['index.html', 'biodescodificacion.html', 'testimonios.html']) {
   const html = read(f)
   ok(!/>\s*Ver con sonido\s*</.test(html) && !html.includes('data-sound '), `${f}: sin el botón duplicado "Ver con sonido"`)
 }
-ok((read('index.html').match(/Toca el video para activar el sonido/g) || []).length === 17, 'Home: una sola indicación de sonido por tarjeta (11 + 6 copias)')
+ok((read('index.html').match(/Toca para activar el sonido/g) || []).length === 17 && (read('index.html').match(/class="tc-film"/g) || []).length === 17, 'Home: una indicación de sonido y una película por tarjeta (11 + 6 copias)')
+for (const f of ['index.html', 'sexualidad-consciente.html', 'biodescodificacion.html', 'constelaciones-familiares.html', 'testimonios.html']) {
+  const html = read(f)
+  const first = html.match(/data-slide data-real="0" [^>]*aria-label="1 de \d+: ([^"]+)"/)?.[1]
+  ok(first === 'Vany Osorio', `${f}: el carrusel empieza con Vany Osorio (${first})`)
+}
 ok(read('index.html').includes('Coach Ontológica') && read('index.html').includes('Shinrin Yoku'), 'Home: credenciales completas de Alba Elisa')
 import { readdirSync } from 'node:fs'
 for (const f of readdirSync(new URL('videos/', dist)).filter((x) => x.endsWith('.mp4'))) {
