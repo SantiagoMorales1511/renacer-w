@@ -79,7 +79,7 @@ const hCar = home.search(/<section[^>]*data-carousel/), hH1 = home.indexOf('<h1'
 ok(hCar > hH1 && hCar < hSobre && (home.match(/<section[^>]*data-carousel/g) || []).length === 1, 'Home: un solo carrusel, inmediatamente después del Hero')
 ok(!home.includes('class="ts ') && !home.includes('quienes han vivido Renacer') && !/class="(tc|ts)-time"/.test(home), 'Home: sin mini testimonios ni duración de videos')
 ok((home.match(/id="tc-dialog"/g) || []).length === 0, 'Home: sin reproductor grande (todo ocurre en el carrusel)')
-ok((read('testimonios.html').match(/id="tc-dialog"/g) || []).length === 1, '/testimonios: reproductor para la cuadrícula')
+ok(!read('testimonios.html').includes('Todos los testimonios') && (read('testimonios.html').match(/<section[^>]*data-carousel/g) || []).length === 1 && !read('testimonios.html').includes('id="tc-dialog"'), '/testimonios: solo el carrusel (sin cuadrícula ni reproductor grande)')
 for (const [f, nextId] of [['sexualidad-consciente.html', 'id="que-es"'], ['biodescodificacion.html', 'id="intro"'], ['constelaciones-familiares.html', 'id="intro"']]) {
   const html = read(f)
   const strip = html.indexOf('Conoce la experiencia de estudiar en Renacer'), h1 = html.indexOf('<h1'), next = html.indexOf(nextId)
@@ -101,7 +101,7 @@ for (const f of ['index.html', 'biodescodificacion.html', 'testimonios.html']) {
   const html = read(f)
   ok(!/>\s*Ver con sonido\s*</.test(html) && !html.includes('data-sound '), `${f}: sin el botón duplicado "Ver con sonido"`)
 }
-ok((read('index.html').match(/Toca para activar el sonido/g) || []).length === 17 && (read('index.html').match(/class="tc-film"/g) || []).length === 17, 'Home: una indicación de sonido y una película por tarjeta (11 + 6 copias)')
+ok((read('index.html').match(/Toca para activar el sonido/g) || []).length === 17 && (read('index.html').match(/class="tc-film"/g) || []).length === 17 && (read('index.html').match(/class="tc-smart"/g) || []).length === 17, 'Home: una indicación de sonido y una película por tarjeta (11 + 6 copias)')
 for (const f of ['index.html', 'sexualidad-consciente.html', 'biodescodificacion.html', 'constelaciones-familiares.html', 'testimonios.html']) {
   const html = read(f)
   const first = html.match(/data-slide data-real="0" [^>]*aria-label="1 de \d+: ([^"]+)"/)?.[1]

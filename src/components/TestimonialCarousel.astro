@@ -152,6 +152,7 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
   .tc:not([data-sound-on]) .tc-slide[data-active][data-playing] .tc-hint:not(.tc-hint-on),
   .tc[data-sound-on][data-sound-flash] .tc-slide[data-active] .tc-hint-on { opacity: 1; transform: translate(-50%, 0); }
   .tc-slide[data-active] .tc-media { cursor: pointer; }
+  .tc-slide[data-active][data-playing] .tc-smart { opacity: 1; }
   .tc-arrow {
     display: none;
     height: 2.75rem;
@@ -461,21 +462,32 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
 
     setBar(p: number, value: number) {
       const bar = this.slides[p]?.querySelector<HTMLElement>('[data-bar]')
-      if (bar) bar.style.transform = `scaleX(${value})`
+      if (bar) bar.style.transform = `translateX(${((Math.max(0, Math.min(1, value)) - 1) * 100).toFixed(3)}%)`
     }
 
-    /** Barra de progreso: currentTime / duration del video real, en cada fotograma. */
+    /**
+     * Smart progress bar: currentTime / duration del video real, en cada fotograma.
+     * Entre dos actualizaciones de currentTime (algunos navegadores lo informan a saltos)
+     * se interpola con el reloj, como máximo 0,25 s y nunca más allá de la duración, para
+     * que avance fluido sin adelantarse al video. Si el video se detiene, la barra también.
+     */
     tick() {
       cancelAnimationFrame(this.raf)
       const v = this.video
       if (!v) return
       const p = Number(v.dataset.for)
-      const step = () => {
+      let lastTime = -1
+      let lastAt = 0
+      const step = (now: number) => {
         if (v.dataset.for !== String(p)) return
-        if (v.duration) this.setBar(p, Math.min(1, v.currentTime / v.duration))
+        if (v.duration) {
+          if (v.currentTime !== lastTime) { lastTime = v.currentTime; lastAt = now }
+          const ahead = v.paused || v.readyState < 3 ? 0 : Math.min(0.25, (now - lastAt) / 1000) * v.playbackRate
+          this.setBar(p, Math.min(v.duration, lastTime + ahead) / v.duration)
+        }
         if (!v.paused && !v.ended) this.raf = requestAnimationFrame(step)
       }
-      step()
+      this.raf = requestAnimationFrame(step)
     }
 
     onEnded() {

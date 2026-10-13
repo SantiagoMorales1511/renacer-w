@@ -1,8 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
 import TestimonialCarousel from '../components/TestimonialCarousel.astro'
-import TestimonialCard from '../components/TestimonialCard.astro'
-import TestimonialDialog from '../components/TestimonialDialog.astro'
 import CtaBand from '../components/CtaBand.astro'
 import { videoTestimonials } from '../data/testimonials'
 import ctaImg from '../assets/photos/certificados.jpg'
@@ -26,24 +24,6 @@ import ogImg from '../assets/photos/grupo-sentado-blanco.jpg'
 
   <TestimonialCarousel items={videoTestimonials} id="carrusel" />
 
-  <section class="bg-white py-16 sm:py-24" aria-labelledby="todos">
-    <div class="wrap">
-      <h2 id="todos" class="title text-center">Todos los <span class="accent">testimonios</span></h2>
-      <p class="mx-auto mt-4 max-w-xl text-center text-ink-soft">{videoTestimonials.length} videos. Toca cualquiera para verlo con sonido.</p>
-      <ul class="mt-10 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
-        {
-          videoTestimonials.map((t) => (
-            <li>
-              <TestimonialCard item={t} sizes="(min-width: 1024px) 270px, (min-width: 768px) 33vw, 50vw" />
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-  </section>
-
-  <!-- Reproductor grande para la cuadrícula -->
-  <TestimonialDialog />
 
   <CtaBand
     waKey="general"

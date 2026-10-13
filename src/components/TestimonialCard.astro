@@ -74,6 +74,7 @@ const tab = clone ? -1 : undefined
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" /></svg>
             Sonido activado
           </span>
+          <span class="tc-smart" aria-hidden="true"><span class="tc-smart-fill" data-bar /></span>
         </>
       ) : (
         <span class="tc-expand" aria-hidden="true">
@@ -83,7 +84,6 @@ const tab = clone ? -1 : undefined
     }
   </button>
   <div class="tc-band">
-    <span class="tc-progress" aria-hidden="true"><span data-bar></span></span>
     <span class="tc-name">{item.name}</span>
     <span class="tc-program">{program}</span>
   </div>
@@ -192,19 +192,37 @@ const tab = clone ? -1 : undefined
     padding: 1rem 1.1rem 1.15rem;
     color: #f7f6f3;
   }
-  .tc-progress {
+  /* Smart progress bar: borde inferior del video, por encima de la película; no intercepta toques */
+  .tc-smart {
     position: absolute;
-    inset: 0 0 auto 0;
-    height: 3px;
-    background: rgba(247, 246, 243, 0.18);
+    inset: auto 0 0 0;
+    z-index: 2;
+    height: 6px;
+    overflow: hidden;
+    background: rgba(20, 36, 61, 0.55);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
   }
-  .tc-progress span {
-    display: block;
-    height: 100%;
-    width: 100%;
-    transform: scaleX(0);
-    transform-origin: left;
-    background: #f7f6f3;
+  @media (min-width: 768px) { .tc-smart { height: 5px; } }
+  .tc-smart-fill {
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, #c8b6e6 0%, #e9e1f5 70%, #ffffff 100%);
+    will-change: transform;
+  }
+  /* Brillo sutil en el extremo que avanza */
+  .tc-smart-fill::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    height: 14px;
+    width: 14px;
+    transform: translate(50%, -50%);
+    border-radius: 9999px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(233, 225, 245, 0.55) 40%, rgba(233, 225, 245, 0) 70%);
   }
   .tc-name { font-size: 1rem; font-weight: 650; line-height: 1.25; }
   .tc-program { font-size: 0.78rem; line-height: 1.3; color: rgba(247, 246, 243, 0.78); }
