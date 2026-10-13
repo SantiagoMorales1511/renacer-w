@@ -10,13 +10,13 @@ interface Props {
 const { person, modules, role = person.role } = Astro.props
 ---
 
-<article class="card flex flex-col overflow-hidden sm:flex-row md:flex-col">
-  <div class="aspect-[4/5] overflow-hidden bg-cream-warm sm:w-2/5 sm:shrink-0 md:w-full">
+<article class="card flex flex-col overflow-hidden sm:flex-row">
+  <div class="aspect-[4/5] overflow-hidden bg-cream-warm sm:aspect-auto sm:min-h-[22rem] sm:w-[42%] sm:shrink-0">
     <Picture
       src={person.photo}
       alt={`Retrato de ${person.name}`}
       widths={[360, 560, 800]}
-      sizes="(min-width: 768px) 420px, (min-width: 640px) 40vw, 100vw"
+      sizes="(min-width: 1024px) 240px, (min-width: 640px) 42vw, 100vw"
       formats={['avif', 'webp']}
       class="h-full w-full object-cover"
       style={`object-position: ${person.focus ?? '50% 30%'}`}
