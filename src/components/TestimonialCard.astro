@@ -26,7 +26,7 @@ const srcset = `${small.src} 360w, ${large.src} 560w`
   data-poster={large.src}
   data-name={item.name}
   data-program={program}
-  aria-label={`Ver con sonido el testimonio de ${item.name}, ${program} (${item.duration})`}
+  aria-label={`Ver con sonido el testimonio de ${item.name}, ${program}`}
 >
   <span class="tc-media">
     <img
@@ -43,7 +43,6 @@ const srcset = `${small.src} 360w, ${large.src} 560w`
     />
     <span class="tc-slot" data-slot></span>
     <span class="tc-play" aria-hidden="true"><Icon name="play" size={22} class="ml-0.5" /></span>
-    <span class="tc-time" aria-hidden="true">{item.duration}</span>
   </span>
   <span class="tc-band">
     <span class="tc-progress" aria-hidden="true"><span data-bar></span></span>
@@ -101,17 +100,6 @@ const srcset = `${small.src} 360w, ${large.src} 560w`
   }
   .tc-card:hover .tc-play { transform: translate(-50%, -50%) scale(1.05); }
   [data-playing] .tc-play { opacity: 0; }
-  .tc-time {
-    position: absolute;
-    right: 0.75rem;
-    top: 0.75rem;
-    border-radius: 9999px;
-    background: rgba(20, 36, 61, 0.7);
-    padding: 0.2rem 0.55rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #f7f6f3;
-  }
   .tc-band {
     position: relative;
     display: flex;

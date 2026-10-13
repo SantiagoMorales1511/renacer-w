@@ -57,7 +57,7 @@ const thumbs = await Promise.all(
                   data-poster={l.src}
                   data-name={t.name}
                   data-program={program}
-                  aria-label={`Ver con sonido el testimonio de ${t.name}, ${program} (${t.duration})`}
+                  aria-label={`Ver con sonido el testimonio de ${t.name}, ${program}`}
                 >
                   <span class="ts-media">
                     <img
@@ -71,7 +71,6 @@ const thumbs = await Promise.all(
                       decoding="async"
                     />
                     <span class="ts-play" aria-hidden="true"><Icon name="play" size={15} class="ml-0.5" /></span>
-                    <span class="ts-time" aria-hidden="true">{t.duration}</span>
                   </span>
                   <span class="ts-name">{t.name}</span>
                   <span class="ts-program">{program}</span>
@@ -154,15 +153,6 @@ const thumbs = await Promise.all(
     transition: transform 0.2s ease;
   }
   .ts-thumb:hover .ts-play { transform: translate(-50%, -50%) scale(1.08); }
-  .ts-time {
-    position: absolute;
-    bottom: 0.4rem;
-    right: 0.45rem;
-    z-index: 1;
-    font-size: 0.66rem;
-    font-weight: 600;
-    color: #f7f6f3;
-  }
   .ts-name {
     margin-top: 0.45rem;
     overflow: hidden;

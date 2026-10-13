@@ -12,7 +12,8 @@ import FacilitatorCard from './FacilitatorCard.astro'
 import Faq from './Faq.astro'
 import CtaBand from './CtaBand.astro'
 import TestimonialStrip from './TestimonialStrip.astro'
-import { featured } from '../data/testimonials'
+import TestimonialCarousel from './TestimonialCarousel.astro'
+import { featured, testimonialsFirstFor } from '../data/testimonials'
 import { formatCOP, type Program } from '../data/programs'
 import type { Faq as FaqItem } from '../data/faqs'
 import { site } from '../data/site'
@@ -89,7 +90,7 @@ const courseLd = {
     items={featured[p.key]}
     title="Conoce la experiencia de estudiar en Renacer"
     note={`Estudiantes de la ${p.shortName === 'Biodescodificación' ? 'formación en Biodescodificación' : 'Formación en Constelaciones Familiares'} cuentan su experiencia.`}
-    moreHref="/testimonios"
+    moreHref="#testimonios"
     class="-mt-6 pb-10 sm:-mt-10 sm:pb-16"
   />
 
@@ -198,6 +199,12 @@ const courseLd = {
       </div>
     </div>
   </section>
+
+  <TestimonialCarousel
+    items={testimonialsFirstFor(p.key)}
+    withDialog={false}
+    subtitle="Primero, estudiantes de esta formación; después, experiencias de otras formaciones de Renacer. Cada video indica la formación de cada persona."
+  />
 
   <CtaBand
     waKey={p.waKey}

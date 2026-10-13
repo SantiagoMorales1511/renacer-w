@@ -8,7 +8,8 @@ import FacilitatorCard from '../components/FacilitatorCard.astro'
 import Faq from '../components/Faq.astro'
 import CtaBand from '../components/CtaBand.astro'
 import TestimonialStrip from '../components/TestimonialStrip.astro'
-import { featured } from '../data/testimonials'
+import TestimonialCarousel from '../components/TestimonialCarousel.astro'
+import { featured, testimonialsFirstFor } from '../data/testimonials'
 import { sexualidad as p, formatDate, shortDate, formatCOP } from '../data/programs'
 import { people } from '../data/people'
 import { sexFaqs } from '../data/faqs'
@@ -127,7 +128,7 @@ const courseLd = {
     items={featured.sex}
     title="Conoce la experiencia de estudiar en Renacer"
     note="Testimonios de estudiantes de otras formaciones de Renacer. Esta formación inicia el 25 de octubre de 2026."
-    moreHref="/testimonios"
+    moreHref="#testimonios"
     class="-mt-6 pb-10 sm:-mt-10 sm:pb-16"
   />
 
@@ -291,6 +292,14 @@ const courseLd = {
       </div>
     </div>
   </section>
+
+  <!-- TESTIMONIOS -->
+  <TestimonialCarousel
+    items={testimonialsFirstFor('sex')}
+    bg="white"
+    withDialog={false}
+    subtitle="Experiencias de estudiantes de otras formaciones de Renacer. Cada video indica la formación que cursó cada persona."
+  />
 
   <CtaBand
     waKey="sex"
