@@ -73,15 +73,15 @@ for (const f of ['index.html', 'testimonios.html', 'constelaciones-familiares.ht
 ok((read('index.html').match(/data-slide /g) || []).length === 11, 'Home: carrusel con los 11 testimonios')
 // Ubicación de testimonios: Home = carrusel tras el Hero; formaciones = mini testimonios tras el Hero
 const home = read('index.html')
-const hCar = home.indexOf('data-carousel'), hH1 = home.indexOf('<h1'), hSobre = home.indexOf('id="sobre"')
-ok(hCar > hH1 && hCar < hSobre && (home.match(/data-carousel/g) || []).length === 1, 'Home: un solo carrusel, inmediatamente después del Hero')
+const hCar = home.search(/<section[^>]*data-carousel/), hH1 = home.indexOf('<h1'), hSobre = home.indexOf('id="sobre"')
+ok(hCar > hH1 && hCar < hSobre && (home.match(/<section[^>]*data-carousel/g) || []).length === 1, 'Home: un solo carrusel, inmediatamente después del Hero')
 ok(!home.includes('class="ts ') && !home.includes('quienes han vivido Renacer') && !/class="(tc|ts)-time"/.test(home), 'Home: sin mini testimonios ni duración de videos')
 ok((home.match(/id="tc-dialog"/g) || []).length === 1, 'Home: un único reproductor')
 for (const [f, nextId] of [['sexualidad-consciente.html', 'id="que-es"'], ['biodescodificacion.html', 'id="intro"'], ['constelaciones-familiares.html', 'id="intro"']]) {
   const html = read(f)
   const strip = html.indexOf('Conoce la experiencia de estudiar en Renacer'), h1 = html.indexOf('<h1'), next = html.indexOf(nextId)
   ok(strip > h1 && strip < next, `${f}: mini testimonios después del Hero y antes del contenido`)
-  const car = html.indexOf('data-carousel')
+  const car = html.search(/<section[^>]*data-carousel/)
   ok(car > strip && car < html.indexOf('experiencia de formación?'), `${f}: carrusel completo abajo, antes del CTA final`)
   ok(!/class="(tc|ts)-time"/.test(html), `${f}: sin duración de los videos`)
   ok((html.match(/id="tc-dialog"/g) || []).length === 1 && (html.match(/class="ts-thumb/g) || []).length === 3, `${f}: 3 miniaturas y un único reproductor`)

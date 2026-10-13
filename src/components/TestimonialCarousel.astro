@@ -158,7 +158,7 @@ const headingId = `${id}-titulo`
   .tc-pause .tc-i-play,
   .tc-pause[aria-pressed='true'] .tc-i-pause { display: none; }
   .tc-pause[aria-pressed='true'] .tc-i-play { display: block; }
-  .tc[data-static] .tc-pause { display: none; }
+  .tc[data-static]:not([data-sound]) .tc-pause { display: none; }
 
 </style>
 
@@ -189,6 +189,12 @@ const headingId = `${id}-titulo`
     blocked = false
     video: HTMLVideoElement | null = null
     preloaded: { index: number; el: HTMLVideoElement } | null = null
+    /** Modo sonido: el visitante pidió escuchar; se mantiene al deslizar. */
+    soundOn = false
+    /** Un solo <video> para el modo sonido: iOS lo habilita tras el primer toque y se reutiliza entre tarjetas. */
+    soundEl: HTMLVideoElement | null = null
+    /** Ignora la sincronización por scroll mientras el carrusel se mueve hacia la tarjeta elegida */
+    lockUntil = 0
 
     constructor(root: HTMLElement) {
       this.root = root
@@ -219,6 +225,9 @@ const headingId = `${id}-titulo`
       })
       root.querySelector('[data-prev]')?.addEventListener('click', () => { this.interact(); this.go(this.active - 1, true) })
       root.querySelector('[data-next]')?.addEventListener('click', () => { this.interact(); this.go(this.active + 1, true) })
+      this.slides.forEach((slide, k) =>
+        slide.querySelector<HTMLButtonElement>('[data-sound]')?.addEventListener('click', () => this.toggleSound(k)),
+      )
       const pause = root.querySelector<HTMLButtonElement>('[data-pause]')
       pause?.addEventListener('click', () => {
         this.userPaused = !this.userPaused
@@ -241,6 +250,7 @@ const headingId = `${id}-titulo`
     }
 
     syncActive() {
+      if (performance.now() < this.lockUntil) return
       const center = this.track.scrollLeft + this.track.clientWidth / 2
       let best = 0
       let dist = Infinity
@@ -280,6 +290,7 @@ const headingId = `${id}-titulo`
       this.active = i
       const ind = this.root.querySelector<HTMLElement>('[data-indicator]')
       if (ind) ind.style.transform = `translateX(${i * 100}%)`
+      this.syncSoundUI()
       // Espera a que el desplazamiento termine antes de iniciar la vista previa.
       clearTimeout(this.settleTimer)
       this.settleTimer = window.setTimeout(() => this.update(), 300)
@@ -295,7 +306,8 @@ const headingId = `${id}-titulo`
     }
 
     canPlay() {
-      return this.inView && !document.hidden && !dialogOpen && !this.userPaused && !this.blocked && allowAutoplay()
+      const allowed = this.soundOn || (!this.blocked && allowAutoplay())
+      return allowed && this.inView && !document.hidden && !dialogOpen && !this.userPaused
     }
 
     update() {
@@ -316,28 +328,110 @@ const headingId = `${id}-titulo`
       return v
     }
 
+    /** Escuchas comunes: progreso real, poster oculto al reproducir y avance al terminar. */
+    bind(v: HTMLVideoElement) {
+      v.addEventListener('playing', () => {
+        v.dataset.ready = ''
+        this.slides[Number(v.dataset.for)]?.setAttribute('data-playing', '')
+        this.tick()
+      })
+      v.addEventListener('ended', () => this.onEnded())
+    }
+
     startPreview() {
       const slide = this.slides[this.active]
       const card = slide.querySelector<HTMLElement>('[data-open]')!
       if (!this.video) {
-        const reuse = this.preloaded?.index === this.active ? this.preloaded.el : null
-        this.preloaded = null
-        const v = reuse ?? this.makeVideo(card.dataset.preview!)
-        v.addEventListener('playing', () => { v.dataset.ready = ''; slide.dataset.playing = '' ; this.tick() })
-        v.addEventListener('ended', () => this.onEnded())
+        let v: HTMLVideoElement
+        if (this.soundOn) {
+          // Video completo con audio, en el mismo elemento ya autorizado por el toque del visitante.
+          v = this.soundEl!
+          v.removeAttribute('data-ready')
+          v.muted = false
+          v.src = card.dataset.full!
+        } else {
+          const reuse = this.preloaded?.index === this.active ? this.preloaded.el : null
+          this.preloaded = null
+          v = reuse ?? this.makeVideo(card.dataset.preview!)
+          this.bind(v)
+        }
+        v.dataset.for = String(this.active)
         slide.querySelector('[data-slot]')!.append(v)
         this.video = v
       }
       if (this.video.ended) return
       const v = this.video
       v.play().catch((err: DOMException) => {
-        // Solo NotAllowedError significa autoplay bloqueado: se queda el poster con el
-        // botón de reproducción y sin avance automático. AbortError (pausa/cambio de
-        // tarjeta durante la carga) no es un bloqueo.
+        // Solo NotAllowedError significa reproducción bloqueada. AbortError (pausa o
+        // cambio de tarjeta durante la carga) no lo es.
         if (err?.name !== 'NotAllowedError' || v !== this.video) return
+        if (this.soundOn) {
+          // El navegador no permitió sonido sin un nuevo toque: seguimos en silencio.
+          this.soundOn = false
+          this.syncSoundUI()
+          v.muted = true
+          v.play().catch(() => {})
+          return
+        }
         this.blocked = true
         this.root.dataset.static = ''
         this.stopPreview()
+      })
+    }
+
+    /** "Ver con sonido": activa (o silencia) el audio en la propia tarjeta, sin abrir el reproductor grande. */
+    toggleSound(k: number) {
+      this.interact()
+      if (this.soundOn && k === this.active) {
+        this.soundOn = false
+        if (this.video) this.video.muted = true
+        this.syncSoundUI()
+        return
+      }
+      this.soundOn = true
+      this.blocked = false
+      this.userPaused = false
+      this.root.dataset.sound = ''
+      if (!this.soundEl) {
+        this.soundEl = this.makeVideo('')
+        this.soundEl.removeAttribute('aria-hidden')
+        this.bind(this.soundEl)
+      }
+      const v = this.soundEl
+      // Se continúa desde el punto de la vista previa (los clips son el inicio del mismo video).
+      const from = k === this.active && this.video && this.video !== v ? this.video.currentTime : 0
+      if (k !== this.active) {
+        this.lockUntil = performance.now() + 900
+        this.go(k)
+        this.setActive(k)
+      } else if (this.video !== v) {
+        this.stopPreview()
+      }
+      clearTimeout(this.settleTimer)
+      const card = this.slides[k].querySelector<HTMLElement>('[data-open]')!
+      if (this.video !== v) {
+        v.removeAttribute('data-ready')
+        v.src = card.dataset.full! + (from > 0.3 ? `#t=${from.toFixed(2)}` : '')
+        v.dataset.for = String(k)
+        this.slides[k].querySelector('[data-slot]')!.append(v)
+        this.video = v
+      }
+      v.muted = false
+      v.defaultMuted = false
+      v.removeAttribute('muted')
+      // play() dentro del toque: así el navegador permite el audio.
+      v.play().catch(() => {})
+      this.syncSoundUI()
+    }
+
+    syncSoundUI() {
+      this.slides.forEach((slide, k) => {
+        const btn = slide.querySelector<HTMLButtonElement>('[data-sound]')
+        if (!btn) return
+        const on = this.soundOn && k === this.active
+        btn.setAttribute('aria-pressed', String(on))
+        const label = btn.querySelector('[data-sound-label]')
+        if (label) label.textContent = on ? 'Silenciar' : 'Ver con sonido'
       })
     }
 
@@ -356,7 +450,7 @@ const headingId = `${id}-titulo`
     }
 
     preloadNext() {
-      if (this.n < 2 || lowData()) return
+      if (this.n < 2 || lowData() || this.soundOn) return
       const next = (this.active + 1) % this.n
       if (this.preloaded?.index === next) return
       const src = this.slides[next].querySelector<HTMLElement>('[data-open]')!.dataset.preview!
@@ -382,10 +476,13 @@ const headingId = `${id}-titulo`
         if (bar) bar.style.transform = 'scaleX(0)'
       }
       if (this.video) {
-        this.video.pause()
-        this.video.removeAttribute('src')
-        this.video.load()
-        this.video.remove()
+        const v = this.video
+        v.pause()
+        v.remove()
+        if (v !== this.soundEl) {
+          v.removeAttribute('src')
+          v.load()
+        }
         this.video = null
       }
     }

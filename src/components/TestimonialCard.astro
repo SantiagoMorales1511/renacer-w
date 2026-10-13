@@ -17,18 +17,19 @@ const program = programLabel(item)
 const srcset = `${small.src} 360w, ${large.src} 560w`
 ---
 
-<button
-  type="button"
-  class="tc-card group"
-  data-open
-  data-full={item.src}
-  data-preview={item.preview}
-  data-poster={large.src}
-  data-name={item.name}
-  data-program={program}
-  aria-label={`Ver con sonido el testimonio de ${item.name}, ${program}`}
->
-  <span class="tc-media">
+<div class="tc-card group">
+  <!-- Tocar el video lo abre en grande (TestimonialDialog) -->
+  <button
+    type="button"
+    class="tc-media"
+    data-open
+    data-full={item.src}
+    data-preview={item.preview}
+    data-poster={large.src}
+    data-name={item.name}
+    data-program={program}
+    aria-label={`Abrir en grande el testimonio de ${item.name}, ${program}`}
+  >
     <img
       src={defer ? blank : small.src}
       srcset={defer ? undefined : srcset}
@@ -43,17 +44,22 @@ const srcset = `${small.src} 360w, ${large.src} 560w`
     />
     <span class="tc-slot" data-slot></span>
     <span class="tc-play" aria-hidden="true"><Icon name="play" size={22} class="ml-0.5" /></span>
-  </span>
-  <span class="tc-band">
+    <span class="tc-expand" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M10 20H4v-6M20 4l-7 7M4 20l7-7"></path></svg>
+    </span>
+  </button>
+  <div class="tc-band">
     <span class="tc-progress" aria-hidden="true"><span data-bar></span></span>
     <span class="tc-name">{item.name}</span>
     <span class="tc-program">{program}</span>
-    <span class="tc-sound" aria-hidden="true">
-      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
-      Ver con sonido
-    </span>
-  </span>
-</button>
+    <!-- Activa el sonido en la misma tarjeta (sin abrir el reproductor grande) -->
+    <button type="button" class="tc-sound" data-sound aria-pressed="false" aria-label={`Escuchar con sonido el testimonio de ${item.name}`}>
+      <svg class="tc-i-on" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"></path></svg>
+      <svg class="tc-i-off" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"></path><path d="m16 9 5 6M21 9l-5 6"></path></svg>
+      <span data-sound-label>Ver con sonido</span>
+    </button>
+  </div>
+</div>
 
 <style is:global>
   .tc-card {
@@ -69,6 +75,7 @@ const srcset = `${small.src} 360w, ${large.src} 560w`
   .tc-media {
     position: relative;
     display: block;
+    width: 100%;
     aspect-ratio: 9 / 16;
     overflow: hidden;
     background: #14243d;
@@ -98,14 +105,27 @@ const srcset = `${small.src} 360w, ${large.src} 560w`
     color: #14243d;
     transition: opacity 0.3s ease, transform 0.2s ease;
   }
-  .tc-card:hover .tc-play { transform: translate(-50%, -50%) scale(1.05); }
+  .tc-media:hover .tc-play { transform: translate(-50%, -50%) scale(1.05); }
   [data-playing] .tc-play { opacity: 0; }
+  .tc-expand {
+    position: absolute;
+    right: 0.7rem;
+    top: 0.7rem;
+    display: inline-flex;
+    height: 2rem;
+    width: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: rgba(20, 36, 61, 0.55);
+    color: #f7f6f3;
+  }
   .tc-band {
     position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
-    padding: 0.9rem 1rem 1rem;
+    padding: 0.9rem 1rem 0.85rem;
     color: #f7f6f3;
   }
   .tc-progress {
@@ -125,12 +145,22 @@ const srcset = `${small.src} 360w, ${large.src} 560w`
   .tc-name { font-size: 1rem; font-weight: 650; line-height: 1.25; }
   .tc-program { font-size: 0.78rem; line-height: 1.3; color: rgba(247, 246, 243, 0.78); }
   .tc-sound {
-    margin-top: 0.6rem;
+    margin: 0.45rem -0.35rem 0;
     display: inline-flex;
+    min-height: 2.5rem;
+    align-self: flex-start;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.78rem;
+    gap: 0.45rem;
+    border-radius: 9999px;
+    padding: 0 0.6rem 0 0.35rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #f7f6f3;
+    transition: background-color 0.2s;
   }
+  .tc-sound:hover { background: rgba(247, 246, 243, 0.1); }
+  .tc-sound .tc-i-off,
+  .tc-sound[aria-pressed='true'] .tc-i-on { display: none; }
+  .tc-sound[aria-pressed='true'] .tc-i-off { display: block; }
+  .tc-sound[aria-pressed='true'] { background: rgba(247, 246, 243, 0.14); }
 </style>
