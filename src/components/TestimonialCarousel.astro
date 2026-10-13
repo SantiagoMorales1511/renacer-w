@@ -217,6 +217,8 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
   let dialogOpen = false
   /** La página terminó de cargar (Hero, CSS, posters): ya se pueden pedir videos sin competir con el LCP */
   let pageIdle = false
+  /** El visitante empezó a desplazarse (intención de seguir bajando) */
+  let scrolled = false
 
   class Carousel {
     root: HTMLElement
@@ -441,15 +443,27 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       }
     }
 
-    /** Prepara el video de la tarjeta central antes de que el carrusel sea visible (sin competir con el Hero). */
+    /**
+     * Prepara el video de la tarjeta central cuando el visitante empieza a desplazarse hacia el
+     * carrusel (y la página ya terminó de cargar el Hero). Quien no hace scroll no descarga video.
+     * Si en 6 s no llega al carrusel, se cancela la descarga para no gastar datos.
+     */
+    parkTimer = 0
     warm() {
-      if (!pageIdle || !this.near || !allowAutoplay() || this.blocked || this.cur) return
+      if (!pageIdle || !scrolled || !this.near || !allowAutoplay() || this.blocked || this.cur) return
       const p = this.active
-      // Solo el inicio (metadatos y primeros fotogramas): quien no baja hasta el carrusel no gasta datos.
       const v = this.acquire(this.real(p), 'metadata')
       this.attach(v, p)
       v.dataset.burst = '1'
       this.cur = v
+      clearTimeout(this.parkTimer)
+      this.parkTimer = window.setTimeout(() => {
+        if (this.cur !== v || !v.paused || this.inView) return
+        v.removeAttribute('src')
+        v.load()
+        delete v.dataset.real
+        this.cur = null
+      }, 6000)
     }
 
     createVideo() {
@@ -721,6 +735,13 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
   }
   if (document.readyState === 'complete') markIdle()
   else window.addEventListener('load', markIdle, { once: true })
+  const onScroll = () => {
+    if (window.scrollY < 24) return
+    scrolled = true
+    window.removeEventListener('scroll', onScroll)
+    carousels.forEach((c) => c.warm())
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
 
   // Si en la página se abre el reproductor grande (miniaturas), el carrusel se pausa.
   document.addEventListener('tc:dialog', (e) => {
