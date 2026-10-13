@@ -1,0 +1,293 @@
+---
+import { Picture } from 'astro:assets'
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import FactSheet from '../components/FactSheet.astro'
+import ModuleTimeline from '../components/ModuleTimeline.astro'
+import FacilitatorCard from '../components/FacilitatorCard.astro'
+import Faq from '../components/Faq.astro'
+import CtaBand from '../components/CtaBand.astro'
+import { sexualidad as p, formatDate, shortDate, formatCOP } from '../data/programs'
+import { people } from '../data/people'
+import { sexFaqs } from '../data/faqs'
+import { site } from '../data/site'
+import { waLink } from '../lib/whatsapp'
+
+import photoA from '../assets/photos/grupo-alegria.jpg'
+import photoB from '../assets/photos/trabajo-suelo.jpg'
+import photoC from '../assets/photos/acompanamiento.jpg'
+import photoD from '../assets/photos/grupo-sexualidad-2.jpg'
+
+const axes = [
+  {
+    title: 'Fundamentación biológica y fisiológica',
+    text: 'Procesos neurobiológicos, hormonales y anatómicos de la respuesta sexual humana y su relación con la salud y el bienestar integral.',
+  },
+  {
+    title: 'Dimensión sistémica y transgeneracional',
+    text: 'Cómo las dinámicas familiares, las lealtades invisibles y las memorias transgeneracionales influyen en la sexualidad, el afecto y los vínculos.',
+  },
+  {
+    title: 'Enfoque educativo y sociocultural',
+    text: 'Modelos de educación sexual contemporánea y una mirada crítica frente a mitos, tabúes y creencias limitantes.',
+  },
+  {
+    title: 'Aplicación práctica e integrativa',
+    text: 'Herramientas conceptuales, reflexivas y metodológicas para la facilitación, el acompañamiento o la práctica pedagógica, con abordajes éticos y respetuosos.',
+  },
+]
+
+const firstDate = p.modules[0].date!
+const courseLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: p.name,
+  description: p.summary,
+  provider: { '@type': 'EducationalOrganization', name: site.name, sameAs: site.url },
+  inLanguage: 'es',
+  hasCourseInstance: {
+    '@type': 'CourseInstance',
+    courseMode: 'onsite',
+    startDate: firstDate,
+    endDate: p.modules[p.modules.length - 1].date,
+    location: { '@type': 'Place', name: 'Hotel La Esperanza', address: { '@type': 'PostalAddress', addressLocality: 'Cali', addressRegion: 'Valle del Cauca', addressCountry: 'CO' } },
+    instructor: p.facilitators.map((f) => ({ '@type': 'Person', name: f.name })),
+  },
+  offers: { '@type': 'Offer', price: p.pricePerModule, priceCurrency: 'COP', description: 'Valor por módulo', availability: 'https://schema.org/InStock', url: `${site.url}${p.slug}` },
+}
+---
+
+<Base
+  title="Formación en Sexualidad Consciente y Vínculos Afectivos · Renacer Cali"
+  description="Formación presencial en Cali · 6 módulos · Inicia el domingo 25 de octubre de 2026 · $250.000 COP por módulo. Con María Mercedes Osorio Silva y Carolina Gutiérrez Gutiérrez."
+  ogImage={photoA}
+  ogAlt="Formación en Sexualidad Consciente y Vínculos Afectivos — Centro de Formación Renacer"
+  stickyWa={{ key: 'sex', label: 'Inscribirme', caption: `Inicia 25 oct · <strong class="text-ink">${formatCOP(p.pricePerModule)}</strong>/módulo` }}
+  jsonLd={courseLd}
+>
+  <!-- HERO -->
+  <section class="grain overflow-hidden">
+    <div class="wrap grid gap-10 pb-16 pt-8 sm:pt-14 md:grid-cols-12 md:gap-12 md:pb-24">
+      <div class="md:col-span-7 md:pt-4">
+        <p class="eyebrow rise">Inscripciones abiertas · Cali</p>
+        <h1 class="rise rise-2 mt-5 text-[clamp(2.05rem,7.6vw,4.1rem)] leading-[1.02] tracking-[-0.04em]">
+          Formación en Sexualidad Consciente y <span class="accent">Vínculos Afectivos</span>
+        </h1>
+        <p class="lead rise rise-3 mt-5 max-w-xl">
+          Seis módulos presenciales para comprender el deseo, el cuerpo y los vínculos desde una mirada biológica, psicológica, sistémica y educativa.
+        </p>
+
+        <FactSheet program={p} start={`Domingo ${formatDate(firstDate)}`} class="rise rise-3 mt-7 max-w-xl">
+          <div class="mt-6 grid gap-3 sm:grid-cols-[1fr_auto]">
+            <a href={waLink('sex')} class="btn btn-primary" target="_blank" rel="noopener">
+              <Icon name="whatsapp" size={20} />
+              Quiero inscribirme
+            </a>
+            <a href="#temario" class="btn btn-ghost">Ver temario</a>
+          </div>
+        </FactSheet>
+      </div>
+
+      <div class="relative md:col-span-5">
+        <div class="grid grid-cols-2 gap-3 md:sticky md:top-28">
+          <figure class="photo aspect-[3/4]">
+            <Picture
+              src={people.mercedes.photo}
+              alt={`Retrato de ${people.mercedes.name}`}
+              widths={[300, 480, 640]}
+              sizes="(min-width: 768px) 20vw, 45vw"
+              formats={['avif', 'webp']}
+              style={`object-position: ${people.mercedes.focus}`}
+              loading="eager"
+            />
+          </figure>
+          <figure class="photo mt-10 aspect-[3/4]">
+            <Picture
+              src={people.carolina.photo}
+              alt={`Retrato de ${people.carolina.name}`}
+              widths={[300, 480, 640]}
+              sizes="(min-width: 768px) 20vw, 45vw"
+              formats={['avif', 'webp']}
+              style={`object-position: ${people.carolina.focus}`}
+              loading="eager"
+            />
+          </figure>
+          <p class="col-span-2 mt-1 text-[0.85rem] leading-snug text-ink-mute">
+            Facilitadoras: <strong class="font-semibold text-ink">{people.mercedes.name}</strong> y <strong class="font-semibold text-ink">{people.carolina.name}</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUÉ ES -->
+  <section class="section bg-white" aria-labelledby="que-es">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <p class="eyebrow">La formación</p>
+        <h2 id="que-es" class="title mt-5">Una mirada <span class="accent">integral</span> a la sexualidad.</h2>
+      </div>
+      <div class="md:col-span-6 md:col-start-7">
+        <p class="lead">
+          La formación desarrolla competencias conceptuales y analíticas en sexología integrativa, articulando aspectos fisiológicos, dinámicas educativas y lealtades transgeneracionales del sistema familiar.
+        </p>
+        <p class="mt-5 text-ink-soft">
+          Integra componentes educativos, biológicos, psicológicos, sistémicos, transgeneracionales, vinculares, sexológicos y socioculturales, con una orientación hacia una práctica consciente, la salud integral y la comprensión de los conflictos vinculares relacionados con la sexualidad.
+        </p>
+      </div>
+    </div>
+
+    <div class="wrap mt-16 grid gap-4 md:grid-cols-2">
+      <div class="rounded-[1.75rem] bg-cream p-7 sm:p-9">
+        <p class="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-petrol">Para quién es</p>
+        <ul class="mt-5 space-y-3.5">
+          <li class="flex gap-3"><Icon name="check" size={20} class="mt-0.5 shrink-0 text-petrol" /><span>Personas interesadas en comprender el deseo, el cuerpo y los vínculos con un enfoque educativo.</span></li>
+          <li class="flex gap-3"><Icon name="check" size={20} class="mt-0.5 shrink-0 text-petrol" /><span>Quienes buscan herramientas conceptuales y reflexivas para el acompañamiento.</span></li>
+        </ul>
+      </div>
+      <div class="rounded-[1.75rem] border border-cream-line p-7 sm:p-9">
+        <p class="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-ink-mute">Lo que no es</p>
+        <ul class="mt-5 space-y-3.5 text-ink-soft">
+          <li class="flex gap-3"><Icon name="close" size={20} class="mt-0.5 shrink-0 text-ink-mute" /><span>No es una terapia ni un tratamiento médico o psicológico.</span></li>
+          <li class="flex gap-3"><Icon name="close" size={20} class="mt-0.5 shrink-0 text-ink-mute" /><span>No es una evaluación clínica.</span></li>
+          <li class="flex gap-3"><Icon name="close" size={20} class="mt-0.5 shrink-0 text-ink-mute" /><span>Es una formación educativa, presencial y con una práctica ética y respetuosa.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUÉ APRENDERÁS -->
+  <section class="section" aria-labelledby="aprenderas">
+    <div class="wrap">
+      <p class="eyebrow">Qué aprenderás</p>
+      <h2 id="aprenderas" class="title mt-5 max-w-3xl">Cuatro ejes que <span class="accent">articulan</span> la formación.</h2>
+      <div class="mt-12 grid gap-px overflow-hidden rounded-[1.75rem] border border-cream-line bg-cream-line sm:grid-cols-2">
+        {
+          axes.map((a, i) => (
+            <div class="bg-white p-7 sm:p-9">
+              <span class="font-serif text-[2.2rem] italic leading-none text-lavender-deep">0{i + 1}</span>
+              <h3 class="mt-4 text-[1.2rem] sm:text-[1.3rem]">{a.title}</h3>
+              <p class="mt-3 text-[0.97rem] leading-relaxed text-ink-soft">{a.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMARIO -->
+  <section id="temario" class="section bg-white" aria-labelledby="temario-t">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <div class="md:sticky md:top-28">
+          <p class="eyebrow">Temario</p>
+          <h2 id="temario-t" class="title mt-5">Seis módulos, <span class="accent">seis domingos.</span></h2>
+          <p class="mt-5 text-ink-soft">Cada módulo es una jornada presencial de 8 horas. Toca cada módulo para ver los temas.</p>
+        </div>
+      </div>
+      <div class="md:col-span-8">
+        <ModuleTimeline modules={p.modules} />
+      </div>
+    </div>
+  </section>
+
+  <!-- CALENDARIO -->
+  <section class="section" aria-labelledby="calendario">
+    <div class="wrap">
+      <div class="night-glow overflow-hidden rounded-[2rem] bg-petrol-night p-6 text-cream sm:p-12">
+        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p class="eyebrow eyebrow-light">Calendario</p>
+            <h2 id="calendario" class="title mt-5 text-cream">Octubre 2026 — <span class="accent text-lavender">marzo 2027</span></h2>
+          </div>
+          <p class="max-w-xs text-[0.95rem] text-cream/70">Domingos · 9:00 a. m. a 5:00 p. m.<br />Hotel La Esperanza, Ciudad Jardín, Cali.</p>
+        </div>
+        <ol class="mt-10 grid grid-cols-3 gap-3 sm:grid-cols-6">
+          {
+            p.modules.map((m) => {
+              const d = shortDate(m.date!)
+              return (
+                <li class="rounded-2xl border border-cream/15 bg-cream/[0.04] px-3 py-4 text-center">
+                  <span class="block text-[0.65rem] font-bold uppercase tracking-[0.16em] text-gold">Mód. {m.n}</span>
+                  <span class="mt-2 block text-[1.9rem] font-bold leading-none">{d.day}</span>
+                  <span class="mt-1 block text-[0.8rem] uppercase tracking-wider text-cream/70">{d.month} {m.date!.slice(0, 4)}</span>
+                </li>
+              )
+            })
+          }
+        </ol>
+        <div class="mt-10 flex flex-col gap-5 border-t border-cream/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-[1.05rem]">
+            Inversión: <strong class="text-[1.3rem] font-bold">{formatCOP(p.pricePerModule)} COP</strong> <span class="text-cream/70">por módulo</span>
+          </p>
+          <a href={waLink('sex')} class="btn btn-light" target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={20} />
+            Escribir por WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FACILITADORAS -->
+  <section class="section pt-4 sm:pt-8" aria-labelledby="facilitadoras">
+    <div class="wrap">
+      <p class="eyebrow">Facilitadoras</p>
+      <h2 id="facilitadoras" class="title mt-5 max-w-3xl">Dos miradas <span class="accent">complementarias.</span></h2>
+      <div class="mt-12 grid gap-6 md:grid-cols-2">
+        <FacilitatorCard person={people.mercedes} role="Facilitadora" modules="Módulos 2, 4 y 6" />
+        <FacilitatorCard person={people.carolina} role="Facilitadora" modules="Módulos 1, 3 y 5" />
+      </div>
+    </div>
+  </section>
+
+  <!-- FOTOS -->
+  <section class="section bg-white" aria-labelledby="fotos">
+    <div class="wrap">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="eyebrow">Comunidad Renacer</p>
+          <h2 id="fotos" class="title mt-5 max-w-2xl">Aprender en un espacio <span class="accent">cercano y humano.</span></h2>
+        </div>
+        <p class="max-w-sm text-[0.9rem] text-ink-mute">Imágenes reales de encuentros de formación en Renacer.</p>
+      </div>
+      <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2">
+        <div class="photo col-span-2 aspect-[4/3] md:row-span-2 md:aspect-auto">
+          <Picture src={photoA} alt="Estudiantes de Renacer sonriendo durante un encuentro" widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+        <div class="photo aspect-square">
+          <Picture src={photoB} alt="Participantes durante una actividad grupal en el suelo" widths={[300, 500, 700]} sizes="(min-width: 768px) 25vw, 50vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+        <div class="photo aspect-square">
+          <Picture src={photoC} alt="Momento de acompañamiento entre participantes" widths={[300, 500, 700]} sizes="(min-width: 768px) 25vw, 50vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+        <div class="photo col-span-2 aspect-[2/1]">
+          <Picture src={photoD} alt="Grupo de estudiantes reunidos en el salón de formación" widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" aria-labelledby="preguntas">
+    <div class="wrap grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2 id="preguntas" class="title mt-5">Antes de <span class="accent">inscribirte.</span></h2>
+      </div>
+      <div class="md:col-span-8">
+        <Faq items={sexFaqs} />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    waKey="sex"
+    eyebrow="Inscripciones abiertas"
+    title="Primer módulo: <span class='accent text-lavender'>domingo 25 de octubre.</span>"
+    text="Escríbenos por WhatsApp. Cuéntanos en el mensaje por qué te interesa la formación y te orientamos sobre la inscripción."
+    button="Quiero inscribirme"
+    image={photoA}
+    imageAlt="Estudiantes de Renacer durante un encuentro"
+  />
+</Base>

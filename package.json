@@ -1,53 +1,41 @@
 {
   "name": "centro-formacion-renacer",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
-  "description": "Sitio web del Centro de Formación Renacer - Constelaciones Familiares y Biodescodificación",
-  "keywords": [
-    "constelaciones",
-    "biodescodificacion",
-    "terapia",
-    "cali",
-    "colombia"
-  ],
+  "description": "Sitio web del Centro de Formación Renacer — Cali, Colombia",
   "author": "Centro de Formación Renacer",
   "scripts": {
-    "dev": "vite",
-    "prebuild": "true",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview",
-    "setup": "cp env.example .env.local && echo 'Archivo .env.local creado. Edita con tus credenciales de Brevo.'"
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node scripts/verify-build.mjs"
   },
   "dependencies": {
+    "@astrojs/react": "4.4.2",
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/manrope": "5.3.0",
+    "@fontsource/cormorant-garamond": "5.3.0",
+    "astro": "5.18.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-icons": "^5.5.0",
-    "react-router-dom": "^6.28.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.13.0",
+    "@astrojs/check": "0.9.10",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.3",
     "autoprefixer": "^10.4.20",
-    "eslint": "^9.13.0",
-    "eslint-plugin-react-hooks": "^5.0.0",
-    "eslint-plugin-react-refresh": "^0.4.14",
-    "globals": "^15.11.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
-    "typescript": "~5.6.2",
-    "vite": "^6.0.1"
+    "typescript": "~5.6.2"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=20.3.0"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tu-usuario/renacer-w.git"
+    "url": "https://github.com/SantiagoMorales1511/renacer-w.git"
   },
   "license": "UNLICENSED"
 }

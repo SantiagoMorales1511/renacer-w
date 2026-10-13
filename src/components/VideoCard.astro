@@ -1,0 +1,71 @@
+---
+import { getImage } from 'astro:assets'
+import Icon from './Icon.astro'
+import type { VideoTestimonial } from '../data/testimonials'
+
+interface Props {
+  item: VideoTestimonial
+}
+const { item } = Astro.props
+const poster = await getImage({ src: item.poster, width: 540, format: 'webp', quality: 72 })
+const posterSmall = await getImage({ src: item.poster, width: 360, format: 'webp', quality: 70 })
+---
+
+<figure class="flex flex-col">
+  <div class="relative aspect-[9/16] overflow-hidden rounded-[1.75rem] bg-petrol-night" data-video-shell>
+    <button
+      type="button"
+      class="group absolute inset-0 h-full w-full text-left"
+      data-video-play
+      data-src={item.src}
+      data-poster={poster.src}
+      aria-label={`Reproducir testimonio de ${item.name} (${item.duration})`}
+    >
+      <img
+        src={poster.src}
+        srcset={`${posterSmall.src} 360w, ${poster.src} 540w`}
+        sizes="(min-width: 768px) 320px, 80vw"
+        alt=""
+        width={poster.attributes.width}
+        height={poster.attributes.height}
+        loading="lazy"
+        decoding="async"
+        class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
+      />
+      <span class="absolute inset-0 bg-gradient-to-t from-petrol-night/85 via-petrol-night/10 to-transparent"></span>
+      <span class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-cream/95 text-petrol-night shadow-lift transition-transform duration-200 group-hover:scale-105">
+        <Icon name="play" size={24} class="ml-1" />
+      </span>
+      <span class="absolute bottom-4 right-4 rounded-full bg-petrol-night/70 px-2.5 py-1 text-[0.72rem] font-semibold text-cream backdrop-blur">{item.duration}</span>
+      <span class="absolute bottom-4 left-5 right-16 text-cream">
+        <span class="block text-[1.05rem] font-semibold">{item.name}</span>
+        <span class="mt-0.5 block text-[0.78rem] leading-snug text-cream/75">{item.program}</span>
+      </span>
+    </button>
+  </div>
+  <figcaption class="mt-4 px-1">
+    <blockquote class="font-serif text-[1.25rem] italic leading-snug text-ink">“{item.quote}”</blockquote>
+  </figcaption>
+</figure>
+
+<script>
+  // El video solo se descarga cuando la persona pulsa reproducir.
+  document.querySelectorAll<HTMLButtonElement>('[data-video-play]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const shell = btn.closest('[data-video-shell]')
+      if (!shell) return
+      document.querySelectorAll<HTMLVideoElement>('[data-video-shell] video').forEach((v) => v.pause())
+      const video = document.createElement('video')
+      video.src = btn.dataset.src ?? ''
+      video.poster = btn.dataset.poster ?? ''
+      video.controls = true
+      video.playsInline = true
+      video.preload = 'auto'
+      video.className = 'absolute inset-0 h-full w-full bg-black object-contain'
+      video.setAttribute('aria-label', btn.getAttribute('aria-label')?.replace('Reproducir', 'Video:') ?? '')
+      btn.replaceWith(video)
+      video.play().catch(() => {})
+      video.focus()
+    })
+  })
+</script>

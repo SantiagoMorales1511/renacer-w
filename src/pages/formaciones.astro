@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro'
+import ProgramCard from '../components/ProgramCard.astro'
+import Icon from '../components/Icon.astro'
+import { waLink } from '../lib/whatsapp'
+import CtaBand from '../components/CtaBand.astro'
+import { programs } from '../data/programs'
+import ctaImg from '../assets/photos/grupo-celebra.jpg'
+import ogImg from '../assets/photos/grupo-luminoso.jpg'
+---
+
+<Base
+  title="Formaciones · Centro de Formación Renacer, Cali"
+  description="Catálogo de formaciones presenciales de Renacer en Cali: Sexualidad Consciente y Vínculos Afectivos, Máster en Biodescodificación y Constelaciones Familiares y Terapia Sistémica."
+  ogImage={ogImg}
+>
+  <section class="grain">
+    <div class="wrap pb-12 pt-10 sm:pb-16 sm:pt-16">
+      <p class="eyebrow rise">Catálogo</p>
+      <h1 class="display rise rise-2 mt-5 max-w-4xl">Nuestras <span class="accent">formaciones.</span></h1>
+      <p class="lead rise rise-3 mt-6 max-w-2xl">
+        Programas presenciales en Cali, organizados por módulos mensuales de jornada completa. Elige el que te interesa y conoce el temario, las fechas, el valor y quién lo facilita.
+      </p>
+    </div>
+  </section>
+
+  <section class="pb-20 sm:pb-28" aria-label="Formaciones disponibles">
+    <div class="wrap grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {programs.map((p, i) => <ProgramCard program={p} index={i} headingLevel="h2" />)}
+    </div>
+    <div class="wrap mt-8">
+      <div class="rounded-[1.75rem] border border-cream-line bg-white p-6 sm:flex sm:items-center sm:justify-between sm:gap-8 sm:p-8">
+        <div>
+          <h2 class="text-[1.2rem]">Jornadas de constelaciones</h2>
+          <p class="mt-2 max-w-2xl text-[0.95rem] text-ink-soft">
+            Además de las formaciones, Renacer organiza jornadas abiertas para constelar o asistir como representante. Escríbenos para conocer las próximas fechas.
+          </p>
+        </div>
+        <a href={waLink('general')} class="btn btn-ghost mt-5 shrink-0 sm:mt-0" target="_blank" rel="noopener">
+          <Icon name="whatsapp" size={19} class="text-petrol" /> Preguntar fechas
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    waKey="general"
+    title="¿Dudas sobre qué <span class='accent text-lavender'>formación elegir?</span>"
+    text="Te orientamos por WhatsApp según tus intereses y tu disponibilidad."
+    image={ctaImg}
+    imageAlt="Estudiantes de Renacer celebrando durante un encuentro"
+  />
+</Base>

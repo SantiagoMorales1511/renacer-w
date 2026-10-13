@@ -1,0 +1,46 @@
+---
+import Icon from './Icon.astro'
+import { formatCOP, type Program } from '../data/programs'
+
+interface Props {
+  program: Program
+  /** Resalta la línea de inicio (para programas con inscripción abierta) */
+  start?: string
+  class?: string
+}
+const { program: p, start, class: className = '' } = Astro.props
+const rows = [
+  { icon: 'calendar', label: 'Inicio', value: start ?? p.startLabel },
+  { icon: 'layers', label: 'Duración', value: `${p.modulesCount} módulos · ${p.frequency.toLowerCase()}` },
+  { icon: 'clock', label: 'Horario', value: p.schedule },
+  { icon: 'pin', label: 'Lugar', value: `${p.modality} · ${p.venue}` },
+] as const
+---
+
+<div class:list={['card p-5 shadow-soft sm:p-6', className]}>
+  <div class="flex items-end justify-between gap-4 border-b border-cream-line pb-5">
+    <div>
+      <p class="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-ink-mute">Valor por módulo</p>
+      <p class="mt-1 text-[2.1rem] font-bold leading-none tracking-[-0.03em] text-petrol-night">
+        {formatCOP(p.pricePerModule)}<span class="ml-1.5 text-[0.9rem] font-semibold tracking-normal text-ink-mute">COP</span>
+      </p>
+    </div>
+    <span class:list={['rounded-full px-3 py-1.5 text-[0.72rem] font-bold', p.status === 'abierta' ? 'bg-sage/50 text-ink' : 'bg-lavender-soft text-petrol-deep']}>
+      {p.statusLabel}
+    </span>
+  </div>
+  <dl class="mt-4 space-y-3.5">
+    {
+      rows.map((r) => (
+        <div class="flex gap-3">
+          <dt class="flex w-[5.75rem] shrink-0 items-center gap-2 text-[0.82rem] text-ink-mute">
+            <Icon name={r.icon} size={17} class="text-petrol" />
+            {r.label}
+          </dt>
+          <dd class="text-[0.93rem] font-semibold leading-snug text-ink">{r.value}</dd>
+        </div>
+      ))
+    }
+  </dl>
+  <slot />
+</div>

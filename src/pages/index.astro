@@ -1,0 +1,270 @@
+---
+import { Picture } from 'astro:assets'
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import ProgramCard from '../components/ProgramCard.astro'
+import VideoCard from '../components/VideoCard.astro'
+import Faq from '../components/Faq.astro'
+import CtaBand from '../components/CtaBand.astro'
+import { programs, sexualidad, formatCOP } from '../data/programs'
+import { people } from '../data/people'
+import { homeFaqs } from '../data/faqs'
+import { videoTestimonials } from '../data/testimonials'
+import { waLink } from '../lib/whatsapp'
+
+import hero from '../assets/photos/grupo-ceremonia.jpg'
+import aside from '../assets/photos/circulo-exterior.jpg'
+import g1 from '../assets/photos/hilos-sistema.jpg'
+import g2 from '../assets/photos/clase-1.jpg'
+import g3 from '../assets/photos/grupo-sentado-blanco.jpg'
+import g4 from '../assets/photos/trabajo-suelo.jpg'
+import g5 from '../assets/photos/acompanamiento.jpg'
+import g6 from '../assets/photos/grupo-luminoso.jpg'
+import g7 from '../assets/photos/certificados.jpg'
+import ctaImg from '../assets/photos/grupo-alegria.jpg'
+
+const gallery = [
+  { src: aside, alt: 'Encuentro al aire libre: el grupo en círculo durante un ejercicio vivencial', span: 'md:col-span-2 md:row-span-2' },
+  { src: g1, alt: 'Ejercicio sistémico con hilos rojos que conectan a los participantes', span: '' },
+  { src: g3, alt: 'Estudiantes vestidas de blanco durante una ceremonia de Renacer', span: '' },
+  { src: g4, alt: 'Participantes trabajando sentados en el suelo durante una actividad grupal', span: '' },
+  { src: g2, alt: 'Facilitadora orientando una sesión de formación en el aula', span: '' },
+  { src: g5, alt: 'Momento de acompañamiento entre participantes durante un encuentro', span: '' },
+  { src: g6, alt: 'Grupo de estudiantes reunidos en el salón de formación', span: '' },
+  { src: g7, alt: 'Estudiantes mostrando sus certificados al finalizar un proceso de formación', span: 'md:col-span-2' },
+]
+
+const pillars = [
+  {
+    title: 'Formación profesional',
+    text: 'Programas estructurados por módulos, con contenidos claros y una práctica ética, pensada para quienes acompañan o quieren acompañar a otros.',
+  },
+  {
+    title: 'Enfoque práctico y vivencial',
+    text: 'Cada encuentro combina teoría con ejercicios guiados. Se aprende mirando, practicando y comprendiendo en grupo.',
+  },
+  {
+    title: 'Acompañamiento cercano',
+    text: 'Un acompañamiento humano durante el proceso de formación, guiado por facilitadoras con formación terapéutica y sistémica.',
+  },
+  {
+    title: 'Comunidad activa',
+    text: 'Un espacio de encuentro mensual donde se construyen vínculos, se comparte la experiencia y se crece con otros.',
+  },
+]
+---
+
+<Base
+  title="Centro de Formación Renacer · Formación y desarrollo humano en Cali"
+  description="Formaciones presenciales en Cali en Constelaciones Familiares, Biodescodificación y Sexualidad Consciente. Herramientas sistémicas con una práctica ética, humana y profesional."
+  ogImage={hero}
+  ogAlt="Estudiantes del Centro de Formación Renacer en Cali"
+>
+  <!-- HERO -->
+  <section class="grain overflow-hidden">
+    <div class="wrap pb-8 pt-8 sm:pb-10 sm:pt-16 md:pb-14">
+      <div class="grid gap-8 md:grid-cols-12 md:items-end">
+        <div class="md:col-span-8">
+          <p class="eyebrow rise">Cali, Colombia</p>
+          <h1 class="display rise rise-2 mt-5">
+            Formarte para <span class="accent">comprender</span> y acompañar procesos humanos.
+          </h1>
+        </div>
+        <div class="rise rise-3 md:col-span-4 md:pb-2">
+          <p class="lead">
+            Formaciones presenciales en Constelaciones Familiares, Biodescodificación y Sexualidad Consciente<span class="hidden sm:inline">, con una mirada sistémica, ética y profundamente humana</span>.
+          </p>
+          <div class="mt-6 grid grid-cols-2 gap-3 sm:mt-7 sm:flex sm:flex-row md:flex-col lg:flex-row">
+            <a href="/formaciones" class="btn btn-primary px-4">Formaciones <Icon name="arrow" size={18} /></a>
+            <a href={waLink('general')} class="btn btn-ghost px-4" target="_blank" rel="noopener">
+              <Icon name="whatsapp" size={19} class="text-petrol" /> WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap pb-14 sm:pb-20">
+      <div class="relative">
+        <div class="photo aspect-[5/4] sm:aspect-[16/9] lg:aspect-[21/9]">
+          <Picture
+            src={hero}
+            alt="Estudiantes de Renacer reunidas en el salón de formación"
+            widths={[480, 768, 1080, 1440, 1920]}
+            sizes="(min-width: 1152px) 1088px, calc(100vw - 2.5rem)"
+            formats={['avif', 'webp']}
+            loading="eager"
+            fetchpriority="high"
+            style="object-position: 50% 45%"
+          />
+        </div>
+        <a
+          href={sexualidad.slug}
+          class="group relative -mt-10 ml-4 mr-4 flex items-center gap-4 rounded-2xl border border-cream-line bg-white/95 p-4 shadow-lift backdrop-blur sm:absolute sm:bottom-6 sm:left-6 sm:m-0 sm:max-w-sm"
+        >
+          <span class="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-xl bg-petrol-night text-cream">
+            <span class="text-[0.6rem] font-bold uppercase tracking-wider text-lavender">oct</span>
+            <span class="text-xl font-bold leading-none">25</span>
+          </span>
+          <span class="min-w-0 flex-1">
+            <span class="block text-[0.7rem] font-bold uppercase tracking-[0.16em] text-gold-deep">Próximo inicio</span>
+            <span class="block text-[0.95rem] font-semibold leading-snug text-ink">Sexualidad Consciente y Vínculos Afectivos</span>
+            <span class="block text-[0.8rem] text-ink-mute">{formatCOP(sexualidad.pricePerModule)} por módulo · 6 módulos</span>
+          </span>
+          <Icon name="arrow" size={20} class="shrink-0 text-petrol transition-transform group-hover:translate-x-1" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESENTACIÓN -->
+  <section class="section bg-white" aria-labelledby="sobre">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <p class="eyebrow">Sobre Renacer</p>
+        <h2 id="sobre" class="title mt-5">Un centro de formación y <span class="accent">desarrollo humano</span> en Cali.</h2>
+      </div>
+      <div class="md:col-span-6 md:col-start-7">
+        <p class="lead">
+          Renacer forma personas y profesionales capaces de comprender, acompañar y facilitar procesos de transformación emocional y familiar mediante herramientas sistémicas.
+        </p>
+        <p class="mt-5 text-ink-soft">
+          Enseñamos herramientas terapéuticas, acompañamiento emocional y crecimiento personal desde una perspectiva sistémica, ética y humana. Nuestras formaciones están abiertas a psicólogos, terapeutas, coaches, profesionales de la salud, educadores y a toda persona interesada en su desarrollo personal.
+        </p>
+        <div class="mt-10 flex items-center gap-4 border-t border-cream-line pt-8">
+          <Picture
+            src={people.alba.photo}
+            alt="Retrato de Alba Elisa Cerón Gómez"
+            widths={[96, 160]}
+            sizes="72px"
+            formats={['avif', 'webp']}
+            class="h-[4.5rem] w-[4.5rem] shrink-0 rounded-full object-cover"
+            style="object-position: 50% 25%"
+            loading="lazy"
+          />
+          <div>
+            <p class="font-semibold text-ink">{people.alba.name}</p>
+            <p class="text-[0.9rem] leading-snug text-ink-mute">
+              Directora y fundadora · Consteladora Familiar y Empresarial · Terapeuta Sistémica
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMACIONES -->
+  <section class="section" aria-labelledby="formaciones">
+    <div class="wrap">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div class="max-w-2xl">
+          <p class="eyebrow">Nuestras formaciones</p>
+          <h2 id="formaciones" class="title mt-5">Programas presenciales, <span class="accent">un encuentro al mes.</span></h2>
+        </div>
+        <a href="/formaciones" class="inline-flex items-center gap-2 font-semibold text-petrol hover:gap-3 transition-all">
+          Ver catálogo completo <Icon name="arrow" size={18} />
+        </a>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {programs.map((p, i) => <ProgramCard program={p} index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCIA -->
+  <section class="section bg-white" aria-labelledby="experiencia">
+    <div class="wrap grid gap-12 md:grid-cols-12 md:gap-16">
+      <div class="md:col-span-5">
+        <div class="md:sticky md:top-28">
+          <p class="eyebrow">La experiencia Renacer</p>
+          <h2 id="experiencia" class="title mt-5">Aprender en presencia, <span class="accent">con otros.</span></h2>
+          <div class="photo mt-10 hidden aspect-[4/5] md:block">
+            <Picture
+              src={g1}
+              alt="Ejercicio sistémico con hilos rojos entre los participantes"
+              widths={[400, 640, 900]}
+              sizes="400px"
+              formats={['avif', 'webp']}
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+      <ol class="md:col-span-7">
+        {
+          pillars.map((p, i) => (
+            <li class="grid grid-cols-[3rem_1fr] gap-4 border-t border-cream-line py-8 first:border-t-0 first:pt-0 sm:grid-cols-[4.5rem_1fr] md:first:pt-2">
+              <span class="font-serif text-[2.4rem] italic leading-none text-lavender-deep sm:text-[3rem]">{i + 1}</span>
+              <div>
+                <h3 class="text-[1.3rem] sm:text-[1.5rem]">{p.title}</h3>
+                <p class="mt-3 max-w-prose text-ink-soft">{p.text}</p>
+              </div>
+            </li>
+          ))
+        }
+        <li class="grid grid-cols-[3rem_1fr] gap-4 border-t border-cream-line pt-8 sm:grid-cols-[4.5rem_1fr]">
+          <span class="mt-1 text-petrol"><Icon name="calendar" size={28} /></span>
+          <dl class="grid grid-cols-2 gap-4 text-[0.9rem]">
+            <div><dt class="text-ink-mute">Modalidad</dt><dd class="font-semibold">Presencial en Cali</dd></div>
+            <div><dt class="text-ink-mute">Ritmo</dt><dd class="font-semibold">Un encuentro al mes</dd></div>
+            <div><dt class="text-ink-mute">Jornada</dt><dd class="font-semibold">9:00 a. m. – 5:00 p. m.</dd></div>
+            <div><dt class="text-ink-mute">Pago</dt><dd class="font-semibold">Por módulo</dd></div>
+          </dl>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- GALERÍA -->
+  <section class="section" aria-labelledby="galeria">
+    <div class="wrap">
+      <p class="eyebrow">Nuestros encuentros</p>
+      <h2 id="galeria" class="title mt-5 max-w-2xl">Así se viven los <span class="accent">encuentros</span> en Renacer.</h2>
+    </div>
+    <div class="no-scrollbar mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-5 px-5 pb-2 sm:scroll-px-8 sm:px-8 md:mx-auto md:grid md:max-w-[72rem] md:auto-rows-[200px] md:grid-cols-4 md:overflow-visible md:px-8 lg:auto-rows-[230px]">
+      {
+        gallery.map((g) => (
+          <div class:list={['photo aspect-[4/5] w-[78%] shrink-0 snap-start rounded-2xl sm:w-[45%] md:aspect-auto md:w-auto', g.span]}>
+            <Picture src={g.src} alt={g.alt} widths={[360, 600, 900]} sizes="(min-width: 768px) 25vw, 78vw" formats={['avif', 'webp']} loading="lazy" />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section class="section bg-white" aria-labelledby="testimonios">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <p class="eyebrow">Testimonios</p>
+        <h2 id="testimonios" class="title mt-5">En sus <span class="accent">propias palabras.</span></h2>
+        <p class="mt-5 text-ink-soft">Estudiantes de la Formación en Constelaciones Familiares cuentan cómo vivieron su proceso en Renacer.</p>
+        <a href="/testimonios" class="mt-8 inline-flex items-center gap-2 font-semibold text-petrol">Ver testimonios <Icon name="arrow" size={18} /></a>
+      </div>
+      <div class="grid grid-cols-1 gap-8 min-[480px]:grid-cols-2 md:col-span-8 md:gap-6">
+        {videoTestimonials.map((t) => <VideoCard item={t} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" aria-labelledby="preguntas">
+    <div class="wrap grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2 id="preguntas" class="title mt-5">Lo que suelen <span class="accent">preguntarnos.</span></h2>
+      </div>
+      <div class="md:col-span-8">
+        <Faq items={homeFaqs} />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    waKey="general"
+    title="¿Qué formación es <span class='accent text-lavender'>para ti?</span>"
+    text="Cuéntanos qué te interesa y te orientamos sobre programas, fechas, valores e inscripción."
+    image={ctaImg}
+    imageAlt="Estudiantes de Renacer sonriendo durante un encuentro"
+  />
+</Base>

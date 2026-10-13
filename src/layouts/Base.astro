@@ -1,0 +1,87 @@
+---
+import '@fontsource-variable/manrope/wght.css'
+import '@fontsource/cormorant-garamond/latin-500-italic.css'
+import '../styles/global.css'
+import manropeLatin from '@fontsource-variable/manrope/files/manrope-latin-wght-normal.woff2?url'
+import type { ImageMetadata } from 'astro'
+import { getImage } from 'astro:assets'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import StickyWa from '../components/StickyWa.astro'
+import { site } from '../data/site'
+import type { WaKey } from '../lib/whatsapp'
+import defaultOg from '../assets/photos/grupo-ceremonia.jpg'
+
+interface Props {
+  title: string
+  description: string
+  ogImage?: ImageMetadata
+  ogAlt?: string
+  noindex?: boolean
+  /** Muestra la barra fija de WhatsApp en móvil con el mensaje del curso */
+  stickyWa?: { key: WaKey; label: string; caption?: string }
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[]
+}
+
+const { title, description, ogImage = defaultOg, ogAlt, noindex = false, stickyWa, jsonLd } = Astro.props
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href
+const og = await getImage({ src: ogImage, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 78 })
+const ogUrl = new URL(og.src, site.url).href
+
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOrganization',
+  name: site.name,
+  url: site.url,
+  logo: `${site.url}/icon-512.png`,
+  telephone: site.whatsapp.display,
+  email: site.email,
+  address: { '@type': 'PostalAddress', addressLocality: 'Cali', addressRegion: 'Valle del Cauca', addressCountry: 'CO' },
+  sameAs: [site.instagram.url],
+}
+const ld = [orgLd, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [])]
+---
+
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#F7F6F3" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href={manropeLatin} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_CO" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogAlt ?? title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(ld.length === 1 ? ld[0] : ld)} />
+  </head>
+  <body class:list={['min-h-screen', stickyWa && 'pb-[5.5rem] md:pb-0']}>
+    <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-cream">
+      Saltar al contenido
+    </a>
+    <Header />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    {stickyWa && <StickyWa waKey={stickyWa.key} label={stickyWa.label} caption={stickyWa.caption} />}
+  </body>
+</html>

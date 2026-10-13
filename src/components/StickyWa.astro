@@ -1,0 +1,30 @@
+---
+import Icon from './Icon.astro'
+import { waLink, type WaKey } from '../lib/whatsapp'
+
+interface Props {
+  waKey: WaKey
+  label: string
+  caption?: string
+}
+const { waKey, label, caption } = Astro.props
+---
+
+<div
+  class="fixed inset-x-0 bottom-0 z-30 border-t border-cream-line bg-cream/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur-md md:hidden"
+  data-sticky-wa
+>
+  <div class="flex items-center gap-3">
+    {
+      caption && (
+        <p class="min-w-0 flex-1 text-[0.78rem] font-semibold leading-tight text-ink-soft">
+          <span set:html={caption} />
+        </p>
+      )
+    }
+    <a href={waLink(waKey)} class:list={['btn btn-primary min-h-[3rem] px-5 text-[0.9rem]', !caption && 'w-full']} target="_blank" rel="noopener">
+      <Icon name="whatsapp" size={19} />
+      {label}
+    </a>
+  </div>
+</div>

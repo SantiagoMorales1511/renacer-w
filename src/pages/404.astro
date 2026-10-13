@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import { programs } from '../data/programs'
+---
+
+<Base title="Página no encontrada · Renacer" description="La página que buscas no existe o cambió de dirección." noindex>
+  <section class="grain">
+    <div class="wrap py-20 sm:py-28">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="display mt-5 max-w-3xl">Esta página <span class="accent">no existe.</span></h1>
+      <p class="lead mt-6 max-w-xl">Puede que la dirección haya cambiado. Estas son nuestras formaciones:</p>
+      <ul class="mt-8 max-w-xl divide-y divide-cream-line border-y border-cream-line">
+        {
+          programs.map((p) => (
+            <li>
+              <a href={p.slug} class="flex items-center justify-between py-4 font-semibold text-ink hover:text-petrol">
+                {p.name}
+                <Icon name="arrow" size={18} class="shrink-0 text-petrol" />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a href="/" class="btn btn-primary mt-10">Volver al inicio</a>
+    </div>
+  </section>
+</Base>

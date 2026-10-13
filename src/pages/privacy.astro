@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro'
+
+// Texto legal de Renacer AI (Google Calendar). No modificar el contenido:
+// esta URL está registrada en integraciones activas.
+const mail = 'contactorenacer.co@gmail.com'
+---
+
+<Base
+  title="Política de Privacidad — Renacer AI"
+  description="Política de privacidad de Renacer AI, la aplicación interna del Centro de Formación Renacer: uso de información de Google Calendar, procesamiento, conservación y contacto."
+>
+  <section class="grain">
+    <div class="wrap pb-10 pt-10 sm:pt-16">
+      <p class="eyebrow">Legal</p>
+      <h1 class="title mt-5 max-w-3xl">Política de Privacidad — Renacer AI</h1>
+      <p class="mt-4 text-[0.95rem] text-ink-mute">Última actualización: 8 de septiembre de 2026</p>
+    </div>
+  </section>
+
+  <section class="pb-20 sm:pb-28">
+    <div class="wrap">
+      <article class="legal card mx-auto max-w-3xl p-6 sm:p-12">
+        <section>
+          <h2>Responsable</h2>
+          <p>Centro de Formación Renacer ("Renacer"), a través de su aplicación interna Renacer AI, es responsable del tratamiento de la información descrita en esta política.</p>
+          <p>Correo de contacto: <a href={`mailto:${mail}`}>{mail}</a></p>
+        </section>
+
+        <section>
+          <h2>Qué información de Google utilizamos</h2>
+          <p>
+            Renacer AI accede, inicialmente, a información de Google Calendar autorizada explícitamente por
+            la cuenta oficial de Google de Renacer. Esta información se utiliza únicamente para consultar
+            fechas, módulos, horarios y eventos de nuestras formaciones (por ejemplo, sedes, fechas de inicio
+            y horarios de cada módulo).
+          </p>
+        </section>
+
+        <section>
+          <h2>Cómo se procesa esta información</h2>
+          <p>
+            La información obtenida de Google Calendar se sincroniza mediante un flujo de automatización
+            interno (n8n) alojado en infraestructura privada (Railway) y puede almacenarse como metadata o
+            caché en una base de datos PostgreSQL privada, con el único fin de que nuestros sistemas internos
+            puedan responder consultas sobre fechas, módulos, horarios y eventos sin depender de una llamada
+            en vivo a la API de Google en cada consulta.
+          </p>
+        </section>
+
+        <section>
+          <h2>Qué no hacemos con tu información</h2>
+          <ul>
+            <li>No vendemos datos obtenidos de Google.</li>
+            <li>No compartimos esta información con anunciantes.</li>
+            <li>No la utilizamos con fines distintos a operar y dar soporte a nuestras formaciones.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Con quién se comparte</h2>
+          <p>
+            Solo se procesa a través de los proveedores técnicos estrictamente necesarios para operar el
+            sistema (por ejemplo, el proveedor de infraestructura en la nube donde corren nuestros servicios).
+            El acceso a esta información está restringido a personal autorizado de Renacer y a los sistemas
+            internos autorizados para ese propósito.
+          </p>
+        </section>
+
+        <section>
+          <h2>Conservación de la información</h2>
+          <p>
+            La información se conserva únicamente durante el tiempo necesario para la operación del sistema
+            y para fines de auditoría interna. Puedes solicitar la eliminación de tu información escribiendo
+            a <a href={`mailto:${mail}`}>{mail}</a>.
+          </p>
+        </section>
+
+        <section>
+          <h2>Medidas de seguridad</h2>
+          <p>
+            Aplicamos medidas de seguridad razonables para proteger esta información, incluyendo conexiones
+            cifradas mediante HTTPS y controles de acceso restringidos a los sistemas e infraestructura donde
+            se procesa y almacena la información.
+          </p>
+        </section>
+
+        <section>
+          <h2>Cumplimiento con las políticas de Google</h2>
+          <p>
+            El uso y la transferencia de información recibida de las API de Google por parte de Renacer AI
+            a cualquier otra aplicación cumplirá con la <a
+              href="https://developers.google.com/terms/api-services-user-data-policy"
+              target="_blank"
+              rel="noopener noreferrer">Política de Datos de Usuario de los Servicios de API de Google</a
+            >, incluidos los requisitos de Uso Limitado.
+          </p>
+        </section>
+
+        <section>
+          <h2>Contacto</h2>
+          <p>
+            Para preguntas sobre esta política o para ejercer tus derechos sobre tu información, escríbenos a <a href={`mailto:${mail}`}>{mail}</a>.
+          </p>
+        </section>
+      </article>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal :global(section + section) { margin-top: 2.25rem; padding-top: 2.25rem; border-top: 1px solid #e4ded4; }
+  .legal :global(h2) { font-size: 1.2rem; margin-bottom: 0.75rem; }
+  .legal :global(p) { color: #3a4a63; line-height: 1.75; }
+  .legal :global(p + p) { margin-top: 0.5rem; }
+  .legal :global(ul) { list-style: disc; padding-left: 1.25rem; color: #3a4a63; line-height: 1.75; }
+  .legal :global(a) { color: #2f4d7e; text-decoration: underline; text-underline-offset: 3px; word-break: break-word; }
+</style>

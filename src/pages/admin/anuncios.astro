@@ -1,0 +1,8 @@
+---
+import Admin from '../../layouts/Admin.astro'
+import AdminAnunciosPage from '../../react-admin/pages/AdminAnunciosPage'
+---
+
+<Admin title="Renacer Admin · Anuncios">
+  <AdminAnunciosPage client:only="react" />
+</Admin>

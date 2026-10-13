@@ -1,0 +1,70 @@
+---
+import { Picture } from 'astro:assets'
+import Icon from './Icon.astro'
+import { formatCOP, type Program } from '../data/programs'
+
+interface Props {
+  program: Program
+  index?: number
+  headingLevel?: 'h2' | 'h3'
+}
+const { program: p, index, headingLevel: H = 'h3' } = Astro.props
+const open = p.status === 'abierta'
+---
+
+<article class="card group flex flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lift">
+  <a href={p.slug} class="relative block aspect-[4/3] overflow-hidden bg-cream-warm" tabindex="-1" aria-hidden="true">
+    <Picture
+      src={p.image}
+      alt=""
+      widths={[400, 640, 900]}
+      sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+      formats={['avif', 'webp']}
+      class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+      loading="lazy"
+    />
+    <span
+      class:list={[
+        'absolute left-4 top-4 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[0.72rem] font-bold tracking-wide backdrop-blur',
+        open ? 'bg-petrol-night/90 text-cream' : 'bg-cream/90 text-ink',
+      ]}
+    >
+      {open && <span class="h-1.5 w-1.5 rounded-full bg-gold" />}
+      {p.statusLabel}
+    </span>
+  </a>
+  <div class="flex flex-1 flex-col p-6 sm:p-7">
+    {index !== undefined && <p class="text-[0.72rem] font-bold uppercase tracking-[0.2em] text-gold-deep">0{index + 1}</p>}
+    <H class="mt-2 text-[1.35rem] leading-tight">
+      <a href={p.slug} class="after:absolute after:inset-0 focus:outline-none">{p.name}</a>
+    </H>
+    <p class="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">{p.summary}</p>
+    <dl class="mt-6 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-cream-line pt-5 text-[0.85rem]">
+      <div>
+        <dt class="text-ink-mute">Módulos</dt>
+        <dd class="font-semibold text-ink">{p.modulesCount} · {p.frequency.toLowerCase()}</dd>
+      </div>
+      <div>
+        <dt class="text-ink-mute">Valor</dt>
+        <dd class="font-semibold text-ink">{formatCOP(p.pricePerModule)} / módulo</dd>
+      </div>
+      <div>
+        <dt class="text-ink-mute">Horario</dt>
+        <dd class="font-semibold text-ink">{p.schedule}</dd>
+      </div>
+      <div>
+        <dt class="text-ink-mute">Modalidad</dt>
+        <dd class="font-semibold text-ink">{p.modality} · Cali</dd>
+      </div>
+    </dl>
+    <span class="mt-7 inline-flex items-center gap-2 text-[0.92rem] font-semibold text-petrol">
+      Ver formación
+      <Icon name="arrow" size={18} class="transition-transform duration-200 group-hover:translate-x-1" />
+    </span>
+  </div>
+</article>
+
+<style>
+  article { position: relative; }
+  article > a:first-child { position: relative; z-index: 0; }
+</style>

@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets'
+import Icon from './Icon.astro'
+import logoMark from '../assets/logo-mark.png'
+import logoWord from '../assets/logo-wordmark.png'
+import { nav } from '../data/site'
+import { waLink } from '../lib/whatsapp'
+
+const path = Astro.url.pathname.replace(/\/$/, '')
+const isActive = (href: string) => path === href
+---
+
+<header class="sticky top-0 z-40 border-b border-cream-line/80 bg-cream/85 backdrop-blur-md supports-[backdrop-filter]:bg-cream/75">
+  <div class="wrap flex h-16 items-center justify-between gap-4 sm:h-[4.5rem]">
+    <a href="/" class="flex items-center gap-2.5" aria-label="Centro de Formación Renacer — Inicio">
+      <Image src={logoMark} alt="" width={36} height={36} class="h-9 w-9 object-contain" loading="eager" />
+      <span class="flex flex-col leading-none">
+        <span class="text-[0.58rem] font-bold uppercase tracking-[0.22em] text-ink-mute">Centro de Formación</span>
+        <Image src={logoWord} alt="Renacer" width={92} height={24} class="mt-1 h-[1.45rem] w-auto" loading="eager" />
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Principal">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'rounded-full px-3.5 py-2 text-[0.88rem] font-semibold transition-colors',
+              isActive(item.href) ? 'bg-ink/[0.06] text-ink' : 'text-ink-soft hover:text-ink',
+            ]}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href={waLink('general')} class="btn btn-primary hidden min-h-[2.75rem] px-5 text-[0.85rem] sm:inline-flex" target="_blank" rel="noopener">
+        <Icon name="whatsapp" size={18} />
+        WhatsApp
+      </a>
+      <button
+        type="button"
+        class="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full text-ink hover:bg-ink/5 lg:hidden"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="menu-movil"
+        data-menu-toggle
+      >
+        <Icon name="menu" size={24} class="menu-open" />
+        <Icon name="close" size={24} class="menu-close hidden" />
+      </button>
+    </div>
+  </div>
+
+  <div id="menu-movil" class="hidden border-t border-cream-line bg-cream lg:hidden" data-menu>
+    <nav class="wrap flex flex-col py-3" aria-label="Menú móvil">
+      <a href="/" class:list={['flex items-center justify-between border-b border-cream-line py-4 text-lg font-semibold', path === '' ? 'text-petrol' : 'text-ink']}>
+        Inicio <Icon name="arrow" size={18} class="text-ink-mute" />
+      </a>
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class:list={['flex items-center justify-between border-b border-cream-line py-4 text-lg font-semibold', isActive(item.href) ? 'text-petrol' : 'text-ink']}
+            aria-current={isActive(item.href) ? 'page' : undefined}
+          >
+            {item.label}
+            <Icon name="arrow" size={18} class="text-ink-mute" />
+          </a>
+        ))
+      }
+      <a href={waLink('general')} class="btn btn-primary mt-5 w-full" target="_blank" rel="noopener">
+        <Icon name="whatsapp" size={20} />
+        Escribir por WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]')
+  const menu = document.querySelector<HTMLElement>('[data-menu]')
+  if (toggle && menu) {
+    const set = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open))
+      toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú')
+      menu.classList.toggle('hidden', !open)
+      toggle.querySelector('.menu-open')?.classList.toggle('hidden', open)
+      toggle.querySelector('.menu-close')?.classList.toggle('hidden', !open)
+      document.documentElement.classList.toggle('overflow-hidden', open)
+    }
+    toggle.addEventListener('click', () => set(toggle.getAttribute('aria-expanded') !== 'true'))
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && set(false))
+  }
+</script>

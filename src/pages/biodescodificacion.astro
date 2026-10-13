@@ -1,0 +1,37 @@
+---
+import ProgramPage from '../components/ProgramPage.astro'
+import { biodescodificacion as p } from '../data/programs'
+import { bioFaqs } from '../data/faqs'
+import hero from '../assets/photos/practica-parejas.jpg'
+import g1 from '../assets/photos/clase-2.jpg'
+import g2 from '../assets/photos/grupo-aula.jpg'
+import g3 from '../assets/photos/grupo-celebra.jpg'
+---
+
+<ProgramPage
+  program={p}
+  title="Máster en Biodescodificación · 12 módulos presenciales en Cali · Renacer"
+  description="Máster en Biodescodificación dirigido por Alba Elisa Cerón Gómez. 12 módulos presenciales en el Hotel La Esperanza, Ciudad Jardín (Cali), de 9:00 a. m. a 5:00 p. m. $300.000 COP por módulo."
+  heroImage={hero}
+  heroAlt="Estudiantes de Renacer realizando un ejercicio práctico en parejas durante un encuentro"
+  intro={{
+    heading: 'Comprender y <span class="accent">acompañar</span> desde una mirada sistémica.',
+    lead: 'Doce módulos para comprender y acompañar procesos familiares y emocionales desde una mirada sistémica y profesional.',
+    body: 'El recorrido va de los fundamentos biológicos y la epigenética a las cinco leyes biológicas de Hamer, el sentido biológico de la enfermedad y las memorias transgeneracionales, hasta la práctica por sistemas biológicos y el trabajo con casos.',
+  }}
+  highlights={[
+    { title: 'Mirada sistémica', text: 'Integra la historia familiar, la emoción y la biología en una misma lectura.' },
+    { title: 'Práctica en cada encuentro', text: 'Teoría y ejercicios guiados en jornadas presenciales de 9:00 a. m. a 5:00 p. m.' },
+    { title: 'Un módulo al mes', text: 'Doce encuentros mensuales en el Hotel La Esperanza, Ciudad Jardín, Cali.' },
+  ]}
+  faqs={bioFaqs}
+  gallery={[
+    { src: g1, alt: 'Facilitadora guiando una sesión de formación en el aula' },
+    { src: g2, alt: 'Grupo de estudiantes de Renacer en el salón de formación' },
+    { src: g3, alt: 'Estudiantes de Renacer celebrando al final de un encuentro' },
+  ]}
+  facilitatorRole="Dirección"
+  ctaTitle="¿Quieres conocer el <span class='accent text-lavender'>Máster?</span>"
+>
+  <Fragment slot="heading">Máster en <span class="accent">Biodescodificación</span></Fragment>
+</ProgramPage>

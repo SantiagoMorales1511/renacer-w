@@ -1,0 +1,68 @@
+---
+import Icon from './Icon.astro'
+import { formatDate, shortDate, type Module } from '../data/programs'
+
+interface Props {
+  modules: Module[]
+}
+const { modules } = Astro.props
+---
+
+<ol class="relative space-y-4">
+  {
+    modules.map((m) => {
+      const d = m.date ? shortDate(m.date) : null
+      return (
+        <li class="card overflow-hidden">
+          <details class="group" open={m.n === 1}>
+            <summary class="flex cursor-pointer list-none gap-4 p-5 sm:gap-6 sm:p-7 [&::-webkit-details-marker]:hidden">
+              {d && (
+                <span class="flex h-16 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-cream-warm text-petrol-night sm:h-[4.5rem] sm:w-16">
+                  <span class="text-[0.62rem] font-bold uppercase tracking-wider text-gold-deep">{d.month}</span>
+                  <span class="text-[1.6rem] font-bold leading-none">{d.day}</span>
+                </span>
+              )}
+              <span class="min-w-0 flex-1">
+                <span class="block text-[0.72rem] font-bold uppercase tracking-[0.18em] text-petrol">Módulo {m.n}</span>
+                <span class="mt-1.5 block text-[1.1rem] font-semibold leading-snug text-ink sm:text-[1.25rem]">{m.title}</span>
+                <span class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[0.85rem] text-ink-mute">
+                  {m.date && (
+                    <span class="inline-flex items-center gap-1.5">
+                      <Icon name="calendar" size={15} />
+                      <span class="first-letter:uppercase">{formatDate(m.date, { weekday: true })}</span>
+                    </span>
+                  )}
+                  {m.facilitator && (
+                    <span class="inline-flex items-center gap-1.5">
+                      <Icon name="user" size={15} />
+                      {m.facilitator}
+                    </span>
+                  )}
+                </span>
+              </span>
+              {m.topics && (
+                <span class="mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-ink/15 text-petrol transition-transform duration-200 group-open:rotate-45">
+                  <Icon name="plus" size={16} />
+                  <span class="sr-only">Ver temas</span>
+                </span>
+              )}
+            </summary>
+            {m.topics && (
+              <div class="border-t border-cream-line px-5 pb-6 pt-5 sm:px-7 sm:pl-[7.25rem]">
+                <ul class="space-y-2.5">
+                  {m.topics.map((t) => (
+                    <li class="flex gap-3 text-[0.95rem] leading-snug text-ink-soft">
+                      <Icon name="check" size={18} class="mt-0.5 shrink-0 text-gold-deep" />
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+                {m.note && <p class="mt-4 rounded-xl bg-cream-warm px-4 py-3 text-[0.85rem] text-ink-soft">{m.note}</p>}
+              </div>
+            )}
+          </details>
+        </li>
+      )
+    })
+  }
+</ol>

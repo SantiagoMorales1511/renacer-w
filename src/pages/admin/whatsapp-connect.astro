@@ -1,0 +1,8 @@
+---
+import Admin from '../../layouts/Admin.astro'
+import WhatsAppConnectAdmin from '../../react-admin/pages/WhatsAppConnectAdmin'
+---
+
+<Admin title="Renacer · Conexión WhatsApp" bodyClass="min-h-screen text-text bg-gradient-to-br from-violet-50/80 via-white to-emerald-50/60">
+  <WhatsAppConnectAdmin client:only="react" />
+</Admin>

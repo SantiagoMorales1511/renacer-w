@@ -1,0 +1,38 @@
+---
+import ProgramPage from '../components/ProgramPage.astro'
+import { constelaciones as p } from '../data/programs'
+import { constFaqs } from '../data/faqs'
+import hero from '../assets/photos/hilos-sistema.jpg'
+import g1 from '../assets/photos/circulo-exterior.jpg'
+import g2 from '../assets/photos/encuentro-blanco.jpg'
+import g3 from '../assets/photos/certificados-2.jpg'
+---
+
+<ProgramPage
+  program={p}
+  title="Formación en Constelaciones Familiares y Terapia Sistémica · Cali · Renacer"
+  description="Formación presencial en Constelaciones Familiares y Terapia Sistémica en Cali. 11 módulos, un sábado al mes, de 9:00 a. m. a 5:00 p. m. $300.000 COP por módulo."
+  heroImage={hero}
+  heroAlt="Ejercicio sistémico con hilos rojos que conectan a los participantes de pie en círculo"
+  intro={{
+    heading: 'Mirar la historia familiar <span class="accent">con claridad.</span>',
+    lead: 'Una formación vivencial para aprender a mirar los vínculos, las lealtades y los patrones que se repiten en la historia familiar, con herramientas sistémicas para la vida personal y el acompañamiento.',
+    body: 'Una constelación familiar es una terapia vivencial breve en la que, a través de representantes, se hacen visibles los vínculos, las lealtades y los patrones invisibles de un sistema familiar, para comprenderlos desde una mirada sistémica.',
+  }}
+  highlights={[
+    { title: 'Vivencial', text: 'Se aprende participando: constelando, representando y observando en grupo.' },
+    { title: 'Grupal', text: 'Encuentros presenciales mensuales donde el grupo es parte del aprendizaje.' },
+    { title: 'Sin juicios', text: 'Un espacio de respeto para mirar la propia historia y la de otros.' },
+  ]}
+  faqs={constFaqs}
+  gallery={[
+    { src: g1, alt: 'Encuentro al aire libre: el grupo de pie en círculo' },
+    { src: g2, alt: 'Participantes vestidos de blanco durante un ejercicio de constelación' },
+    { src: g3, alt: 'Estudiantes de Renacer con sus certificados al cierre de un proceso' },
+  ]}
+  facilitatorRole="Dirección"
+  syllabusNote="La formación se desarrolla en 11 módulos mensuales. Te enviamos el temario detallado por WhatsApp."
+  ctaTitle="¿Te interesa la <span class='accent text-lavender'>formación?</span>"
+>
+  <Fragment slot="heading">Constelaciones Familiares y <span class="accent">Terapia Sistémica</span></Fragment>
+</ProgramPage>

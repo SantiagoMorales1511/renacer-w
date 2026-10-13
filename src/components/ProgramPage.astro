@@ -1,0 +1,204 @@
+---
+/**
+ * Plantilla para formaciones en curso (Biodescodificación, Constelaciones).
+ * Todo el contenido viene de src/data/programs.ts.
+ */
+import { Picture } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+import Base from '../layouts/Base.astro'
+import Icon from './Icon.astro'
+import FactSheet from './FactSheet.astro'
+import FacilitatorCard from './FacilitatorCard.astro'
+import Faq from './Faq.astro'
+import CtaBand from './CtaBand.astro'
+import { formatCOP, type Program } from '../data/programs'
+import type { Faq as FaqItem } from '../data/faqs'
+import { site } from '../data/site'
+import { waLink } from '../lib/whatsapp'
+
+interface Props {
+  program: Program
+  title: string
+  description: string
+  heroImage: ImageMetadata
+  heroAlt: string
+  intro: { heading: string; lead: string; body: string }
+  highlights: { title: string; text: string }[]
+  faqs: FaqItem[]
+  gallery: { src: ImageMetadata; alt: string }[]
+  facilitatorRole: string
+  syllabusNote?: string
+  ctaTitle: string
+}
+const { program: p, title, description, heroImage, heroAlt, intro, highlights, faqs, gallery, facilitatorRole, syllabusNote, ctaTitle } = Astro.props
+
+const courseLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: p.name,
+  description: p.summary,
+  provider: { '@type': 'EducationalOrganization', name: site.name, sameAs: site.url },
+  inLanguage: 'es',
+  offers: { '@type': 'Offer', price: p.pricePerModule, priceCurrency: 'COP', description: 'Valor por módulo', url: `${site.url}${p.slug}` },
+}
+---
+
+<Base
+  title={title}
+  description={description}
+  ogImage={heroImage}
+  ogAlt={p.name}
+  stickyWa={{ key: p.waKey, label: 'Pedir información', caption: `${p.modulesCount} módulos · <strong class="text-ink">${formatCOP(p.pricePerModule)}</strong>/módulo` }}
+  jsonLd={courseLd}
+>
+  <section class="grain overflow-hidden">
+    <div class="wrap grid gap-10 pb-16 pt-8 sm:pt-14 md:grid-cols-12 md:gap-12 md:pb-24">
+      <div class="md:col-span-7 md:pt-4">
+        <p class="eyebrow rise">{p.statusLabel}</p>
+        <h1 class="rise rise-2 mt-5 text-[clamp(2.05rem,7.6vw,4.1rem)] leading-[1.02] tracking-[-0.04em]">
+          <slot name="heading" />
+        </h1>
+        <p class="lead rise rise-3 mt-5 max-w-xl">{p.summary}</p>
+        <FactSheet program={p} class="rise rise-3 mt-7 max-w-xl">
+          <p class="mt-5 rounded-xl bg-cream-warm px-4 py-3 text-[0.88rem] leading-snug text-ink-soft">
+            La cohorte actual ya está en marcha. Escríbenos y te contamos las condiciones de ingreso vigentes.
+          </p>
+          <a href={waLink(p.waKey)} class="btn btn-primary mt-4 w-full" target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={20} />
+            Pedir información por WhatsApp
+          </a>
+        </FactSheet>
+      </div>
+      <div class="md:col-span-5">
+        <div class="photo aspect-[4/5] md:sticky md:top-28">
+          <Picture
+            src={heroImage}
+            alt={heroAlt}
+            widths={[400, 640, 900, 1200]}
+            sizes="(min-width: 768px) 40vw, calc(100vw - 2.5rem)"
+            formats={['avif', 'webp']}
+            loading="eager"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="intro">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <p class="eyebrow">El programa</p>
+        <h2 id="intro" class="title mt-5" set:html={intro.heading} />
+      </div>
+      <div class="md:col-span-6 md:col-start-7">
+        <p class="lead">{intro.lead}</p>
+        <p class="mt-5 text-ink-soft">{intro.body}</p>
+      </div>
+    </div>
+    <div class="wrap mt-14 grid gap-px overflow-hidden rounded-[1.75rem] border border-cream-line bg-cream-line sm:grid-cols-3">
+      {
+        highlights.map((h) => (
+          <div class="bg-cream p-7">
+            <Icon name="spark" size={22} class="text-gold-deep" />
+            <h3 class="mt-4 text-[1.15rem]">{h.title}</h3>
+            <p class="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">{h.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section id="temario" class="section" aria-labelledby="temario-t">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <div class="md:sticky md:top-28">
+          <p class="eyebrow">Temario</p>
+          <h2 id="temario-t" class="title mt-5">{p.modulesCount} <span class="accent">módulos.</span></h2>
+          <p class="mt-5 text-ink-soft">{p.frequency} · {p.schedule} · {p.modality} en {p.venue}.</p>
+        </div>
+      </div>
+      <div class="md:col-span-8">
+        {
+          p.modules.length > 0 ? (
+            <ol class="grid gap-3 sm:grid-cols-2">
+              {p.modules.map((m) => (
+                <li class="card flex items-start gap-4 p-5">
+                  <span class="font-serif text-[1.9rem] italic leading-none text-lavender-deep">{String(m.n).padStart(2, '0')}</span>
+                  <span class="pt-1 font-semibold leading-snug text-ink">{m.title}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div class="card p-7 sm:p-9">
+              <ol class="grid grid-cols-4 gap-2 sm:grid-cols-6">
+                {Array.from({ length: p.modulesCount }, (_, i) => (
+                  <li class="flex aspect-square items-center justify-center rounded-2xl bg-cream-warm font-serif text-[1.6rem] italic text-petrol">
+                    {i + 1}
+                  </li>
+                ))}
+              </ol>
+              <p class="mt-6 text-ink-soft">{syllabusNote}</p>
+              <a href={waLink(p.waKey)} class="btn btn-ghost mt-6" target="_blank" rel="noopener">
+                <Icon name="whatsapp" size={19} class="text-petrol" />
+                Solicitar el temario
+              </a>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="direccion">
+    <div class="wrap grid gap-10 md:grid-cols-12 md:items-center">
+      <div class="md:col-span-5">
+        <p class="eyebrow">{facilitatorRole}</p>
+        <h2 id="direccion" class="title mt-5">Quién <span class="accent">acompaña</span> el proceso.</h2>
+      </div>
+      <div class="md:col-span-7">
+        {p.facilitators.map((f) => <FacilitatorCard person={f} role={facilitatorRole} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="fotos">
+    <div class="wrap">
+      <p class="eyebrow">Encuentros Renacer</p>
+      <h2 id="fotos" class="title mt-5 max-w-2xl">Formación <span class="accent">presencial</span>, en grupo.</h2>
+      <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-3">
+        {
+          gallery.map((g, i) => (
+            <div class:list={['photo', i === 0 ? 'col-span-2 aspect-[16/10] md:col-span-1 md:aspect-[4/5]' : 'aspect-[4/5]']}>
+              <Picture src={g.src} alt={g.alt} widths={[320, 560, 860]} sizes="(min-width: 768px) 33vw, 50vw" formats={['avif', 'webp']} loading="lazy" />
+            </div>
+          ))
+        }
+      </div>
+      <p class="mt-4 text-[0.85rem] text-ink-mute">Imágenes reales de encuentros de formación en Renacer.</p>
+    </div>
+  </section>
+
+  <section class="section bg-white" aria-labelledby="preguntas">
+    <div class="wrap grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2 id="preguntas" class="title mt-5">Resolvemos tus <span class="accent">dudas.</span></h2>
+      </div>
+      <div class="md:col-span-8">
+        <Faq items={faqs} />
+      </div>
+    </div>
+  </section>
+
+  <div class="bg-white pt-4">
+    <CtaBand
+      waKey={p.waKey}
+      eyebrow={p.statusLabel}
+      title={ctaTitle}
+      text="Escríbenos por WhatsApp y te informamos sobre las condiciones de ingreso, los módulos y el proceso de inscripción."
+      button="Pedir información"
+      image={gallery[0].src}
+      imageAlt={gallery[0].alt}
+    />
+  </div>
+</Base>

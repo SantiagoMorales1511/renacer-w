@@ -1,0 +1,69 @@
+---
+import { Image } from 'astro:assets'
+import Icon from './Icon.astro'
+import logoMark from '../assets/logo-mark.png'
+import { site } from '../data/site'
+import { programs } from '../data/programs'
+import { waLink } from '../lib/whatsapp'
+const year = new Date().getFullYear()
+---
+
+<footer class="night-glow bg-petrol-night text-cream/80">
+  <div class="wrap grid gap-12 py-16 sm:py-20 md:grid-cols-12">
+    <div class="md:col-span-5">
+      <a href="/" class="inline-flex items-center gap-3" aria-label="Inicio">
+        <Image src={logoMark} alt="" width={44} height={44} class="h-11 w-11 object-contain" />
+        <span class="flex flex-col leading-tight">
+          <span class="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-lavender">Centro de Formación</span>
+          <span class="font-serif text-2xl italic text-cream">Renacer</span>
+        </span>
+      </a>
+      <p class="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-cream/70">
+        Formación y desarrollo humano en Cali, Colombia. Herramientas sistémicas para comprender, acompañar y transformar, desde una práctica ética y humana.
+      </p>
+      <a href={waLink('general')} class="btn btn-light mt-8" target="_blank" rel="noopener">
+        <Icon name="whatsapp" size={20} />
+        Escríbenos por WhatsApp
+      </a>
+    </div>
+
+    <div class="md:col-span-3">
+      <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-lavender">Formaciones</h2>
+      <ul class="mt-5 space-y-3 text-[0.95rem]">
+        {programs.map((p) => <li><a href={p.slug} class="hover:text-cream">{p.shortName}</a></li>)}
+        <li><a href="/formaciones" class="hover:text-cream">Todas las formaciones</a></li>
+        <li><a href="/testimonios" class="hover:text-cream">Testimonios</a></li>
+      </ul>
+    </div>
+
+    <div class="md:col-span-4">
+      <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-lavender">Contacto</h2>
+      <ul class="mt-5 space-y-3.5 text-[0.95rem]">
+        <li>
+          <a href={waLink('general')} class="inline-flex items-center gap-3 hover:text-cream" target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={18} class="text-lavender" />{site.whatsapp.display}
+          </a>
+        </li>
+        <li>
+          <a href={site.instagram.url} class="inline-flex items-center gap-3 hover:text-cream" target="_blank" rel="noopener">
+            <Icon name="instagram" size={18} class="text-lavender" />{site.instagram.handle}
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${site.email}`} class="inline-flex items-center gap-3 break-all hover:text-cream">
+            <Icon name="mail" size={18} class="shrink-0 text-lavender" />{site.email}
+          </a>
+        </li>
+        <li class="inline-flex items-center gap-3">
+          <Icon name="pin" size={18} class="text-lavender" />Cali, Colombia
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-cream/10">
+    <div class="wrap flex flex-col gap-3 py-6 text-[0.8rem] text-cream/55 sm:flex-row sm:items-center sm:justify-between">
+      <p>© {year} Centro de Formación Renacer. Todos los derechos reservados.</p>
+      <a href="/privacy" class="hover:text-cream">Política de privacidad</a>
+    </div>
+  </div>
+</footer>
