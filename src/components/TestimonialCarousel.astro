@@ -509,6 +509,24 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
       if (this.soundOn) v!.play().catch(() => {})
     }
 
+    /**
+     * Teclas de volumen del dispositivo (solo en navegadores que las informan a la página:
+     * algunos Android y teclados con teclas multimedia; iPhone no las expone a la web).
+     * Si el video central suena en silencio, se activa el audio sin pausarlo.
+     */
+    onVolumeKey() {
+      const v = this.video
+      if (this.soundOn || !this.inView || dialogOpen || !v || !v.isConnected || v.paused || v.dataset.for !== String(this.active)) return
+      this.setSound(true)
+      v.muted = false
+      v.play().catch(() => {
+        // El navegador no aceptó la tecla como interacción: se mantiene en silencio.
+        this.setSound(false)
+        v.muted = true
+        v.play().catch(() => {})
+      })
+    }
+
     setSound(on: boolean) {
       this.soundOn = on
       this.syncSoundUI()
@@ -532,6 +550,10 @@ const after = items.slice(0, k).map((t, j) => ({ t, real: j }))
 
   document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((el) => carousels.push(new Carousel(el)))
   document.addEventListener('visibilitychange', () => carousels.forEach((c) => c.update()))
+  const VOLUME_KEYS = ['AudioVolumeUp', 'AudioVolumeDown', 'VolumeUp', 'VolumeDown']
+  document.addEventListener('keydown', (e) => {
+    if (VOLUME_KEYS.includes(e.key)) carousels.forEach((c) => c.onVolumeKey())
+  })
   reduceMotion.addEventListener?.('change', () => carousels.forEach((c) => c.update()))
 
   // Si en la página se abre el reproductor grande (miniaturas), el carrusel se pausa.
