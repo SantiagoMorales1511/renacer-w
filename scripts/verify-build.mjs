@@ -71,11 +71,28 @@ for (const f of ['index.html', 'testimonios.html', 'constelaciones-familiares.ht
   ok(n > 0, `${f}: ${n} testimonios en video`)
 }
 ok((read('index.html').match(/data-slide /g) || []).length === 11, 'Home: carrusel con los 11 testimonios')
-ok(!read('sexualidad-consciente.html').includes('data-carousel'), 'Sexualidad: sin testimonios (no hay atribuciones confirmadas)')
-const bioHtml = read('biodescodificacion.html')
-ok(['Marcela Rivera', 'Johana Valencia', 'Viviana'].every((n) => bioHtml.includes(`data-name="${n}"`)) && !bioHtml.includes('data-name="Mauricio"'), 'Biodescodificación: solo testimonios que mencionan el programa')
-const constHtml = read('constelaciones-familiares.html')
-ok(!constHtml.includes('data-name="Marcela Rivera"') && constHtml.includes('data-name="Alexis García"'), 'Constelaciones: solo testimonios que mencionan el programa')
+// Orden de testimonios y bloques de prueba social
+const slideNames = (html) => {
+  const car = html.slice(html.indexOf('data-carousel'))
+  return [...car.matchAll(/data-slide [^>]*aria-label="\d+ de \d+: ([^"]+)"/g)].map((m) => m[1])
+}
+const bioNames = slideNames(read('biodescodificacion.html'))
+ok(bioNames.slice(0, 3).sort().join() === ['Johana Valencia', 'Marcela Rivera', 'Viviana'].sort().join() && bioNames.length === 11, `Biodescodificación: carrusel con sus 3 testimonios primero (${bioNames.slice(0, 3).join(', ')}) y luego los demás`)
+const constNames = slideNames(read('constelaciones-familiares.html'))
+ok(constNames.slice(0, 6).every((n) => ['Mauricio', 'Vany Osorio', 'Jaime Fernández Naranjo', 'Viviana', 'Laura', 'Alexis García'].includes(n)), 'Constelaciones: sus 6 testimonios primero')
+for (const [f, title] of [['index.html', 'Conoce las experiencias de quienes han vivido Renacer'], ['sexualidad-consciente.html', 'Conoce la experiencia de estudiar en Renacer'], ['biodescodificacion.html', 'Conoce la experiencia de estudiar en Renacer'], ['constelaciones-familiares.html', 'Conoce la experiencia de estudiar en Renacer']]) {
+  const html = read(f)
+  const strip = html.indexOf(title), carousel = html.indexOf('data-carousel'), h1 = html.indexOf('<h1')
+  ok(strip > h1 && strip < carousel, `${f}: bloque compacto de testimonios después del Hero y antes del carrusel`)
+  ok(html.includes('Ver más experiencias'), `${f}: enlace "Ver más experiencias"`)
+}
+const sexHtml = read('sexualidad-consciente.html')
+ok(sexHtml.includes('Testimonios de estudiantes de otras formaciones de Renacer') && !/data-program="Sexualidad/.test(sexHtml), 'Sexualidad: testimonios identificados como de otras formaciones, ninguno atribuido a Sexualidad')
+for (const f of ['sexualidad-consciente.html', 'biodescodificacion.html', 'constelaciones-familiares.html']) {
+  const html = read(f)
+  const car = html.indexOf('data-carousel'), cta = html.indexOf('experiencia de formación?')
+  ok(cta > car, `${f}: CTA "¿Te gustaría vivir tu propia experiencia de formación?" después del carrusel`)
+}
 ok(read('index.html').includes('Coach Ontológica') && read('index.html').includes('Shinrin Yoku'), 'Home: credenciales completas de Alba Elisa')
 import { readdirSync } from 'node:fs'
 for (const f of readdirSync(new URL('videos/', dist)).filter((x) => x.endsWith('.mp4'))) {

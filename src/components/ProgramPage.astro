@@ -12,7 +12,8 @@ import FacilitatorCard from './FacilitatorCard.astro'
 import Faq from './Faq.astro'
 import CtaBand from './CtaBand.astro'
 import TestimonialCarousel from './TestimonialCarousel.astro'
-import { testimonialsFor } from '../data/testimonials'
+import TestimonialStrip from './TestimonialStrip.astro'
+import { testimonialsFirstFor, featured } from '../data/testimonials'
 import { formatCOP, type Program } from '../data/programs'
 import type { Faq as FaqItem } from '../data/faqs'
 import { site } from '../data/site'
@@ -30,11 +31,10 @@ interface Props {
   gallery: { src: ImageMetadata; alt: string }[]
   facilitatorRole: string
   syllabusNote?: string
-  ctaTitle: string
 }
-const { program: p, title, description, heroImage, heroAlt, intro, highlights, faqs, gallery, facilitatorRole, syllabusNote, ctaTitle } = Astro.props
+const { program: p, title, description, heroImage, heroAlt, intro, highlights, faqs, gallery, facilitatorRole, syllabusNote } = Astro.props
 
-const testimonials = testimonialsFor(p.key)
+const testimonials = testimonialsFirstFor(p.key)
 
 const courseLd = {
   '@context': 'https://schema.org',
@@ -87,6 +87,14 @@ const courseLd = {
       </div>
     </div>
   </section>
+
+  <TestimonialStrip
+    items={featured[p.key]}
+    title="Conoce la experiencia de estudiar en Renacer"
+    note={`Estudiantes de la ${p.shortName === 'Biodescodificación' ? 'formación en Biodescodificación' : 'Formación en Constelaciones Familiares'} cuentan su experiencia.`}
+    moreHref="#testimonios"
+    class="-mt-6 pb-10 sm:-mt-10 sm:pb-16"
+  />
 
   <section class="section bg-white" aria-labelledby="intro">
     <div class="wrap grid gap-12 md:grid-cols-12">
@@ -182,13 +190,7 @@ const courseLd = {
     </div>
   </section>
 
-  <TestimonialCarousel
-    items={testimonials}
-    bg="white"
-    subtitle="Experiencias de estudiantes de esta formación, contadas por ellos mismos."
-  />
-
-  <section class:list={['section', testimonials.length === 0 && 'bg-white']} aria-labelledby="preguntas">
+  <section class="section bg-white" aria-labelledby="preguntas">
     <div class="wrap grid gap-10 md:grid-cols-12">
       <div class="md:col-span-4">
         <p class="eyebrow">Preguntas frecuentes</p>
@@ -200,15 +202,18 @@ const courseLd = {
     </div>
   </section>
 
-  <div class="bg-white pt-4">
-    <CtaBand
-      waKey={p.waKey}
-      eyebrow={p.statusLabel}
-      title={ctaTitle}
-      text="Escríbenos por WhatsApp y te informamos sobre las condiciones de ingreso, los módulos y el proceso de inscripción."
-      button="Pedir información"
-      image={gallery[0].src}
-      imageAlt={gallery[0].alt}
-    />
-  </div>
+  <TestimonialCarousel
+    items={testimonials}
+    subtitle="Primero, estudiantes de esta formación; después, experiencias de otras formaciones de Renacer. Cada video indica la formación de cada persona."
+  />
+
+  <CtaBand
+    waKey={p.waKey}
+    eyebrow={p.statusLabel}
+    title="¿Te gustaría vivir tu propia <span class='accent text-lavender'>experiencia de formación?</span>"
+    text="Escríbenos por WhatsApp y te informamos sobre las condiciones de ingreso, los módulos y el proceso de inscripción."
+    button="Solicitar información por WhatsApp"
+    image={gallery[0].src}
+    imageAlt={gallery[0].alt}
+  />
 </Base>

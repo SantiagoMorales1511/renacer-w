@@ -61,3 +61,24 @@ export const videoTestimonials: VideoTestimonial[] = [
 export function testimonialsFor(key?: ProgramKey): VideoTestimonial[] {
   return key ? videoTestimonials.filter((t) => t.programs.includes(key)) : videoTestimonials
 }
+
+/**
+ * Orden para el carrusel de una formación: primero quienes mencionan esa
+ * formación y después el resto de experiencias de Renacer (cada tarjeta
+ * muestra la formación que la persona cursó).
+ */
+export function testimonialsFirstFor(key: ProgramKey): VideoTestimonial[] {
+  const own = testimonialsFor(key)
+  return [...own, ...videoTestimonials.filter((t) => !own.includes(t))]
+}
+
+const byId = (ids: string[]) => ids.map((id) => videoTestimonials.find((t) => t.id === id)!).filter(Boolean)
+
+/** 3 miniaturas para los bloques compactos junto al Hero. */
+export const featured = {
+  home: byId(['marcela', 'alexis', 'johana']),
+  bio: byId(['marcela', 'johana', 'viviana']),
+  const: byId(['mauricio', 'alexis', 'jaime']),
+  // Sexualidad aún no inicia: experiencias de otras formaciones, identificadas como tales.
+  sex: byId(['mauricio', 'marcela', 'laura']),
+} satisfies Record<string, VideoTestimonial[]>

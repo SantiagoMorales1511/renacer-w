@@ -4,12 +4,13 @@ import Base from '../layouts/Base.astro'
 import Icon from '../components/Icon.astro'
 import ProgramCard from '../components/ProgramCard.astro'
 import TestimonialCarousel from '../components/TestimonialCarousel.astro'
+import TestimonialStrip from '../components/TestimonialStrip.astro'
 import Faq from '../components/Faq.astro'
 import CtaBand from '../components/CtaBand.astro'
 import { programs, sexualidad, formatCOP } from '../data/programs'
 import { people } from '../data/people'
 import { homeFaqs } from '../data/faqs'
-import { testimonialsFor } from '../data/testimonials'
+import { testimonialsFor, featured } from '../data/testimonials'
 import { waLink } from '../lib/whatsapp'
 
 import hero from '../assets/photos/grupo-ceremonia.jpg'
@@ -116,6 +117,14 @@ const pillars = [
       </div>
     </div>
   </section>
+
+  <!-- MINI TESTIMONIOS -->
+  <TestimonialStrip
+    items={featured.home}
+    title="Conoce las experiencias de quienes han vivido Renacer"
+    moreHref="#testimonios"
+    class="pb-10 sm:pb-16"
+  />
 
   <!-- PRESENTACIÓN -->
   <section class="section bg-white" aria-labelledby="sobre">

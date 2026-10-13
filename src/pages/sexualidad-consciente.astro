@@ -8,7 +8,8 @@ import FacilitatorCard from '../components/FacilitatorCard.astro'
 import Faq from '../components/Faq.astro'
 import CtaBand from '../components/CtaBand.astro'
 import TestimonialCarousel from '../components/TestimonialCarousel.astro'
-import { testimonialsFor } from '../data/testimonials'
+import TestimonialStrip from '../components/TestimonialStrip.astro'
+import { testimonialsFirstFor, featured } from '../data/testimonials'
 import { sexualidad as p, formatDate, shortDate, formatCOP } from '../data/programs'
 import { people } from '../data/people'
 import { sexFaqs } from '../data/faqs'
@@ -121,6 +122,15 @@ const courseLd = {
       </div>
     </div>
   </section>
+
+  <!-- PRUEBA SOCIAL (experiencias de otras formaciones: este programa aún no inicia) -->
+  <TestimonialStrip
+    items={featured.sex}
+    title="Conoce la experiencia de estudiar en Renacer"
+    note="Testimonios de estudiantes de otras formaciones de Renacer. Esta formación inicia el 25 de octubre de 2026."
+    moreHref="#testimonios"
+    class="-mt-6 pb-10 sm:-mt-10 sm:pb-16"
+  />
 
   <!-- QUÉ ES -->
   <section class="section bg-white" aria-labelledby="que-es">
@@ -270,9 +280,6 @@ const courseLd = {
     </div>
   </section>
 
-  <!-- TESTIMONIOS (solo si hay testimonios confirmados de esta formación) -->
-  <TestimonialCarousel items={testimonialsFor('sex')} subtitle="Experiencias de estudiantes de esta formación, contadas por ellos mismos." />
-
   <!-- FAQ -->
   <section class="section" aria-labelledby="preguntas">
     <div class="wrap grid gap-10 md:grid-cols-12">
@@ -286,12 +293,19 @@ const courseLd = {
     </div>
   </section>
 
+  <!-- TESTIMONIOS -->
+  <TestimonialCarousel
+    items={testimonialsFirstFor('sex')}
+    bg="white"
+    subtitle="Experiencias de estudiantes de otras formaciones de Renacer. Cada video indica la formación que cursó cada persona."
+  />
+
   <CtaBand
     waKey="sex"
     eyebrow="Inscripciones abiertas"
-    title="Primer módulo: <span class='accent text-lavender'>domingo 25 de octubre.</span>"
-    text="Escríbenos por WhatsApp. Cuéntanos en el mensaje por qué te interesa la formación y te orientamos sobre la inscripción."
-    button="Quiero inscribirme"
+    title="¿Te gustaría vivir tu propia <span class='accent text-lavender'>experiencia de formación?</span>"
+    text="El primer módulo es el domingo 25 de octubre de 2026. Escríbenos por WhatsApp y cuéntanos por qué te interesa la formación."
+    button="Solicitar información por WhatsApp"
     image={photoA}
     imageAlt="Estudiantes de Renacer durante un encuentro"
   />
