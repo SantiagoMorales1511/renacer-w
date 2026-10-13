@@ -22,7 +22,7 @@ export const videoTestimonials: VideoTestimonial[] = [
     quote: 'Ha sido un proceso, como su nombre lo dice, de renacimiento, de encontrarme conmigo mismo.',
     src: '/videos/testimonio-mauricio-constelaciones.mp4',
     poster: posterMauricio,
-    duration: '0:26',
+    duration: '0:25',
   },
   {
     id: 'vany',
@@ -31,6 +31,6 @@ export const videoTestimonials: VideoTestimonial[] = [
     quote: '…porque fue un trabajo personal y que impactó mucho en mí.',
     src: '/videos/testimonio-estudiante-constelaciones.mp4',
     poster: posterVany,
-    duration: '0:34',
+    duration: '0:33',
   },
 ]

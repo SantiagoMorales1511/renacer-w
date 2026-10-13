@@ -18,16 +18,13 @@ const rows = [
 ---
 
 <div class:list={['card p-5 shadow-soft sm:p-6', className]}>
-  <div class="flex items-end justify-between gap-4 border-b border-cream-line pb-5">
+  <div class="border-b border-cream-line pb-5">
     <div>
       <p class="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-ink-mute">Valor por módulo</p>
       <p class="mt-1 text-[2.1rem] font-bold leading-none tracking-[-0.03em] text-petrol-night">
         {formatCOP(p.pricePerModule)}<span class="ml-1.5 text-[0.9rem] font-semibold tracking-normal text-ink-mute">COP</span>
       </p>
     </div>
-    <span class:list={['rounded-full px-3 py-1.5 text-[0.72rem] font-bold', p.status === 'abierta' ? 'bg-sage/50 text-ink' : 'bg-lavender-soft text-petrol-deep']}>
-      {p.statusLabel}
-    </span>
   </div>
   <dl class="mt-4 space-y-3.5">
     {
