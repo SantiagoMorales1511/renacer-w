@@ -7,10 +7,10 @@ export default {
         // ── Sitio público (Manual de Identidad Renacer) ──
         ink: { DEFAULT: '#1B2B45', soft: '#3A4A63', mute: '#5E6B80' },
         petrol: { DEFAULT: '#2F4D7E', deep: '#1F3A63', night: '#14243D' },
-        lavender: { DEFAULT: '#C8B6E6', soft: '#E9E1F5', deep: '#A992D8' },
+        lavender: { DEFAULT: '#C8B6E6', soft: '#E9E1F5', deep: '#8A70C6' },
         peri: '#D9DDF7',
         cream: { DEFAULT: '#F7F6F3', warm: '#F1EDE6', line: '#E4DED4' },
-        gold: { DEFAULT: '#D7C29A', deep: '#9C7F4B' },
+        gold: { DEFAULT: '#D7C29A', deep: '#7E6436' },
         sage: '#BFD9C4',
         wa: { DEFAULT: '#1F7A4D', hover: '#196640' },
         // ── Tokens heredados: los usan los paneles /admin/* ──

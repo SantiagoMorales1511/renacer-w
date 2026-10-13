@@ -18,10 +18,10 @@ const isActive = (href: string) => path === href
 <header class="sticky top-0 z-40 border-b border-cream-line/80 bg-cream/85 backdrop-blur-md supports-[backdrop-filter]:bg-cream/75">
   <div class="wrap flex h-16 items-center justify-between gap-4 sm:h-[4.5rem]">
     <a href="/" class="flex items-center gap-2.5" aria-label="Centro de Formación Renacer — Inicio">
-      <Image src={logoMark} alt="" width={36} height={36} class="h-9 w-9 object-contain" loading="eager" />
+      <Image src={logoMark} alt="" width={36} height={36} densities={[1, 2, 3]} class="h-9 w-9 object-contain" loading="eager" />
       <span class="flex flex-col leading-none">
         <span class="text-[0.58rem] font-bold uppercase tracking-[0.22em] text-ink-mute">Centro de Formación</span>
-        <Image src={logoWord} alt="Renacer" width={92} height={24} class="mt-1 h-[1.45rem] w-auto" loading="eager" />
+        <Image src={logoWord} alt="Renacer" width={91} height={24} densities={[1, 2, 3]} class="mt-1 h-6 w-[91px]" loading="eager" />
       </span>
     </a>
 
