@@ -1,0 +1,221 @@
+---
+/**
+ * Meta Pixel con consentimiento. Solo se renderiza si PUBLIC_META_PIXEL_ID está definido;
+ * sin ID no se carga nada y no se muestra ningún aviso.
+ *
+ * - fbevents.js se descarga únicamente después de que la persona acepta.
+ * - Eventos: PageView (todas las páginas públicas), ViewContent (/sexualidad-consciente)
+ *   y Contact (clic en un enlace de WhatsApp). Contact es un clic, no una conversación.
+ * - Sin Lead ni Purchase. Sin datos personales: autoConfig desactivado (no lee formularios
+ *   ni textos de botones) y sin advanced matching.
+ */
+interface Props {
+  /** La página tiene la barra fija de WhatsApp en móvil: el aviso se sube para no taparla */
+  sticky?: boolean
+}
+const { sticky = false } = Astro.props
+const pixelId = (import.meta.env.PUBLIC_META_PIXEL_ID ?? '').trim()
+const valid = /^\d{10,20}$/.test(pixelId)
+---
+
+{
+  valid && (
+    <div
+      id="rn-consent"
+      data-px={pixelId}
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="rn-consent-t"
+      hidden
+      class:list={['rn-consent', sticky && 'rn-consent--sticky']}
+    >
+      <p id="rn-consent-t" class="rn-consent__text">
+        Usamos Meta Pixel para medir qué anuncios traen visitas a esta página. Solo se activa si aceptas y no
+        compartimos tu nombre ni tu teléfono. <a href="/privacy#meta-pixel">Más información</a>
+      </p>
+      <div class="rn-consent__actions">
+        <button type="button" data-consent="denied" class="btn btn-ghost">Rechazar</button>
+        <button type="button" data-consent="granted" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  )
+}
+
+<style is:global>
+  .rn-consent {
+    position: fixed;
+    z-index: 55;
+    left: 1rem;
+    right: 1rem;
+    bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+    max-width: 30rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1.25rem;
+    background: #f7f6f3;
+    color: #1f2a37;
+    box-shadow: 0 10px 40px rgba(20, 30, 40, 0.22);
+    border: 1px solid rgba(20, 30, 40, 0.08);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .rn-consent--sticky {
+    bottom: calc(6.25rem + env(safe-area-inset-bottom, 0px));
+  }
+  @media (min-width: 768px) {
+    .rn-consent {
+      right: auto;
+      left: 1.5rem;
+      bottom: 1.5rem;
+    }
+    .rn-consent--sticky {
+      bottom: 1.5rem;
+    }
+  }
+  .rn-consent[hidden] {
+    display: none;
+  }
+  .rn-consent__text {
+    margin: 0;
+  }
+  .rn-consent__text a {
+    text-decoration: underline;
+  }
+  .rn-consent__actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 0.75rem;
+  }
+  .rn-consent__actions .btn {
+    padding: 0.5rem 1.1rem;
+    font-size: 0.85rem;
+    min-height: 0;
+  }
+</style>
+
+<script>
+  const box = document.getElementById('rn-consent')
+  const ID = box?.dataset.px
+  const KEY = 'rn_consent'
+
+  if (box && ID) {
+    type Fbq = ((...a: unknown[]) => void) & { callMethod?: (...a: unknown[]) => void; queue: unknown[]; loaded: boolean; version: string; push: unknown }
+    const w = window as unknown as { fbq?: Fbq; _fbq?: Fbq }
+
+    const read = (): string | null => {
+      try {
+        return localStorage.getItem(KEY)
+      } catch {
+        return null
+      }
+    }
+    const write = (v: string) => {
+      try {
+        localStorage.setItem(KEY, v)
+      } catch {
+        /* sin almacenamiento: se pregunta en cada visita */
+      }
+    }
+
+    let loaded = false
+    let allowed = false
+    let lastContact = 0
+
+    const newId = (p: string) => `${p}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`
+
+    function loadPixel() {
+      allowed = true
+      if (loaded) return
+      loaded = true
+      if (!w.fbq) {
+        const n = function (...args: unknown[]) {
+          n.callMethod ? n.callMethod(...args) : n.queue.push(args)
+        } as Fbq
+        w.fbq = n
+        if (!w._fbq) w._fbq = n
+        n.push = n
+        n.loaded = true
+        n.version = '2.0'
+        n.queue = []
+        const s = document.createElement('script')
+        s.async = true
+        s.src = 'https://connect.facebook.net/en_US/fbevents.js'
+        document.head.appendChild(s)
+      }
+      const fbq = w.fbq!
+      fbq('set', 'autoConfig', false, ID)
+      fbq('init', ID)
+      fbq('track', 'PageView', {}, { eventID: newId('pv') })
+      if (location.pathname.replace(/\/$/, '') === '/sexualidad-consciente') {
+        fbq(
+          'track',
+          'ViewContent',
+          { content_name: 'Formación en Sexualidad Consciente y Vínculos Afectivos', content_category: 'Formación', content_type: 'product' },
+          { eventID: newId('vc') },
+        )
+      }
+    }
+
+    function clearCookies() {
+      const host = location.hostname.replace(/^www\./, '')
+      for (const name of ['_fbp', '_fbc']) {
+        for (const d of ['', `; domain=${host}`, `; domain=.${host}`]) {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d}`
+        }
+      }
+    }
+
+    function decide(v: 'granted' | 'denied') {
+      write(v)
+      box!.hidden = true
+      if (v === 'granted') {
+        loadPixel()
+      } else {
+        allowed = false
+        clearCookies()
+      }
+    }
+
+    // Contact: un clic en cualquier botón de WhatsApp (delegado: no toca los botones existentes)
+    document.addEventListener(
+      'click',
+      (e) => {
+        if (!allowed || !w.fbq) return
+        const a = (e.target as Element | null)?.closest?.('a[href^="https://wa.me/"]') as HTMLAnchorElement | null
+        if (!a) return
+        const now = Date.now()
+        if (now - lastContact < 1500) return // evita duplicados por doble toque
+        lastContact = now
+        let code = ''
+        try {
+          code = new URL(a.href).searchParams.get('text')?.match(/\[([A-Z0-9-]+)\]\s*$/)?.[1] ?? ''
+        } catch {
+          /* enlace no analizable: se envía sin código */
+        }
+        w.fbq('track', 'Contact', { content_name: 'Clic a WhatsApp', content_category: 'Formación', source: 'web_whatsapp', wa_code: code }, { eventID: newId('ct') })
+      },
+      { capture: true },
+    )
+
+    box.querySelectorAll<HTMLButtonElement>('[data-consent]').forEach((b) => {
+      b.addEventListener('click', () => decide(b.dataset.consent as 'granted' | 'denied'))
+    })
+    // Enlace del pie para cambiar la decisión
+    document.querySelectorAll('[data-consent-open]').forEach((el) => {
+      el.addEventListener('click', () => {
+        box.hidden = false
+      })
+    })
+
+    const saved = read()
+    const start = () => {
+      if (saved === 'granted') loadPixel()
+      else if (saved !== 'denied') box.hidden = false
+    }
+    // Después de la carga, sin competir con el Hero ni los videos
+    const idle = (window as unknown as { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => void }).requestIdleCallback
+    const run = () => (idle ? idle(start, { timeout: 2500 }) : setTimeout(start, 1200))
+    if (document.readyState === 'complete') run()
+    else window.addEventListener('load', run, { once: true })
+  }
+</script>

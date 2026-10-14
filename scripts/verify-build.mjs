@@ -126,13 +126,17 @@ const oldTsx = execSync('git show a51ce87:src/App.tsx', { encoding: 'utf8' })
 const oldBlock = oldTsx.slice(oldTsx.indexOf('function PrivacyPolicyPage'), oldTsx.indexOf('function FormacionConstelacionesPage'))
 const oldText = norm(oldBlock.slice(oldBlock.indexOf('<h1'), oldBlock.lastIndexOf('</main>')))
 const newHtml = read('privacy.html')
-const newText = norm(newHtml.slice(newHtml.indexOf('<h1'), newHtml.indexOf('</article>')))
+// La sección de Meta Pixel (id="meta-pixel") se añadió después; el texto original va antes de ella.
+const metaIdx = newHtml.indexOf('<section id="meta-pixel"')
+const newText = norm(newHtml.slice(newHtml.indexOf('<h1'), metaIdx > 0 ? metaIdx : newHtml.indexOf('</article>')))
   .replace(/^Política de Privacidad — Renacer AI Última actualización/, 'Política de Privacidad — Renacer AI Última actualización')
 ok(oldText.replace(/\s/g, '') === newText.replace(/\s/g, ''), '/privacy: texto idéntico al original')
 if (oldText.replace(/\s/g, '') !== newText.replace(/\s/g, '')) {
   console.log('  original:', oldText.slice(0, 300))
   console.log('  nuevo   :', newText.slice(0, 300))
 }
+
+ok(newHtml.includes('id="meta-pixel"') && newHtml.includes('Ley 1581'), '/privacy: sección de Meta Pixel presente')
 
 // Admin y rutas técnicas
 for (const a of ['whatsapp-connect', 'asistente', 'inscritos', 'anuncios']) {

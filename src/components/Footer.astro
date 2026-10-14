@@ -11,6 +11,7 @@ interface Props {
 }
 const { waKey = 'general' } = Astro.props
 const year = new Date().getFullYear()
+const pixelOn = /^\d{10,20}$/.test((import.meta.env.PUBLIC_META_PIXEL_ID ?? '').trim())
 ---
 
 <footer class="night-glow bg-petrol-night text-cream/80">
@@ -68,7 +69,10 @@ const year = new Date().getFullYear()
   <div class="border-t border-cream/10">
     <div class="wrap flex flex-col gap-3 py-6 text-[0.8rem] text-cream/55 sm:flex-row sm:items-center sm:justify-between">
       <p>© {year} Centro de Formación Renacer. Todos los derechos reservados.</p>
-      <a href="/privacy" class="hover:text-cream">Política de privacidad</a>
+      <span class="flex flex-wrap gap-x-5 gap-y-2">
+        <a href="/privacy" class="hover:text-cream">Política de privacidad</a>
+        {pixelOn && <button type="button" data-consent-open class="text-left hover:text-cream">Preferencias de seguimiento</button>}
+      </span>
     </div>
   </div>
 </footer>
