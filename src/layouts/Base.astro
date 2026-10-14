@@ -9,6 +9,7 @@ import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro'
 import StickyWa from '../components/StickyWa.astro'
 import MetaPixel from '../components/MetaPixel.astro'
+import WaAttribution from '../components/WaAttribution.astro'
 import { site } from '../data/site'
 import type { WaKey } from '../lib/whatsapp'
 import defaultOg from '../assets/photos/grupo-ceremonia.jpg'
@@ -87,5 +88,6 @@ const ld = [orgLd, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
     <Footer waKey={waKey} />
     {stickyWa && <StickyWa waKey={stickyWa.key} label={stickyWa.label} caption={stickyWa.caption} />}
     <MetaPixel sticky={!!stickyWa} />
+    <WaAttribution />
   </body>
 </html>

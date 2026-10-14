@@ -1,0 +1,46 @@
+---
+/**
+ * Atribución por anuncio en los botones de WhatsApp de la landing de Sexualidad.
+ * Si la URL trae ?utm_content=<código> y el código está en la lista permitida, los enlaces
+ * con el mensaje [WEB-SEX] pasan a llevar ese código. Sin código válido no cambia nada.
+ * El código se recuerda durante la sesión (sessionStorage). No se envían ni guardan datos personales.
+ */
+---
+
+<script>
+  const ALLOWED = ['SVA-F3-WEB', 'SVA-S3-WEB']
+  const KEY = 'rn_wa_code'
+  const BASE = '[WEB-SEX]'
+
+  let code: string | null = null
+  const fromUrl = new URLSearchParams(location.search).get('utm_content')
+  if (fromUrl && ALLOWED.includes(fromUrl)) {
+    code = fromUrl
+    try {
+      sessionStorage.setItem(KEY, code)
+    } catch {
+      /* sin almacenamiento: vale solo para esta página */
+    }
+  } else {
+    try {
+      const saved = sessionStorage.getItem(KEY)
+      if (saved && ALLOWED.includes(saved)) code = saved
+    } catch {
+      /* sin almacenamiento */
+    }
+  }
+
+  if (code) {
+    document.querySelectorAll<HTMLAnchorElement>('a[href^="https://wa.me/"]').forEach((a) => {
+      try {
+        const u = new URL(a.href)
+        const text = u.searchParams.get('text')
+        if (!text || !text.endsWith(BASE)) return // otras formaciones y mensajes: intactos
+        const next = text.slice(0, -BASE.length) + `[${code}]`
+        a.href = `${u.origin}${u.pathname}?text=${encodeURIComponent(next)}`
+      } catch {
+        /* enlace no analizable: se deja como está */
+      }
+    })
+  }
+</script>
