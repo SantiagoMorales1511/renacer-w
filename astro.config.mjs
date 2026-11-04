@@ -12,7 +12,7 @@ export default defineConfig({
   prefetch: { prefetchAll: false, defaultStrategy: 'viewport' },
   integrations: [
     react({ include: ['**/react-admin/**'] }),
-    sitemap({ filter: (page) => !page.includes('/admin') }),
+    sitemap({ filter: (page) => !page.includes('/admin'), lastmod: new Date() }),
   ],
   image: { responsiveStyles: false },
   vite: {

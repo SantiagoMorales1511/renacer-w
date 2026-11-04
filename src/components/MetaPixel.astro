@@ -4,7 +4,7 @@
  * sin ID no se carga nada y no se muestra ningún aviso.
  *
  * - fbevents.js se descarga únicamente después de que la persona acepta.
- * - Eventos: PageView (todas las páginas públicas), ViewContent (/sexualidad-consciente)
+ * - Eventos: PageView (todas las páginas públicas), ViewContent (/constelaciones-familiares)
  *   y Contact (clic en un enlace de WhatsApp). Contact es un clic, no una conversación.
  * - Sin Lead ni Purchase. Sin datos personales: autoConfig desactivado (no lee formularios
  *   ni textos de botones) y sin advanced matching.
@@ -154,11 +154,11 @@ const valid = /^\d{10,20}$/.test(pixelId)
       fbq('set', 'autoConfig', false, ID)
       fbq('init', ID)
       fbq('track', 'PageView', {}, { eventID: newId('pv') })
-      if (location.pathname.replace(/\/$/, '') === '/sexualidad-consciente') {
+      if (location.pathname.replace(/\/$/, '') === '/constelaciones-familiares') {
         fbq(
           'track',
           'ViewContent',
-          { content_name: 'Formación en Sexualidad Consciente y Vínculos Afectivos', content_category: 'Formación', content_type: 'product' },
+          { content_name: 'Formación en Constelaciones Familiares y Terapia Sistémica', content_category: 'Formación', content_type: 'product' },
           { eventID: newId('vc') },
         )
       }

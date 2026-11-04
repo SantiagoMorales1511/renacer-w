@@ -4,8 +4,10 @@ import { formatDate, shortDate, type Module } from '../data/programs'
 
 interface Props {
   modules: Module[]
+  /** Muestra el número del módulo cuando aún no tiene fecha confirmada */
+  numbered?: boolean
 }
-const { modules } = Astro.props
+const { modules, numbered = false } = Astro.props
 ---
 
 <ol class="relative space-y-4">
@@ -16,11 +18,17 @@ const { modules } = Astro.props
         <li class="card overflow-hidden">
           <details class="group" open={m.n === 1}>
             <summary class="flex cursor-pointer list-none gap-4 p-5 sm:gap-6 sm:p-7 [&::-webkit-details-marker]:hidden">
-              {d && (
-                <span class="flex h-16 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-cream-warm text-petrol-night sm:h-[4.5rem] sm:w-16">
-                  <span class="text-[0.62rem] font-bold uppercase tracking-wider text-gold-deep">{d.month}</span>
+              {d ? (
+                <span class="flex h-16 w-14 shrink-0 flex-col items-center justify-center rounded-2xl bg-petrol-night text-cream sm:h-[4.5rem] sm:w-16">
+                  <span class="text-[0.62rem] font-bold uppercase tracking-wider text-lavender">{d.month}</span>
                   <span class="text-[1.6rem] font-bold leading-none">{d.day}</span>
                 </span>
+              ) : (
+                numbered && (
+                  <span class="flex h-16 w-14 shrink-0 items-center justify-center rounded-2xl bg-cream-warm font-serif text-[1.9rem] italic leading-none text-petrol sm:h-[4.5rem] sm:w-16" aria-hidden="true">
+                    {String(m.n).padStart(2, '0')}
+                  </span>
+                )
               )}
               <span class="min-w-0 flex-1">
                 <span class="block text-[0.72rem] font-bold uppercase tracking-[0.18em] text-petrol">Módulo {m.n}</span>

@@ -77,7 +77,7 @@ const byId = (ids: string[]) => ids.map((id) => videoTestimonials.find((t) => t.
 export const featured = {
   home: byId(['marcela', 'alexis', 'johana']),
   bio: byId(['marcela', 'johana', 'viviana']),
-  const: byId(['mauricio', 'alexis', 'jaime']),
+  const: byId(['vany', 'mauricio', 'jaime']),
   // Sexualidad aún no inicia: experiencias de otras formaciones, identificadas como tales.
   sex: byId(['mauricio', 'marcela', 'laura']),
 } satisfies Record<string, VideoTestimonial[]>

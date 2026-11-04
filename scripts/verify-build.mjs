@@ -23,7 +23,6 @@ const pages = {
   'formaciones.html': 'WEB-GENERAL',
   'testimonios.html': 'WEB-GENERAL',
   'privacy.html': 'WEB-GENERAL',
-  'sexualidad-consciente.html': 'WEB-SEX',
   'biodescodificacion.html': 'WEB-BIO',
   'constelaciones-familiares.html': 'WEB-CONST',
 }
@@ -51,10 +50,24 @@ for (const [file, tag] of Object.entries(pages)) {
   ok(imgsNoSize.length === 0, `${file}: todas las <img> tienen width/height`)
 }
 
-// Sexualidad: precio y fecha en el HTML inicial
-const sex = read('sexualidad-consciente.html')
-ok(sex.includes('$250.000') && /25 de octubre de 2026/.test(sex), 'Sexualidad: precio y fecha de inicio visibles')
-ok(['Carolina Gutiérrez Gutiérrez', 'María Mercedes Osorio Silva', 'Máster en Sexología', 'Astrología Psicológica'].every((s) => sex.includes(s)), 'Sexualidad: facilitadoras y credenciales')
+// Sexualidad Consciente está oculta (docs/sexualidad-consciente-oculta.md): no se genera ni se enlaza
+ok(!existsSync(new URL('sexualidad-consciente.html', dist)), 'Sexualidad: la página no se genera (oculta)')
+ok(Object.keys(pages).every((f) => !/href="\/sexualidad-consciente"/.test(read(f)) && !read(f).includes('Sexualidad Consciente')), 'Sexualidad: ninguna página la enlaza ni la menciona')
+
+// Constelaciones: nueva cohorte, datos visibles en el HTML inicial
+const cons = read('constelaciones-familiares.html')
+ok(cons.includes('28 de noviembre de 2026') && cons.includes('$300.000') && cons.includes('Cali, Ciudad Jardín'), 'Constelaciones: fecha de inicio, valor y lugar visibles')
+const modTitles = ['Introducción a las Constelaciones Familiares', 'Dinámicas familiares', 'Los órdenes del amor', 'Compensación y reparación en el sistema', 'Órdenes de la abundancia', 'La figura materna', 'La figura del padre', 'La pareja', 'Salud, enfermedad y muerte', 'Empezar a constelar', 'Constelando y círculo de cierre']
+ok(modTitles.every((t) => cons.includes(t)), 'Constelaciones: los 11 módulos del temario oficial')
+ok((cons.match(/data-countdown data-target="2026-11-28T09:00:00-05:00"/g) || []).length === 2, 'Constelaciones: cuenta regresiva al 28 de noviembre, 9:00 a. m. (Colombia)')
+ok((read('index.html').match(/data-countdown data-target="2026-11-28T09:00:00-05:00"/g) || []).length === 2, 'Home: cuenta regresiva en el Hero y en la banda de la nueva cohorte')
+const lds = (html) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].flatMap((m) => [JSON.parse(m[1])].flat())
+const course = lds(cons).find((x) => x['@type'] === 'Course')
+ok(course?.hasCourseInstance?.startDate === '2026-11-28' && course.offers.price === 300000, 'Constelaciones: datos estructurados Course con inicio 2026-11-28')
+ok(lds(cons).some((x) => x['@type'] === 'BreadcrumbList') && lds(cons).some((x) => x['@type'] === 'FAQPage'), 'Constelaciones: migas de pan y preguntas frecuentes estructuradas')
+ok(lds(read('index.html')).some((x) => x['@type'] === 'WebSite' && x.name === 'Renacer'), 'Home: datos estructurados WebSite "Renacer"')
+const navHtml = read('index.html').slice(0, read('index.html').indexOf('<main'))
+ok(navHtml.indexOf('href="/constelaciones-familiares"') > 0 && navHtml.indexOf('href="/constelaciones-familiares"') < navHtml.indexOf('href="/biodescodificacion"'), 'Menú: Constelaciones antes que Biodescodificación')
 
 // Afirmaciones no respaldadas que no deben aparecer
 const all = Object.keys(pages).map(read).join('\n').toLowerCase()
@@ -80,29 +93,27 @@ ok(hCar > hH1 && hCar < hSobre && (home.match(/<section[^>]*data-carousel/g) || 
 ok(!home.includes('class="ts ') && !home.includes('quienes han vivido Renacer') && !/class="(tc|ts)-time"/.test(home), 'Home: sin mini testimonios ni duración de videos')
 ok((home.match(/id="tc-dialog"/g) || []).length === 0, 'Home: sin reproductor grande (todo ocurre en el carrusel)')
 ok(!read('testimonios.html').includes('Todos los testimonios') && (read('testimonios.html').match(/<section[^>]*data-carousel/g) || []).length === 1 && !read('testimonios.html').includes('id="tc-dialog"'), '/testimonios: solo el carrusel (sin cuadrícula ni reproductor grande)')
-for (const [f, nextId] of [['sexualidad-consciente.html', 'id="que-es"'], ['biodescodificacion.html', 'id="intro"'], ['constelaciones-familiares.html', 'id="intro"']]) {
+for (const [f, nextId, cta] of [['biodescodificacion.html', 'id="intro"', 'experiencia de formación?'], ['constelaciones-familiares.html', 'id="intro"', 'Constelador Familiar?</span>']]) {
   const html = read(f)
   const strip = html.indexOf('Conoce la experiencia de estudiar en Renacer'), h1 = html.indexOf('<h1'), next = html.indexOf(nextId)
   ok(strip > h1 && strip < next, `${f}: mini testimonios después del Hero y antes del contenido`)
   const car = html.search(/<section[^>]*data-carousel/)
-  ok(car > strip && car < html.indexOf('experiencia de formación?'), `${f}: carrusel completo abajo, antes del CTA final`)
+  ok(car > strip && car < html.lastIndexOf(cta), `${f}: carrusel completo abajo, antes del CTA final`)
   ok(!/class="(tc|ts)-time"/.test(html), `${f}: sin duración de los videos`)
   ok((html.match(/id="tc-dialog"/g) || []).length === 1 && (html.match(/class="ts-thumb/g) || []).length === 3, `${f}: 3 miniaturas y un único reproductor`)
-  ok(html.indexOf('experiencia de formación?') > strip, `${f}: CTA final de WhatsApp conservado`)
+  ok(html.lastIndexOf(cta) > car, `${f}: CTA final de WhatsApp conservado`)
 }
 const own = (f) => [...read(f).matchAll(/class="ts-thumb[^>]*data-program="([^"]+)"/g)].map((m) => m[1])
 const bioSlides = [...read('biodescodificacion.html').matchAll(/data-slide [^>]*aria-label="\d+ de \d+: ([^"]+)"/g)].map((m) => m[1])
 ok(['Marcela Rivera', 'Johana Valencia', 'Viviana'].every((n) => bioSlides.slice(1, 4).includes(n)), `Biodescodificación: el carrusel empieza con sus testimonios (${bioSlides.slice(1, 4).join(', ')})`)
 ok(own('biodescodificacion.html').every((p) => p.includes('Biodescodificación')), 'Biodescodificación: miniaturas de estudiantes de Biodescodificación')
 ok(own('constelaciones-familiares.html').every((p) => p.includes('Constelaciones')), 'Constelaciones: miniaturas de estudiantes de Constelaciones')
-const sexHtml = read('sexualidad-consciente.html')
-ok(sexHtml.includes('Testimonios de estudiantes de otras formaciones de Renacer') && own('sexualidad-consciente.html').every((p) => !p.includes('Sexualidad')), 'Sexualidad: experiencias de otras formaciones, identificadas')
 for (const f of ['index.html', 'biodescodificacion.html', 'testimonios.html']) {
   const html = read(f)
   ok(!/>\s*Ver con sonido\s*</.test(html) && !html.includes('data-sound '), `${f}: sin el botón duplicado "Ver con sonido"`)
 }
 ok((read('index.html').match(/Toca para activar el sonido/g) || []).length === 17 && (read('index.html').match(/class="tc-film"/g) || []).length === 17 && (read('index.html').match(/class="tc-smart"/g) || []).length === 17, 'Home: una indicación de sonido y una película por tarjeta (11 + 6 copias)')
-for (const f of ['index.html', 'sexualidad-consciente.html', 'biodescodificacion.html', 'constelaciones-familiares.html', 'testimonios.html']) {
+for (const f of ['index.html', 'biodescodificacion.html', 'constelaciones-familiares.html', 'testimonios.html']) {
   const html = read(f)
   const first = html.match(/data-slide data-real="0" [^>]*aria-label="1 de \d+: ([^"]+)"/)?.[1]
   ok(first === 'Vany Osorio', `${f}: el carrusel empieza con Vany Osorio (${first})`)
@@ -145,13 +156,16 @@ for (const a of ['whatsapp-connect', 'asistente', 'inscritos', 'anuncios']) {
 }
 const sitemap = read('sitemap-0.xml')
 ok(!sitemap.includes('/admin'), 'sitemap sin rutas /admin')
-ok(['/sexualidad-consciente', '/biodescodificacion', '/constelaciones-familiares', '/formaciones', '/testimonios', '/privacy'].every((r) => sitemap.includes(`https://renacer-ahora.com${r}`)), 'sitemap con todas las páginas públicas')
+ok(['/biodescodificacion', '/constelaciones-familiares', '/formaciones', '/testimonios', '/privacy'].every((r) => sitemap.includes(`https://renacer-ahora.com${r}`)), 'sitemap con todas las páginas públicas')
+ok(!sitemap.includes('sexualidad'), 'sitemap sin Sexualidad (oculta)')
 ok(existsSync(new URL('robots.txt', dist)) && read('robots.txt').includes('Sitemap:'), 'robots.txt con sitemap')
 
 const vercel = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8'))
 const redirects = Object.fromEntries(vercel.redirects.map((r) => [r.source, r.destination]))
 ok(redirects['/formacion/constelaciones'] === '/constelaciones-familiares' && redirects['/formacion/biodescodificacion'] === '/biodescodificacion', 'vercel.json: redirecciones de rutas antiguas')
 ok(!vercel.rewrites, 'vercel.json: sin rewrites SPA')
+const tmp = vercel.redirects.filter((r) => /sexualidad/.test(r.source))
+ok(tmp.length === 3 && tmp.every((r) => r.destination === '/constelaciones-familiares' && r.statusCode === 307), 'vercel.json: Sexualidad → Constelaciones con redirección temporal (307)')
 
 console.log(failures ? `\n${failures} verificación(es) fallaron` : '\nTodas las verificaciones pasaron')
 process.exit(failures ? 1 : 0)

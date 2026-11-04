@@ -43,6 +43,11 @@ const courseLd = {
   inLanguage: 'es',
   offers: { '@type': 'Offer', price: p.pricePerModule, priceCurrency: 'COP', description: 'Valor por módulo', url: `${site.url}${p.slug}` },
 }
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+}
 ---
 
 <Base
@@ -51,7 +56,8 @@ const courseLd = {
   ogImage={heroImage}
   ogAlt={p.name}
   stickyWa={{ key: p.waKey, label: 'Pedir información', caption: `${p.modulesCount} módulos · <strong class="text-ink">${formatCOP(p.pricePerModule)}</strong>/módulo` }}
-  jsonLd={courseLd}
+  jsonLd={[courseLd, faqLd]}
+  breadcrumb={[{ name: 'Formaciones', path: '/formaciones' }, { name: p.shortName, path: p.slug }]}
 >
   <section class="grain overflow-hidden">
     <div class="wrap grid gap-10 pb-16 pt-8 sm:pt-14 md:grid-cols-12 md:gap-12 md:pb-24">

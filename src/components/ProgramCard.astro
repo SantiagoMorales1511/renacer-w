@@ -1,7 +1,7 @@
 ---
 import { Picture } from 'astro:assets'
 import Icon from './Icon.astro'
-import { formatCOP, type Program } from '../data/programs'
+import { formatCOP, formatDate, type Program } from '../data/programs'
 
 interface Props {
   program: Program
@@ -10,6 +10,7 @@ interface Props {
 }
 const { program: p, index, headingLevel: H = 'h3' } = Astro.props
 const open = p.status === 'abierta'
+const start = p.startDate ? formatDate(p.startDate, { year: false }) : null
 ---
 
 <article class="card group flex flex-col overflow-hidden transition-shadow duration-300 hover:shadow-lift">
@@ -30,7 +31,7 @@ const open = p.status === 'abierta'
       ]}
     >
       {open && <span class="h-1.5 w-1.5 rounded-full bg-gold" />}
-      {p.statusLabel}
+      {start ? `Inicia el ${start}` : p.statusLabel}
     </span>
   </a>
   <div class="flex flex-1 flex-col p-6 sm:p-7">

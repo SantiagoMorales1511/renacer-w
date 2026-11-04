@@ -1,0 +1,138 @@
+---
+/**
+ * Cuenta regresiva hasta el inicio de una formación (hora de Colombia).
+ * Los números se rellenan en el navegador; el HTML inicial muestra "--" en cajas de ancho fijo,
+ * así que no hay saltos de diseño. Cuando la fecha pasa, muestra el mensaje `after`.
+ *
+ * variant: light (fondo claro) · dark (sobre fondo oscuro) · compact (una línea: "Faltan 24 días")
+ */
+interface Props {
+  /** Fecha ISO yyyy-mm-dd */
+  date: string
+  /** Hora local de Colombia, HH:MM */
+  time?: string
+  variant?: 'light' | 'dark' | 'compact'
+  /** Texto para lectores de pantalla (la fecha escrita) */
+  label: string
+  after?: string
+  class?: string
+}
+const { date, time = '09:00', variant = 'light', label, after = 'La formación ya comenzó', class: className = '' } = Astro.props
+const target = `${date}T${time}:00-05:00`
+const units = [
+  { key: 'd', label: 'días' },
+  { key: 'h', label: 'horas' },
+  { key: 'm', label: 'min' },
+  { key: 's', label: 'seg' },
+] as const
+---
+
+{
+  variant === 'compact' ? (
+    <span class:list={['cd cd-compact', className]} data-countdown data-target={target}>
+      <span class="sr-only">{label}</span>
+      <span aria-hidden="true" data-live>
+        Faltan{' '}<strong data-u="d">--</strong>{' '}<span data-dl>días</span>
+      </span>
+      <span aria-hidden="true" data-after hidden>{after}</span>
+    </span>
+  ) : (
+    <div class:list={['cd', `cd-${variant}`, className]} data-countdown data-target={target}>
+      <p class="sr-only">{label}</p>
+      <ol class="cd-grid" aria-hidden="true" data-live>
+        {units.map((u) => (
+          <li class="cd-box">
+            <span class="cd-num" data-u={u.key}>--</span>
+            <span class="cd-unit" data-l={u.key}>{u.label}</span>
+          </li>
+        ))}
+      </ol>
+      <p class="cd-after" aria-hidden="true" data-after hidden>{after}</p>
+    </div>
+  )
+}
+
+<script>
+  const els = [...document.querySelectorAll<HTMLElement>('[data-countdown]')]
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const singular: Record<string, string> = { d: 'día', h: 'hora', m: 'min', s: 'seg' }
+  const plural: Record<string, string> = { d: 'días', h: 'horas', m: 'min', s: 'seg' }
+
+  function render() {
+    const now = Date.now()
+    for (const el of els) {
+      const left = Date.parse(el.dataset.target!) - now
+      const live = el.querySelector<HTMLElement>('[data-live]')!
+      const after = el.querySelector<HTMLElement>('[data-after]')!
+      if (left <= 0) {
+        live.hidden = true
+        after.hidden = false
+        after.removeAttribute('aria-hidden')
+        continue
+      }
+      const s = Math.floor(left / 1000)
+      const v: Record<string, number> = { d: Math.floor(s / 86400), h: Math.floor((s % 86400) / 3600), m: Math.floor((s % 3600) / 60), s: s % 60 }
+      el.querySelectorAll<HTMLElement>('[data-u]').forEach((n) => {
+        const k = n.dataset.u!
+        const text = k === 'd' ? String(v.d) : pad(v[k])
+        if (n.textContent !== text) n.textContent = text
+      })
+      el.querySelectorAll<HTMLElement>('[data-l]').forEach((n) => {
+        const k = n.dataset.l!
+        n.textContent = v[k] === 1 ? singular[k] : plural[k]
+      })
+      const dl = el.querySelector<HTMLElement>('[data-dl]')
+      if (dl) dl.textContent = v.d === 1 ? 'día' : 'días'
+    }
+  }
+
+  if (els.length) {
+    let timer = 0
+    const start = () => {
+      render()
+      clearInterval(timer)
+      timer = window.setInterval(render, 1000)
+    }
+    document.addEventListener('visibilitychange', () => (document.hidden ? clearInterval(timer) : start()))
+    start()
+  }
+</script>
+
+<style is:global>
+  .cd-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .cd-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    padding: 0.7rem 0.25rem 0.6rem;
+  }
+  .cd-num {
+    font-size: clamp(1.6rem, 6.5vw, 2.3rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cd-unit {
+    margin-top: 0.35rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .cd-light .cd-box { background: #fff; border: 1px solid #e4ded4; }
+  .cd-light .cd-num { color: #14243d; }
+  .cd-light .cd-unit { color: #7e6436; }
+  .cd-dark .cd-box { background: rgba(247, 246, 243, 0.06); border: 1px solid rgba(247, 246, 243, 0.16); }
+  .cd-dark .cd-num { color: #f7f6f3; }
+  .cd-dark .cd-unit { color: #d9ccf2; }
+  .cd-after { font-weight: 600; }
+  .cd-compact { font-variant-numeric: tabular-nums; }
+  .cd-compact strong { font-weight: 700; }
+</style>

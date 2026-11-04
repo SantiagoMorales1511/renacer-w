@@ -1,37 +1,312 @@
 ---
-import ProgramPage from '../components/ProgramPage.astro'
-import { constelaciones as p } from '../data/programs'
+import { Picture } from 'astro:assets'
+import Base from '../layouts/Base.astro'
+import Icon from '../components/Icon.astro'
+import FactSheet from '../components/FactSheet.astro'
+import ModuleTimeline from '../components/ModuleTimeline.astro'
+import FacilitatorCard from '../components/FacilitatorCard.astro'
+import Faq from '../components/Faq.astro'
+import CtaBand from '../components/CtaBand.astro'
+import Countdown from '../components/Countdown.astro'
+import TestimonialStrip from '../components/TestimonialStrip.astro'
+import TestimonialCarousel from '../components/TestimonialCarousel.astro'
+import { featured, testimonialsFirstFor } from '../data/testimonials'
+import { constelaciones as p, formatDate, formatCOP } from '../data/programs'
+import { people } from '../data/people'
 import { constFaqs } from '../data/faqs'
+import { site } from '../data/site'
+import { waLink } from '../lib/whatsapp'
+
 import hero from '../assets/photos/hilos-sistema.jpg'
 import g1 from '../assets/photos/circulo-exterior.jpg'
 import g2 from '../assets/photos/encuentro-blanco.jpg'
-import g3 from '../assets/photos/certificados-2.jpg'
+import g3 from '../assets/photos/acompanamiento.jpg'
+import g4 from '../assets/photos/certificados-2.jpg'
+
+const start = p.startDate!
+const startText = `Sábado ${formatDate(start)}`
+const countdownLabel = `La formación inicia el sábado ${formatDate(start)} a las 9:00 a. m., hora de Colombia.`
+
+const learn = [
+  {
+    title: 'Herramientas para constelar',
+    text: 'Desde el primer módulo aprendes técnicas para facilitar terapias y constelaciones familiares: grupales, individuales y con anclajes.',
+  },
+  {
+    title: 'Mirada sistémica',
+    text: 'Dinámicas familiares, patrones transgeneracionales y principios sistémicos que influyen en tu vida y en la de quienes te rodean.',
+  },
+  {
+    title: 'Tu propio proceso',
+    text: 'Un espacio para sanar, integrar y liberar las cargas emocionales heredadas de tu propio sistema familiar.',
+  },
+]
+
+const courseLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: p.name,
+  description: p.summary,
+  url: `${site.url}${p.slug}`,
+  provider: { '@type': 'EducationalOrganization', name: site.name, sameAs: site.url },
+  inLanguage: 'es',
+  syllabusSections: p.modules.map((m) => ({ '@type': 'Syllabus', name: `Módulo ${m.n}: ${m.title}`, description: m.topics?.join(', ') })),
+  hasCourseInstance: {
+    '@type': 'CourseInstance',
+    courseMode: 'onsite',
+    startDate: start,
+    courseSchedule: { '@type': 'Schedule', repeatFrequency: 'P1M', repeatCount: p.modulesCount, duration: 'PT8H', startDate: start },
+    location: {
+      '@type': 'Place',
+      name: 'Ciudad Jardín, Cali',
+      address: { '@type': 'PostalAddress', streetAddress: 'Ciudad Jardín', addressLocality: 'Cali', addressRegion: 'Valle del Cauca', addressCountry: 'CO' },
+    },
+    instructor: p.facilitators.map((f) => ({ '@type': 'Person', name: f.name })),
+  },
+  offers: {
+    '@type': 'Offer',
+    category: 'Paid',
+    price: p.pricePerModule,
+    priceCurrency: 'COP',
+    description: 'Valor por módulo',
+    availability: 'https://schema.org/InStock',
+    url: `${site.url}${p.slug}`,
+  },
+}
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: constFaqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+}
 ---
 
-<ProgramPage
-  program={p}
-  title="Formación en Constelaciones Familiares y Terapia Sistémica · Cali · Renacer"
-  description="Formación presencial en Constelaciones Familiares y Terapia Sistémica en Cali. 11 módulos, un sábado al mes, de 9:00 a. m. a 5:00 p. m. $300.000 COP por módulo."
-  heroImage={hero}
-  heroAlt="Ejercicio sistémico con hilos rojos que conectan a los participantes de pie en círculo"
-  intro={{
-    heading: 'Mirar la historia familiar <span class="accent">con claridad.</span>',
-    lead: 'Una formación vivencial para aprender a mirar los vínculos, las lealtades y los patrones que se repiten en la historia familiar, con herramientas sistémicas para la vida personal y el acompañamiento.',
-    body: 'Una constelación familiar es una terapia vivencial breve en la que, a través de representantes, se hacen visibles los vínculos, las lealtades y los patrones invisibles de un sistema familiar, para comprenderlos desde una mirada sistémica.',
-  }}
-  highlights={[
-    { title: 'Vivencial', text: 'Se aprende participando: constelando, representando y observando en grupo.' },
-    { title: 'Grupal', text: 'Encuentros presenciales mensuales donde el grupo es parte del aprendizaje.' },
-    { title: 'Sin juicios', text: 'Un espacio de respeto para mirar la propia historia y la de otros.' },
-  ]}
-  faqs={constFaqs}
-  gallery={[
-    { src: g1, alt: 'Encuentro al aire libre: el grupo de pie en círculo' },
-    { src: g2, alt: 'Participantes vestidos de blanco durante un ejercicio de constelación' },
-    { src: g3, alt: 'Estudiantes de Renacer con sus certificados al cierre de un proceso' },
-  ]}
-  facilitatorRole="Dirección"
-  syllabusNote="La formación se desarrolla en 11 módulos mensuales. Te enviamos el temario detallado por WhatsApp."
+<Base
+  title="Formación en Constelaciones Familiares en Cali · Inicia 28 de noviembre · Renacer"
+  description="Formación presencial en Constelaciones Familiares y Terapia Sistémica en Cali, Ciudad Jardín. Inicia el sábado 28 de noviembre de 2026 · 11 módulos, un sábado al mes · $300.000 COP por módulo. Dirige Alba Elisa Cerón Gómez."
+  ogImage={hero}
+  ogAlt="Formación en Constelaciones Familiares y Terapia Sistémica — Centro de Formación Renacer, Cali"
+  stickyWa={{ key: p.waKey, label: 'Inscribirme', caption: `Inicia 28 nov · <strong class="text-ink">${formatCOP(p.pricePerModule)}</strong>/módulo` }}
+  jsonLd={[courseLd, faqLd]}
+  breadcrumb={[{ name: 'Formaciones', path: '/formaciones' }, { name: 'Constelaciones Familiares', path: p.slug }]}
 >
-  <Fragment slot="heading">Constelaciones Familiares y <span class="accent">Terapia Sistémica</span></Fragment>
-</ProgramPage>
+  <!-- HERO -->
+  <section class="grain overflow-hidden">
+    <div class="wrap grid gap-10 pb-16 pt-8 sm:pt-14 md:grid-cols-12 md:gap-12 md:pb-24">
+      <div class="md:col-span-7 md:pt-4">
+        <p class="eyebrow rise">Inscripciones abiertas · Cali</p>
+        <h1 class="rise rise-2 mt-5 text-[clamp(2.05rem,7.6vw,4.1rem)] leading-[1.02] tracking-[-0.04em]">
+          Formación en Constelaciones Familiares y <span class="accent">Terapia Sistémica</span> en Cali
+        </h1>
+        <p class="lead rise rise-3 mt-5 max-w-xl">{p.summary}</p>
+
+        <div class="rise rise-3 mt-7 max-w-xl">
+          <p class="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-petrol">Faltan para el inicio · {formatDate(start, { year: false })}</p>
+          <Countdown date={start} label={countdownLabel} class="mt-3" after="La formación ya comenzó. Escríbenos para conocer las opciones de ingreso." />
+        </div>
+
+        <FactSheet program={p} start={startText} class="rise rise-3 mt-5 max-w-xl">
+          <div class="mt-6 grid gap-3 sm:grid-cols-[1fr_auto]">
+            <a href={waLink(p.waKey)} class="btn btn-primary" target="_blank" rel="noopener">
+              <Icon name="whatsapp" size={20} />
+              Quiero inscribirme
+            </a>
+            <a href="#temario" class="btn btn-ghost">Ver temario</a>
+          </div>
+        </FactSheet>
+      </div>
+
+      <div class="md:col-span-5">
+        <div class="md:sticky md:top-28">
+          <div class="photo aspect-[4/5]">
+            <Picture
+              src={hero}
+              alt="Ejercicio sistémico con hilos rojos que conectan a los participantes de pie en círculo"
+              widths={[400, 640, 900, 1200]}
+              sizes="(min-width: 768px) 40vw, calc(100vw - 2.5rem)"
+              formats={['avif', 'webp']}
+              loading="eager"
+            />
+          </div>
+          <div class="mt-4 flex items-center gap-3">
+            <Picture
+              src={people.alba.photo}
+              alt={`Retrato de ${people.alba.name}`}
+              widths={[96, 160]}
+              sizes="56px"
+              formats={['avif', 'webp']}
+              class="h-14 w-14 shrink-0 rounded-full object-cover"
+              style={`object-position: ${people.alba.focus}`}
+              loading="lazy"
+            />
+            <p class="text-[0.88rem] leading-snug text-ink-mute">
+              Dirige <strong class="font-semibold text-ink">{people.alba.name}</strong><br />Consteladora Familiar y Terapeuta Sistémica
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRUEBA SOCIAL -->
+  <TestimonialStrip
+    items={featured.const}
+    title="Conoce la experiencia de estudiar en Renacer"
+    note="Estudiantes de la Formación en Constelaciones Familiares cuentan su experiencia."
+    moreHref="#testimonios"
+    class="-mt-6 pb-10 sm:-mt-10 sm:pb-16"
+  />
+
+  <!-- QUÉ ES -->
+  <section class="section bg-white" aria-labelledby="intro">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-5">
+        <p class="eyebrow">La formación</p>
+        <h2 id="intro" class="title mt-5">Aprender a acompañar <span class="accent">sanando tu propia historia.</span></h2>
+      </div>
+      <div class="md:col-span-6 md:col-start-7">
+        <p class="lead">
+          Esta formación tiene como objetivo formar Terapeutas Sistémicos y Consteladores Familiares. No solo aprenderás las herramientas y técnicas para guiar a otros en su camino de sanación: también trabajarás profundamente en tu propio proceso de autoconocimiento y transformación personal.
+        </p>
+        <p class="mt-5 text-ink-soft">
+          A lo largo de 11 módulos presenciales en Cali exploramos las dinámicas familiares, los patrones transgeneracionales y los principios sistémicos que impactan nuestras vidas, para que puedas facilitar constelaciones familiares con confianza.
+        </p>
+      </div>
+    </div>
+
+    <div class="wrap mt-14 grid gap-px overflow-hidden rounded-[1.75rem] border border-cream-line bg-cream-line sm:grid-cols-3">
+      {
+        learn.map((h, i) => (
+          <div class="bg-cream p-7">
+            <span class="font-serif text-[2rem] italic leading-none text-lavender-deep">0{i + 1}</span>
+            <h3 class="mt-4 text-[1.15rem]">{h.title}</h3>
+            <p class="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">{h.text}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="wrap mt-6">
+      <div class="rounded-[1.75rem] border border-cream-line p-7 sm:p-9">
+        <h3 class="text-[1.15rem]">¿Qué es una constelación familiar?</h3>
+        <p class="mt-3 max-w-3xl text-ink-soft">
+          Es una terapia vivencial breve en la que, a través de representantes, se hacen visibles los vínculos, las lealtades y los patrones que se repiten en la historia familiar, para comprenderlos desde una mirada sistémica.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEMARIO -->
+  <section id="temario" class="section" aria-labelledby="temario-t">
+    <div class="wrap grid gap-12 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <div class="md:sticky md:top-28">
+          <p class="eyebrow">Temario</p>
+          <h2 id="temario-t" class="title mt-5">Once módulos, <span class="accent">un sábado al mes.</span></h2>
+          <p class="mt-5 text-ink-soft">Cada módulo es una jornada presencial de 9:00 a. m. a 5:00 p. m. Toca cada módulo para ver los temas.</p>
+          <a href={waLink(p.waKey)} class="btn btn-ghost mt-6" target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={19} class="text-petrol" />
+            Pedir el calendario
+          </a>
+        </div>
+      </div>
+      <div class="md:col-span-8">
+        <ModuleTimeline modules={p.modules} numbered />
+      </div>
+    </div>
+  </section>
+
+  <!-- PRÓXIMO INICIO -->
+  <section class="section pt-0" aria-labelledby="inicio">
+    <div class="wrap">
+      <div class="night-glow overflow-hidden rounded-[2rem] bg-petrol-night p-6 text-cream sm:p-12">
+        <div class="grid gap-10 md:grid-cols-2 md:items-center">
+          <div>
+            <p class="eyebrow eyebrow-light">Próximo inicio</p>
+            <h2 id="inicio" class="title mt-5 text-cream">Sábado 28 de <span class="accent text-lavender">noviembre</span></h2>
+            <p class="mt-5 text-[1rem] text-cream/75">9:00 a. m. – 5:00 p. m. · Presencial · {p.venue}</p>
+          </div>
+          <Countdown date={start} variant="dark" label={countdownLabel} after="La formación ya comenzó. Escríbenos para conocer las opciones de ingreso." />
+        </div>
+        <div class="mt-10 flex flex-col gap-5 border-t border-cream/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p class="text-[1.05rem]">
+            Inversión: <strong class="text-[1.3rem] font-bold">{formatCOP(p.pricePerModule)} COP</strong> <span class="text-cream/70">por módulo · {p.modulesCount} módulos</span>
+          </p>
+          <a href={waLink(p.waKey)} class="btn btn-light" target="_blank" rel="noopener">
+            <Icon name="whatsapp" size={20} />
+            Reservar mi cupo
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIRECCIÓN -->
+  <section class="section bg-white" aria-labelledby="direccion">
+    <div class="wrap grid gap-10 md:grid-cols-12 md:items-center">
+      <div class="md:col-span-5">
+        <p class="eyebrow">Dirección</p>
+        <h2 id="direccion" class="title mt-5">Quién <span class="accent">acompaña</span> el proceso.</h2>
+      </div>
+      <div class="md:col-span-7">
+        <FacilitatorCard person={people.alba} role="Directora de la formación" />
+      </div>
+    </div>
+  </section>
+
+  <!-- FOTOS -->
+  <section class="section" aria-labelledby="fotos">
+    <div class="wrap">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="eyebrow">Encuentros Renacer</p>
+          <h2 id="fotos" class="title mt-5 max-w-2xl">Formación <span class="accent">presencial</span>, en grupo.</h2>
+        </div>
+        <p class="max-w-sm text-[0.9rem] text-ink-mute">Imágenes reales de encuentros de formación en Renacer.</p>
+      </div>
+      <div class="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4 md:grid-rows-2">
+        <div class="photo col-span-2 aspect-[4/3] md:row-span-2 md:aspect-auto">
+          <Picture src={g1} alt="Encuentro al aire libre: el grupo de pie en círculo" widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+        <div class="photo aspect-square">
+          <Picture src={g2} alt="Participantes vestidos de blanco durante un ejercicio de constelación" widths={[300, 500, 700]} sizes="(min-width: 768px) 25vw, 50vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+        <div class="photo aspect-square">
+          <Picture src={g3} alt="Momento de acompañamiento entre participantes" widths={[300, 500, 700]} sizes="(min-width: 768px) 25vw, 50vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+        <div class="photo col-span-2 aspect-[2/1]">
+          <Picture src={g4} alt="Estudiantes de Renacer con sus certificados al cierre de un proceso" widths={[480, 800, 1200]} sizes="(min-width: 768px) 50vw, 100vw" formats={['avif', 'webp']} loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section bg-white" aria-labelledby="preguntas">
+    <div class="wrap grid gap-10 md:grid-cols-12">
+      <div class="md:col-span-4">
+        <p class="eyebrow">Preguntas frecuentes</p>
+        <h2 id="preguntas" class="title mt-5">Antes de <span class="accent">inscribirte.</span></h2>
+      </div>
+      <div class="md:col-span-8">
+        <Faq items={constFaqs} />
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <TestimonialCarousel
+    items={testimonialsFirstFor(p.key)}
+    withDialog={false}
+    subtitle="Primero, estudiantes de esta formación; después, experiencias de otras formaciones de Renacer. Cada video indica la formación de cada persona."
+  />
+
+  <CtaBand
+    waKey={p.waKey}
+    eyebrow="Inicia el sábado 28 de noviembre"
+    title="¿Te gustaría formarte como <span class='accent text-lavender'>Constelador Familiar?</span>"
+    text="Escríbenos por WhatsApp y te contamos los detalles de la formación, el calendario y el proceso de inscripción."
+    button="Quiero inscribirme"
+    image={g1}
+    imageAlt="Encuentro al aire libre: el grupo de pie en círculo"
+  />
+</Base>

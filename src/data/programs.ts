@@ -30,6 +30,8 @@ export interface Program {
   modality: string
   pricePerModule: number
   startLabel: string
+  /** ISO yyyy-mm-dd del primer módulo de una cohorte con inscripción abierta */
+  startDate?: string
   facilitators: Person[]
   modules: Module[]
   image: ImageMetadata
@@ -198,22 +200,120 @@ export const constelaciones: Program = {
   slug: '/constelaciones-familiares',
   name: 'Formación en Constelaciones Familiares y Terapia Sistémica',
   shortName: 'Constelaciones Familiares',
-  status: 'en-curso',
-  statusLabel: 'En curso desde agosto de 2026',
+  status: 'abierta',
+  statusLabel: 'Inscripciones abiertas',
   summary:
-    'Una formación vivencial para aprender a mirar los vínculos, las lealtades y los patrones que se repiten en la historia familiar, con herramientas sistémicas para la vida personal y el acompañamiento.',
+    'Una formación para convertirte en Terapeuta Sistémico y Constelador Familiar, mientras trabajas en tu propio proceso de autoconocimiento y transformación personal.',
   modulesCount: 11,
   frequency: 'Un sábado al mes',
   schedule: '9:00 a. m. – 5:00 p. m.',
-  venue: 'Cali',
+  venue: 'Cali, Ciudad Jardín',
   modality: 'Presencial',
   pricePerModule: 300000,
-  startLabel: 'Cohorte en curso desde el 15 de agosto de 2026',
+  startLabel: 'Inicia el sábado 28 de noviembre de 2026',
+  startDate: '2026-11-28',
   facilitators: [people.alba],
   image: imgConst,
   imageAlt: 'Ejercicio sistémico grupal con hilos rojos que conectan a los participantes',
   waKey: 'const',
-  modules: [],
+  // Temario oficial: "Programa de Formación Sistémica" (Alba Elisa Cerón Gómez).
+  modules: [
+    {
+      n: 1,
+      title: 'Introducción a las Constelaciones Familiares',
+      date: '2026-11-28',
+      topics: [
+        'Origen y fundamento de las constelaciones familiares',
+        'Árbol genealógico',
+        'Sistema familiar',
+        'Fenomenología',
+        'Constelación familiar: grupal, individual y con anclajes',
+        'Terapia sistémica',
+        'Mala y buena conciencia',
+      ],
+    },
+    {
+      n: 2,
+      title: 'Dinámicas familiares',
+      topics: [
+        'La mirada y el movimiento sistémico',
+        'Estructuras familiares',
+        'Roles y posiciones dentro del sistema',
+        'Patrones recurrentes',
+        'Cómo romper patrones',
+        'Los ancestros',
+        'Ejercicios sistémicos',
+      ],
+    },
+    {
+      n: 3,
+      title: 'Los órdenes del amor',
+      topics: ['Los órdenes del amor', 'Pertenencia', 'Jerarquía y órdenes de la ayuda', 'Ejercicios sistémicos'],
+    },
+    {
+      n: 4,
+      title: 'Compensación y reparación en el sistema',
+      topics: ['Equilibrio entre el tomar y el dar', 'Compensación', 'Reparación y víctimas', 'Ejercicios sistémicos'],
+    },
+    {
+      n: 5,
+      title: 'Órdenes de la abundancia',
+      topics: [
+        'Interferir',
+        'Respetar límites',
+        'El dinero',
+        'Cargas emocionales heredadas: culpa, vergüenza y sufrimiento',
+        'Ejercicios sistémicos',
+      ],
+    },
+    {
+      n: 6,
+      title: 'La figura materna',
+      topics: ['Rol de la madre en el sistema familiar', 'Vínculo materno', 'Madre ausente o desvalorizada', 'Tomar a la madre'],
+    },
+    {
+      n: 7,
+      title: 'La figura del padre',
+      topics: ['Rol del padre en el sistema familiar', 'Vínculo y relación', 'Padre ausente, débil o desautorizado', 'Tomar al padre'],
+    },
+    {
+      n: 8,
+      title: 'La pareja',
+      topics: [
+        'Amor y orden',
+        'La pareja sistémica',
+        'Las relaciones de pareja en la familia',
+        'Vínculos y relaciones',
+        'Sexualidad',
+        'Ejercicios sistémicos',
+      ],
+    },
+    {
+      n: 9,
+      title: 'Salud, enfermedad y muerte',
+      topics: ['La vida', 'La enfermedad', 'La muerte', 'Ejercicios sistémicos'],
+    },
+    {
+      n: 10,
+      title: 'Empezar a constelar',
+      topics: [
+        'Posicionamiento: terapeuta y constelador',
+        'Límites como constelador',
+        'Preguntas base y frases sanadoras',
+        'Constelar',
+        'Evaluación',
+      ],
+    },
+    {
+      n: 11,
+      title: 'Constelando y círculo de cierre',
+      topics: ['Constelaciones como trabajo de grado', 'Graduación'],
+    },
+  ],
 }
 
-export const programs = [sexualidad, biodescodificacion, constelaciones]
+/**
+ * Formaciones visibles en el sitio. Sexualidad Consciente está oculta desde noviembre de 2026
+ * (sus datos se conservan arriba): ver docs/sexualidad-consciente-oculta.md.
+ */
+export const programs = [constelaciones, biodescodificacion]

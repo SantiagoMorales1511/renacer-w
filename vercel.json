@@ -9,8 +9,9 @@
   "redirects": [
     { "source": "/formacion/constelaciones", "destination": "/constelaciones-familiares", "statusCode": 301 },
     { "source": "/formacion/biodescodificacion", "destination": "/biodescodificacion", "statusCode": 301 },
-    { "source": "/formacion/sexualidad", "destination": "/sexualidad-consciente", "statusCode": 301 },
-    { "source": "/sexualidad", "destination": "/sexualidad-consciente", "statusCode": 301 },
+    { "source": "/sexualidad-consciente", "destination": "/constelaciones-familiares", "statusCode": 307 },
+    { "source": "/formacion/sexualidad", "destination": "/constelaciones-familiares", "statusCode": 307 },
+    { "source": "/sexualidad", "destination": "/constelaciones-familiares", "statusCode": 307 },
     { "source": "/constelaciones", "destination": "/constelaciones-familiares", "statusCode": 301 },
     { "source": "/privacidad", "destination": "/privacy", "statusCode": 301 }
   ],

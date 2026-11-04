@@ -84,23 +84,31 @@ export const bioFaqs: Faq[] = [
 
 export const constFaqs: Faq[] = [
   {
-    q: '¿Puedo ingresar si la formación ya inició?',
-    a: 'La cohorte actual inició en agosto de 2026. Escríbenos por WhatsApp y te contamos las opciones de ingreso disponibles.',
+    q: '¿Cuándo inicia la formación?',
+    a: 'El primer módulo es el sábado 28 de noviembre de 2026, de 9:00 a. m. a 5:00 p. m. Luego, un sábado al mes. Te compartimos el calendario completo por WhatsApp.',
   },
   {
     q: '¿Cuál es el valor?',
-    a: '$300.000 COP por módulo. La formación tiene 11 módulos, un sábado al mes.',
+    a: '$300.000 COP por módulo. La formación tiene 11 módulos y se paga por módulo. Por WhatsApp te explicamos cómo realizar el pago.',
   },
   {
-    q: '¿Cuál es el horario?',
-    a: 'De 9:00 a. m. a 5:00 p. m., de forma presencial en Cali.',
+    q: '¿Dónde son los encuentros?',
+    a: 'De forma presencial en Cali, en el barrio Ciudad Jardín. Al inscribirte te confirmamos la dirección exacta.',
+  },
+  {
+    q: '¿Qué voy a aprender?',
+    a: 'La formación prepara Terapeutas Sistémicos y Consteladores Familiares. Desde el primer módulo aprendes técnicas y herramientas para facilitar terapias y constelaciones familiares, y al mismo tiempo trabajas en tu propio proceso personal.',
   },
   {
     q: '¿Qué es una constelación familiar?',
     a: 'Es una terapia vivencial breve en la que, a través de representantes, se hacen visibles los vínculos, las lealtades y los patrones que se repiten en la historia familiar, para comprenderlos desde una mirada sistémica.',
   },
   {
-    q: '¿Dónde puedo ver el temario completo?',
-    a: 'Te enviamos el temario detallado de los 11 módulos por WhatsApp.',
+    q: '¿Cómo termina la formación?',
+    a: 'En el módulo 11 cada participante realiza constelaciones como trabajo de grado y cerramos con un círculo de cierre y la graduación.',
+  },
+  {
+    q: '¿Cómo me inscribo?',
+    a: 'Escríbenos por WhatsApp al +57 312 384 7771. Te orientamos sobre la formación, las fechas y el proceso de inscripción.',
   },
 ]
