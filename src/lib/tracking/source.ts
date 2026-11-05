@@ -18,6 +18,14 @@ const clean = (v: string | null | undefined) =>
     .replace(/[^a-z0-9._-]+/g, '_')
     .slice(0, 60)
 
+const internalReferrer = () => {
+  try {
+    return !!document.referrer && new URL(document.referrer).hostname.replace(/^www\./, '') === location.hostname.replace(/^www\./, '')
+  } catch {
+    return false
+  }
+}
+
 function fromLanding(pagePath: string): VisitSource | null {
   const q = new URLSearchParams(location.search)
   const utm = { source: clean(q.get('utm_source')), medium: clean(q.get('utm_medium')), campaign: clean(q.get('utm_campaign')) }
@@ -50,8 +58,8 @@ export function visitSource(pagePath: string): VisitSource {
   } catch {
     saved = null
   }
-  // Navegación interna o recarga sin origen: se mantiene el de la entrada
-  const keepSaved = saved !== null && (fresh === null || fresh.source === '(direct)')
+  // Navegación interna (aunque la dirección lleve el gclid de la entrada) o recarga sin origen: se mantiene el de la entrada
+  const keepSaved = saved !== null && (fresh === null || fresh.source === '(direct)' || internalReferrer())
   if (keepSaved) return saved!
   const current = fresh ?? { source: '(direct)', medium: '(none)', campaign: '', landing: pagePath }
   try {

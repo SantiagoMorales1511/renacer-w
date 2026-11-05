@@ -1,6 +1,6 @@
 # Medición: Google Ads, Google Tag Manager y Meta Pixel
 
-Última revisión: 4 de noviembre de 2026.
+Última revisión: 5 de noviembre de 2026.
 
 ## Qué hay instalado
 
@@ -9,13 +9,14 @@
 | Meta Pixel | `PUBLIC_META_PIXEL_ID` (variable de entorno en Vercel) | Vercel → Settings → Environment Variables | Activo |
 | Google Tag Manager | `GTM-MP6HRKCG` | `src/data/tracking.ts` (o `PUBLIC_GTM_ID`) | Activo |
 | Etiqueta de Google Ads | `AW-18556827974` (dentro del contenedor) | tagmanager.google.com / Google Ads | Activa |
-| Conversión «Clic en WhatsApp» de Google Ads | etiqueta `AW-18556827974/…` | `src/data/tracking.ts` → `GOOGLE_ADS_WA_LABEL` (o `PUBLIC_GOOGLE_ADS_WA_LABEL`) | **Pendiente**: falta crear la acción en Google Ads |
+| Conversión «Clic en WhatsApp - Web» de Google Ads | `AW-18556827974/7J0pCKGwsrIdEMbyypBF` | `src/data/tracking.ts` → `GOOGLE_ADS_WA_LABEL` (o `PUBLIC_GOOGLE_ADS_WA_LABEL`) | Activa desde el 5 nov 2026 (Contacto · recuento «Una» · principal · conversiones avanzadas desactivadas) |
 | Google Analytics 4 | — | — | No existe |
 
 `GTM-MP6HRKCG` es un **contenedor de Google Tag Manager**, no un ID de conversión. Lo creó Google Ads; su versión publicada (v1)
-contiene solo la etiqueta de Google de la cuenta `AW-18556827974`, con eventos automáticos y la recopilación automática
-de datos proporcionados por el usuario (conversiones avanzadas) activada. Sin la etiqueta de la acción de conversión no
-se registra ninguna conversión.
+contiene solo la etiqueta de Google de la cuenta `AW-18556827974`, con eventos automáticos y la opción de recopilación
+automática de datos proporcionados por el usuario. **No tiene** etiqueta «Seguimiento de conversiones de Google Ads» ni
+«Vinculación de conversiones», y no las necesita (ver «Conversión de Google Ads»). Revisado el 5 nov 2026: sigue en la
+versión 1.
 
 Los IDs son públicos (salen en el HTML), no son claves. Si un valor tiene formato inválido, esa herramienta queda apagada.
 
@@ -92,42 +93,59 @@ un botón nuevo no tiene ubicación.
 
 Nunca se marca una visita a una página como cliente potencial: las conversiones de Google Ads son solo clics en WhatsApp.
 
-## Activar la conversión de Google Ads
+## Conversión de Google Ads
 
-1. En Google Ads, crear la acción (ver «Pasos en Google Ads» abajo) y copiar la **etiqueta de conversión**.
-2. Pegarla en `GOOGLE_ADS_WA_LABEL` de `src/data/tracking.ts` (por defecto vacío), o crear `PUBLIC_GOOGLE_ADS_WA_LABEL` en
-   Vercel. Ejemplo: `send_to: 'AW-18556827974/AbC-D_efG12hIjk'` → la etiqueta es `AbC-D_efG12hIjk`.
-3. `npm run build && npm test` → «Google Ads: conversión de WhatsApp configurada».
-4. Publicar y comprobar en Google Ads → Objetivos → Conversiones que la acción pase a «Registrando conversiones».
+**Cómo se envía.** Al hacer clic en WhatsApp (con consentimiento), el código ejecuta
+`gtag('event', 'conversion', { send_to: 'AW-18556827974/7J0pCKGwsrIdEMbyypBF' })`. La etiqueta de Google que ya está en el
+contenedor (`AW-18556827974`) recibe ese comando y lo envía a Google Ads. **No hay que crear nada en GTM.**
 
-**Evitar el doble conteo.** La conversión se envía desde el código. No crear además, para el mismo clic:
+**Por qué el contenedor no necesita más etiquetas:**
+- **Seguimiento de conversiones de Google Ads:** no. La conversión ya sale desde el código. Si además se crea esta etiqueta
+  en GTM (por ejemplo, con el activador `whatsapp_click`), cada clic contaría **dos veces**.
+- **Vinculación de conversiones (Conversion Linker):** no. La etiqueta de Google ya hace esa función. Comprobado en
+  navegador: al llegar con `?gclid=`, crea la cookie `_gcl_aw`, y la conversión enviada en otra página lleva el `gclid`
+  (parámetro `gclaw`). La etiqueta de vinculación solo hace falta con etiquetas de conversión de GTM sin etiqueta de Google.
+
+**Alternativa (no usar a la vez):** si algún día se prefiere manejar la conversión desde GTM, se crea allí la etiqueta
+«Seguimiento de conversiones de Google Ads» (ID `18556827974`, etiqueta `7J0pCKGwsrIdEMbyypBF`, activador «Evento
+personalizado» = `whatsapp_click`) y **en el mismo momento** se vacía `GOOGLE_ADS_WA_LABEL` en `src/data/tracking.ts`.
+
+**Atribución al anuncio mientras se navega:**
+- Con cookies aceptadas en la página de llegada, la etiqueta guarda el clic del anuncio en `_gcl_aw` (90 días).
+- Si la persona navega **antes** de responder al aviso, el `gclid`/`gbraid`/`wbraid` de la página de entrada se añade a
+  los enlaces internos al pulsarlos (como el «url passthrough» de Google). No se guarda en el dispositivo. Así, si acepta
+  en otra página, la conversión se atribuye igual. Si rechaza, deja de añadirse. Los enlaces de WhatsApp no se tocan.
+- El origen de la visita (`visit_source`, `landing_page`) se conserva en la navegación interna aunque la dirección lleve
+  el `gclid`.
+
+**Evitar el doble conteo.** No crear, para el mismo clic:
 - una etiqueta «Seguimiento de conversiones de Google Ads» en GTM,
-- ni una conversión automática de Google Ads por «clics en enlaces» o «URL contiene wa.me».
+- una conversión automática de Google Ads por «clics en enlaces» o «URL contiene wa.me»,
+- ni una conversión importada de GA4 por `whatsapp_click`.
 
 Si Google Ads ya creó alguna conversión automática de clics o de visitas a páginas, se marca como **secundaria**,
-para que no cuente como cliente potencial.
+para que no cuente como cliente potencial. Con el recuento «Una», varios clics en WhatsApp después de un mismo clic en el
+anuncio cuentan como una sola conversión.
 
-### Pasos en Google Ads (requieren la cuenta)
-
-Objetivos → Conversiones → Resumen → **+ Crear acción de conversión** → Sitio web → escribir `renacer-ahora.com` →
-Analizar → **Agregar una acción de conversión manualmente**:
+### Configuración usada en Google Ads
 
 | Campo | Valor |
 |---|---|
-| Objetivo y acción | **Contacto** |
-| Nombre | `Clic en WhatsApp – Web` |
-| Valor | **No usar un valor** (un clic no es una venta) |
-| Recuento | **Una** (una conversión por clic en el anuncio, aunque la persona pulse varias veces) |
-| Período de conversión | 30 días |
-| Atribución | Basada en datos (recomendada) |
+| Nombre | `Clic en WhatsApp - Web` |
+| Categoría | **Contacto** |
+| Valor | Sin valor (un clic no es una venta) |
+| Recuento | **Una** |
+| Optimización | Principal |
+| Configuración de etiqueta | «Usar Google Tag Manager» → ID `18556827974`, etiqueta `7J0pCKGwsrIdEMbyypBF` |
 
-Guardar → configurar la etiqueta → **Usar Google Tag Manager** → copiar el **ID de conversión** (debe ser
-`18556827974`) y la **etiqueta de conversión**.
+Para cambiar la etiqueta: `GOOGLE_ADS_WA_LABEL` en `src/data/tracking.ts` (o `PUBLIC_GOOGLE_ADS_WA_LABEL` en Vercel) →
+`npm run build && npm test` → publicar.
 
-**Conversiones avanzadas:** el contenedor tiene activa la recopilación automática de datos proporcionados por el usuario.
-El sitio no tiene formularios y en las pruebas las conversiones no llevaron datos personales. Aun así, como la web
-muestra el correo y el WhatsApp de Renacer, conviene desactivarla en Google Ads → Objetivos → Configuración →
-Conversiones avanzadas, o excluir el pie de página desde la configuración de la etiqueta de Google.
+**Conversiones avanzadas:** desactivadas en la acción de conversión. La configuración de la etiqueta de Google publicada
+todavía marca la recopilación automática de datos proporcionados por el usuario. En las pruebas del 5 nov 2026 las
+conversiones no llevaron datos personales (ni `em`, ni correo, ni teléfono). Para cerrarlo del todo, desactivar también
+«Datos proporcionados por el usuario» en la configuración de la etiqueta de Google (Google Ads → Herramientas →
+Administrador de datos → Etiqueta de Google → Administrar → Configuración).
 
 ## Google Analytics 4 (opcional, más adelante)
 
@@ -160,10 +178,14 @@ No enviar a Google Ads la conversión importada de GA4 si la conversión directa
   - la sección de Google existe en `/privacy`,
   - estado de la etiqueta de conversión.
 - **Navegador:** con un clic en WhatsApp, `dataLayer.filter(e => e.event === 'whatsapp_click')` en la consola.
-- **Oficiales:**
-  - [Tag Assistant](https://tagassistant.google.com) (modo Vista previa de GTM, con la cuenta) → aceptar cookies →
-    pulsar un botón: debe aparecer `whatsapp_click` y la conversión de Google Ads una sola vez.
-  - Google Ads → Conversiones → diagnóstico de la acción.
+- **Oficiales (requieren la cuenta de Google):**
+  - [Tag Assistant](https://tagassistant.google.com) → «Add domain» → `https://renacer-ahora.com/constelaciones-familiares`
+    → se abre la web en una ventana nueva → **aceptar cookies** (sin aceptar no se carga nada) → pulsar un botón de
+    WhatsApp. En Tag Assistant: debe aparecer **un** `whatsapp_click` y, en la etiqueta `AW-18556827974`, **un** evento
+    `conversion` con la etiqueta `7J0pCKGwsrIdEMbyypBF`.
+  - Google Ads → Objetivos → Conversiones → «Clic en WhatsApp - Web»: el estado pasa de «Sin verificar» a
+    «Sin conversiones recientes» o «Registrando conversiones» (puede tardar hasta 24 h). Solo cuentan los clics de
+    personas que llegaron desde un anuncio; las pruebas sin clic en anuncio no suman conversiones.
   - Meta → Administrador de eventos → Probar eventos.
 
 ## Privacidad

@@ -28,7 +28,7 @@ const googleAdsId = pick(env.PUBLIC_GOOGLE_ADS_ID, 'AW-18556827974', /^AW-\d{6,1
  * Es la parte después de la barra en send_to: 'AW-18556827974/<etiqueta>'.
  * Vacía = no se envían conversiones a Google Ads (el evento whatsapp_click sí llega a la capa de datos).
  */
-const GOOGLE_ADS_WA_LABEL = '' // ← pegar aquí la etiqueta cuando exista la acción en Google Ads
+const GOOGLE_ADS_WA_LABEL = '7J0pCKGwsrIdEMbyypBF' // acción «Clic en WhatsApp - Web» (Contacto, recuento: Una), creada el 5 nov 2026
 const googleAdsWaLabel = pick(env.PUBLIC_GOOGLE_ADS_WA_LABEL, GOOGLE_ADS_WA_LABEL, /^[A-Za-z0-9_-]{6,40}$/)
 
 /**

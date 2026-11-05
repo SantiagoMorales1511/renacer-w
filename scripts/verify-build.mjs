@@ -192,7 +192,7 @@ for (const file of Object.keys(pages)) {
   }
 }
 const ads = read('constelaciones-familiares.html').match(/"adsWaSendTo":"([^"]*)"/)?.[1]
-ok(ads === '' || /^AW-18556827974\/[A-Za-z0-9_-]{6,40}$/.test(ads), `Google Ads: conversión de WhatsApp ${ads ? `configurada (${ads})` : 'pendiente de etiqueta'}`)
+ok(ads === 'AW-18556827974/7J0pCKGwsrIdEMbyypBF', `Google Ads: conversión «Clic en WhatsApp - Web» configurada (${ads || 'sin etiqueta'})`)
 
 console.log(failures ? `\n${failures} verificación(es) fallaron` : '\nTodas las verificaciones pasaron')
 process.exit(failures ? 1 : 0)

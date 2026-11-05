@@ -71,10 +71,34 @@ export function initTracking(cfg: TrackingConfig, box: HTMLElement | null) {
   document.addEventListener('click', onClick, { capture: true })
   document.addEventListener('auxclick', onClick, { capture: true })
 
+  // ---- Atribución del anuncio mientras se navega ----
+  // La etiqueta de Google lee el identificador del clic (gclid, gbraid, wbraid) de la dirección de la página.
+  // Si la persona navega antes de responder al aviso, ese identificador viaja en la dirección de la
+  // siguiente página interna (como el "url passthrough" de Google), sin guardarse en el dispositivo.
+  // Así, si acepta en otra página, el clic en WhatsApp se atribuye igual al anuncio. Al rechazar, deja de pasar.
+  const landingQuery = new URLSearchParams(location.search)
+  const adIds = ['gclid', 'gbraid', 'wbraid'].filter((k) => landingQuery.get(k)).map((k) => [k, landingQuery.get(k)!] as const)
+  let rejected = readConsent() === 'denied'
+  function carryAdId(e: MouseEvent) {
+    if (rejected || !adIds.length) return
+    if (e.type === 'auxclick' && e.button !== 1) return
+    const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null
+    if (!a || a.origin !== location.origin || a.hasAttribute('download')) return // solo páginas del sitio (nunca WhatsApp)
+    const url = new URL(a.href)
+    if (adIds.every(([k]) => url.searchParams.has(k))) return
+    for (const [k, v] of adIds) if (!url.searchParams.has(k)) url.searchParams.set(k, v)
+    a.href = url.href
+  }
+  if (adIds.length) {
+    document.addEventListener('click', carryAdId, { capture: true })
+    document.addEventListener('auxclick', carryAdId, { capture: true })
+  }
+
   // ---- Aviso de consentimiento ----
   if (!box) return
   function decide(v: Consent) {
     writeConsent(v)
+    rejected = v === 'denied'
     box!.hidden = true
     apply(v)
   }
