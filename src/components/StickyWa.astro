@@ -22,7 +22,7 @@ const { waKey, label, caption } = Astro.props
         </p>
       )
     }
-    <a href={waLink(waKey)} class:list={['btn btn-primary min-h-[3rem] px-5 text-[0.9rem]', !caption && 'w-full']} target="_blank" rel="noopener">
+    <a href={waLink(waKey)} class:list={['btn btn-primary min-h-[3rem] px-5 text-[0.9rem]', !caption && 'w-full']} target="_blank" rel="noopener" data-wa-loc="barra_movil">
       <Icon name="whatsapp" size={19} />
       {label}
     </a>

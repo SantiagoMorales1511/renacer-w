@@ -25,7 +25,7 @@ const { waKey, eyebrow = 'Hablemos', title, text, button = 'Escribir por WhatsAp
         <h2 class="title mt-5 text-cream" set:html={title} />
         <p class="mt-5 max-w-md text-[1.05rem] leading-relaxed text-cream/75">{text}</p>
         <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <a href={waLink(waKey)} class="btn btn-light" target="_blank" rel="noopener">
+          <a href={waLink(waKey)} class="btn btn-light" target="_blank" rel="noopener" data-wa-loc="cta_final">
             <Icon name="whatsapp" size={20} />
             {button}
           </a>

@@ -5,13 +5,13 @@ import logoMark from '../assets/logo-mark.png'
 import { site } from '../data/site'
 import { programs } from '../data/programs'
 import { waLink, type WaKey } from '../lib/whatsapp'
+import { trackingOn } from '../data/tracking'
 
 interface Props {
   waKey?: WaKey
 }
 const { waKey = 'general' } = Astro.props
 const year = new Date().getFullYear()
-const pixelOn = /^\d{10,20}$/.test((import.meta.env.PUBLIC_META_PIXEL_ID ?? '').trim())
 ---
 
 <footer class="night-glow bg-petrol-night text-cream/80">
@@ -27,7 +27,7 @@ const pixelOn = /^\d{10,20}$/.test((import.meta.env.PUBLIC_META_PIXEL_ID ?? '').
       <p class="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-cream/70">
         Formación y desarrollo humano en Cali, Colombia. Herramientas sistémicas para comprender, acompañar y transformar, desde una práctica ética y humana.
       </p>
-      <a href={waLink(waKey)} class="btn btn-light mt-8" target="_blank" rel="noopener">
+      <a href={waLink(waKey)} class="btn btn-light mt-8" target="_blank" rel="noopener" data-wa-loc="pie_boton">
         <Icon name="whatsapp" size={20} />
         Escríbenos por WhatsApp
       </a>
@@ -46,7 +46,7 @@ const pixelOn = /^\d{10,20}$/.test((import.meta.env.PUBLIC_META_PIXEL_ID ?? '').
       <h2 class="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-lavender">Contacto</h2>
       <ul class="mt-5 space-y-3.5 text-[0.95rem]">
         <li>
-          <a href={waLink(waKey)} class="inline-flex items-center gap-3 hover:text-cream" target="_blank" rel="noopener">
+          <a href={waLink(waKey)} class="inline-flex items-center gap-3 hover:text-cream" target="_blank" rel="noopener" data-wa-loc="pie_contacto">
             <Icon name="whatsapp" size={18} class="text-lavender" />{site.whatsapp.display}
           </a>
         </li>
@@ -71,7 +71,7 @@ const pixelOn = /^\d{10,20}$/.test((import.meta.env.PUBLIC_META_PIXEL_ID ?? '').
       <p>© {year} Centro de Formación Renacer. Todos los derechos reservados.</p>
       <span class="flex flex-wrap gap-x-5 gap-y-2">
         <a href="/privacy" class="hover:text-cream">Política de privacidad</a>
-        {pixelOn && <button type="button" data-consent-open class="text-left hover:text-cream">Preferencias de seguimiento</button>}
+        {trackingOn && <button type="button" data-consent-open class="text-left hover:text-cream">Preferencias de seguimiento</button>}
       </span>
     </div>
   </div>

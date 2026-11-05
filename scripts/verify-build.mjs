@@ -174,5 +174,25 @@ ok(!vercel.rewrites, 'vercel.json: sin rewrites SPA')
 const tmp = vercel.redirects.filter((r) => /sexualidad/.test(r.source))
 ok(tmp.length === 3 && tmp.every((r) => r.destination === '/constelaciones-familiares' && r.statusCode === 307), 'vercel.json: Sexualidad → Constelaciones con redirección temporal (307)')
 
+// Medición (docs/medicion.md): GTM solo después del consentimiento, cada botón de WhatsApp con su ubicación
+ok(newHtml.includes('id="google-ads"') && newHtml.indexOf('id="google-ads"') > metaIdx, '/privacy: sección de Google Ads después del texto original')
+for (const file of Object.keys(pages)) {
+  const html = read(file)
+  const cfgMatch = html.match(/<script type="application\/json" id="rn-tracking">([^<]+)<\/script>/)
+  const cfg = cfgMatch ? JSON.parse(cfgMatch[1]) : null
+  ok(cfg?.gtmId === 'GTM-MP6HRKCG', `${file}: configuración de medición con GTM-MP6HRKCG`)
+  ok(!/<script[^>]+googletagmanager\.com/.test(html) && !html.includes('googletagmanager.com/ns.html'), `${file}: GTM no se carga antes del consentimiento`)
+  ok(!html.includes('connect.facebook.net/en_US/fbevents.js"'), `${file}: Pixel no se carga antes del consentimiento`)
+  ok((html.match(/id="rn-consent"/g) || []).length === 1 && html.includes('data-consent-open'), `${file}: un aviso de consentimiento + "Preferencias de seguimiento"`)
+  const was = [...html.matchAll(/<a\b[^>]*href="https:\/\/wa\.me\/[^"]*"[^>]*>/g)].map((m) => m[0])
+  ok(was.length > 0 && was.every((t) => /data-wa-loc="[a-z_]+"/.test(t)), `${file}: ${was.length} botones de WhatsApp con ubicación`)
+  if (cfg) {
+    ok(cfg.programs['WEB-CONST']?.id === 'constelaciones-familiares' && cfg.programs['WEB-BIO']?.id === 'biodescodificacion' && cfg.programs['WEB-GENERAL']?.id === 'general', `${file}: códigos de WhatsApp → formación`)
+    ok(!JSON.stringify(cfg).includes('573123847771') && !JSON.stringify(cfg).includes('@'), `${file}: la configuración no contiene teléfono ni correo`)
+  }
+}
+const ads = read('constelaciones-familiares.html').match(/"adsWaSendTo":"([^"]*)"/)?.[1]
+ok(ads === '' || /^AW-18556827974\/[A-Za-z0-9_-]{6,40}$/.test(ads), `Google Ads: conversión de WhatsApp ${ads ? `configurada (${ads})` : 'pendiente de etiqueta'}`)
+
 console.log(failures ? `\n${failures} verificación(es) fallaron` : '\nTodas las verificaciones pasaron')
 process.exit(failures ? 1 : 0)

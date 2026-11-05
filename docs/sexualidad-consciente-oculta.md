@@ -22,7 +22,7 @@ git diff sexualidad-visible -- src/pages/index.astro   # ver cómo estaba el Hom
 | Mini testimonios | `featured.sex` en `src/data/testimonials.ts`. |
 | Mensaje de WhatsApp `[WEB-SEX]` | Sigue en `src/lib/whatsapp.ts`. |
 | Atribución de anuncios (`utm_content` → código en WhatsApp) | `src/components/WaAttribution.astro` sigue cargado, pero solo actúa sobre enlaces `[WEB-SEX]`, así que hoy no cambia nada. |
-| Meta Pixel `ViewContent` | Se movió a `/constelaciones-familiares` (`src/components/MetaPixel.astro`). La frase de `/privacy` se actualizó para que coincida. |
+| Meta Pixel `ViewContent` | Se movió a `/constelaciones-familiares` (`src/lib/tracking/meta.ts`). La frase de `/privacy` se actualizó para que coincida. |
 | Menú, Home, Formaciones, pie de página, sitemap | Ya no la muestran. |
 
 > **Anuncios:** si había campañas de Meta apuntando a `/sexualidad-consciente`, ahora llevan a Constelaciones. Revisa en el Administrador de anuncios y pausa o cambia esas campañas.
@@ -34,6 +34,6 @@ git diff sexualidad-visible -- src/pages/index.astro   # ver cómo estaba el Hom
 3. Agrégala a `programs` en `src/data/programs.ts` y al menú `nav` en `src/data/site.ts` (y a `site.description` si debe mencionarse).
 4. En `vercel.json` quita la redirección `/sexualidad-consciente` y vuelve a apuntar `/sexualidad` y `/formacion/sexualidad` a `/sexualidad-consciente`.
 5. Si debe ser la formación destacada: tarjeta del Hero y banda "Nueva cohorte" en `src/pages/index.astro` (ver la etiqueta `sexualidad-visible`).
-6. Meta Pixel: si `ViewContent` debe medir Sexualidad, cambia la ruta en `MetaPixel.astro` **y** la frase correspondiente en `src/pages/privacy.astro`.
+6. Meta Pixel: si `ViewContent` debe medir Sexualidad, cambia la ruta en `src/lib/tracking/meta.ts` **y** la frase correspondiente en `src/pages/privacy.astro`.
 7. En `scripts/verify-build.mjs` vuelve a añadir `sexualidad-consciente.html` a `pages` (`WEB-SEX`) y quita las verificaciones "Sexualidad oculta".
 8. `npm run build && npm test`.

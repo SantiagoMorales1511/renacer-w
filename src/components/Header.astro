@@ -43,7 +43,7 @@ const isActive = (href: string) => path === href
     </nav>
 
     <div class="flex items-center gap-2">
-      <a href={waLink(waKey)} class="btn btn-primary hidden min-h-[2.75rem] px-5 text-[0.85rem] sm:inline-flex" target="_blank" rel="noopener">
+      <a href={waLink(waKey)} class="btn btn-primary hidden min-h-[2.75rem] px-5 text-[0.85rem] sm:inline-flex" target="_blank" rel="noopener" data-wa-loc="encabezado">
         <Icon name="whatsapp" size={18} />
         WhatsApp
       </a>
@@ -78,7 +78,7 @@ const isActive = (href: string) => path === href
           </a>
         ))
       }
-      <a href={waLink(waKey)} class="btn btn-primary mt-5 w-full" target="_blank" rel="noopener">
+      <a href={waLink(waKey)} class="btn btn-primary mt-5 w-full" target="_blank" rel="noopener" data-wa-loc="menu_movil">
         <Icon name="whatsapp" size={20} />
         Escribir por WhatsApp
       </a>

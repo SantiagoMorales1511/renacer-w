@@ -14,6 +14,7 @@ Sitio oficial de Renacer (Cali, Colombia).
 ```
 src/data/          programas, facilitadoras, FAQs, testimonios, datos del sitio
 src/lib/whatsapp.ts  enlaces wa.me con mensaje por formación ([WEB-SEX], [WEB-BIO], [WEB-CONST], [WEB-GENERAL])
+src/lib/tracking/  medición con consentimiento: Meta Pixel, Google Tag Manager, Google Ads (docs/medicion.md)
 src/pages/         /, /formaciones, /constelaciones-familiares, /biodescodificacion,
                    /testimonios, /privacy, /admin/*
                    (_sexualidad-consciente.astro: oculta, ver docs/)
@@ -40,4 +41,5 @@ Las rutas `/api/*` solo funcionan en Vercel (o con `vercel dev`).
 - `/privacy` contiene la política de Renacer AI usada por integraciones de Google; no cambiar su texto.
 - Redirecciones 301 de rutas antiguas en `vercel.json`.
 - **Formaciones ocultas:** Sexualidad Consciente está oculta desde noviembre de 2026 y se puede recuperar. Ver [docs/sexualidad-consciente-oculta.md](docs/sexualidad-consciente-oculta.md).
+- **Medición (Google Ads, GTM, Meta Pixel):** evento `whatsapp_click`, consentimiento y cómo activar la conversión de Google Ads en [docs/medicion.md](docs/medicion.md).
 - **Google Search Console:** el código de verificación va en `site.googleVerification` (`src/data/site.ts`) o en la variable `PUBLIC_GOOGLE_SITE_VERIFICATION`.

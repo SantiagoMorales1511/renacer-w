@@ -106,7 +106,7 @@ const faqLd = {
 
         <FactSheet program={p} start={startText} class="rise rise-3 mt-5 max-w-xl">
           <div class="mt-6 grid gap-3 sm:grid-cols-[1fr_auto]">
-            <a href={waLink(p.waKey)} class="btn btn-primary" target="_blank" rel="noopener">
+            <a href={waLink(p.waKey)} class="btn btn-primary" target="_blank" rel="noopener" data-wa-loc="hero">
               <Icon name="whatsapp" size={20} />
               Quiero inscribirme
             </a>
@@ -203,7 +203,7 @@ const faqLd = {
           <p class="eyebrow">Temario</p>
           <h2 id="temario-t" class="title mt-5">Once módulos, <span class="accent">un sábado al mes.</span></h2>
           <p class="mt-5 text-ink-soft">Cada módulo es una jornada presencial de 9:00 a. m. a 5:00 p. m. Toca cada módulo para ver los temas.</p>
-          <a href={waLink(p.waKey)} class="btn btn-ghost mt-6" target="_blank" rel="noopener">
+          <a href={waLink(p.waKey)} class="btn btn-ghost mt-6" target="_blank" rel="noopener" data-wa-loc="temario">
             <Icon name="whatsapp" size={19} class="text-petrol" />
             Pedir el calendario
           </a>
@@ -231,7 +231,7 @@ const faqLd = {
           <p class="text-[1.05rem]">
             Inversión: <strong class="text-[1.3rem] font-bold">{formatCOP(p.pricePerModule)} COP</strong> <span class="text-cream/70">por módulo · {p.modulesCount} módulos</span>
           </p>
-          <a href={waLink(p.waKey)} class="btn btn-light" target="_blank" rel="noopener">
+          <a href={waLink(p.waKey)} class="btn btn-light" target="_blank" rel="noopener" data-wa-loc="proximo_inicio">
             <Icon name="whatsapp" size={20} />
             Reservar mi cupo
           </a>
