@@ -31,7 +31,8 @@ interface Props {
 }
 
 const { title, description, ogImage = defaultOg, ogAlt, noindex = false, stickyWa, jsonLd, waKey = stickyWa?.key ?? 'general', breadcrumb } = Astro.props
-const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', site.url).href
+// build.format 'file' genera /pagina.html, pero Vercel (cleanUrls) sirve /pagina: la canónica va sin .html
+const canonical = new URL(Astro.url.pathname.replace(/(\/index)?\.html$/, '').replace(/\/$/, '') || '/', site.url).href
 const og = await getImage({ src: ogImage, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 78 })
 const ogUrl = new URL(og.src, site.url).href
 
